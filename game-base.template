@@ -1,0 +1,102 @@
+{
+    "datestamp": "{{date.now(YYYY-MM-DD HH:mm:ssZ)}}",
+    "playerid": {{random.number(
+        {
+            "min":1000000000,
+            "max":1000009999
+        }
+    )}},
+    "playerlevel": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.05,0.10,0.12,0.05,0.03,0.07,0.13,0.3,0.15 ],
+            "data": [ "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9" ]
+        }
+    )}}",
+    "gamenumber": {{random.number(
+        {
+            "min":1,
+            "max":6
+        }
+    )}},
+    "squadpower": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squadagility": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squadhealth": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squadluck": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squadspecial": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "bosspower": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "bossagility": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "bosshealth": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "bossluck": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "bossspecial": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "result": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.51, 0.42, 0.07 ],
+            "data": [ "Won","Lost","DNF" ]
+    )}}"
+}
+
+
+============= Redshift Queries
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16)));
+select * from eval01table limit 500;
+select count(*) from eval01table;
+select count(distinct handle) from eval01table;
+select count(distinct email) from eval01table;
+select count(distinct playerip) from eval01table;
+select count(distinct playerid) from eval01table;
+select count(distinct playerlevel) from eval01table;
+select count(*) from eval01table group by country;
+
+delete from eval01table where 1=1;
+drop table eval01table;
+==============

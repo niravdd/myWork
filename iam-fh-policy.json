@@ -1,0 +1,76 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::kinesis-bot-datagen",
+                "arn:aws:s3:::kinesis-bot-datagen/*",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+            ]
+        },
+        {
+          "Sid": "",
+          "Effect": "Allow",
+          "Action": [
+            "lambda:InvokeFunction",
+            "lambda:GetFunctionConfiguration"
+          ],
+          "Resource": "arn:aws:lambda:us-west-2:505314836537:function:KinesisDataGeneratorCognitoSetup:$LATEST"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:505314836537:log-group:/aws/kinesisfirehose/evalAnalyticsFHStream:log-stream:*",
+                "arn:aws:logs:us-west-2:505314836537:log-group:/aws/kinesisfirehose/evalTelemetryFHStream:log-stream:*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream",
+                "arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream"
+            ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": [
+            "arn:aws:kms:region:accountid:key/DUMMY_KEY_ID"
+          ],
+          "Condition": {
+            "StringEquals": {
+              "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+            },
+            "StringLike": {
+              "kms:EncryptionContext:aws:kinesis:arn": [
+                    "arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream",
+                    "arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream"
+                ]
+            }
+          }
+        }
+    ]
+}

@@ -1,0 +1,58 @@
+{
+    "playerip": "{{internet.ip}}",
+    "handle": "{{internet.userName}}",
+    "email": "{{internet.email}}",
+    "uuid": "{{random.uuid}}",
+    "playerid": {{random.number(
+        {
+            "min":1000000000,
+            "max":1000009999
+        }
+    )}},
+    "country": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.25, 0.20, 0.08, 0.10, 0.02, 0.15, 0.05, 0.03, 0.02, 0.03, 0.04, 0.03 ],
+            "data": [ "US", "Japan", "Singapore", "Australia", "New Zealand", "Canada", "UK", "Malaysia", "Russia", "India", "Philippines", "Taiwan" ]
+        }
+    )}}",
+    "useragent": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.15, 0.16, 0.04, 0.06, 0.06, 0.03, 0.5 ],
+            "data": [ "Mozilla Firefox", "Chrome", "Brave", "Safari", "Opera", "Internet Explorer", "Unknown" ]
+        }
+    )}}",
+    "datestamp": "{{date.now(YYYY-MM-DD HH:mm:ssZ)}}",
+    "walletbalance": {{finance.amount}},
+    "playerlevel": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.05,0.10,0.12,0.05,0.03,0.07,0.13,0.3,0.15 ],
+            "data": [ "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9" ]
+        }
+    )}}",
+    "status": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.91, 0.02, 0.07 ],
+            "data": [ "Player","DevTest","Blacklisted" ]
+        }
+    )}}"
+}
+
+
+#!/bin/bash
+/home/ec2-user/efs-userdata-mount.sh fs-8c2acab5 /mnt/efs
+
+
+============= Redshift Queries
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16)));
+select * from eval01table limit 500;
+select count(*) from eval01table;
+select count(distinct handle) from eval01table;
+select count(distinct email) from eval01table;
+select count(distinct playerip) from eval01table;
+select count(distinct playerid) from eval01table;
+select count(distinct playerlevel) from eval01table;
+select count(*) from eval01table group by country;
+
+delete from eval01table where 1=1;
+drop table eval01table;
+==============

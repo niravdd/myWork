@@ -1,0 +1,32 @@
+aws sts get-caller-identity --query "Account" --output text
+aws s3api create-bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
+
+aws s3api create-bucket --bucket kinesis-bot-datagen --acl private --create-bucket-configuration LocationConstraint=us-west-2
+
+aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
+aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy --policy-document file://iam-redshift-policy.json
+
+aws kinesis create-stream --stream-name evalTelemetryStream --shard-count 10
+# aws kinesis create-stream --stream-name evalAnalyticsStream --shard-count 10
+
+aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
+aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
+
+aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://FHInput.json
+
+aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
+
+aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+aws iam delete-role --role-name redshift_fullaccess_role
+aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
+aws iam delete-role --role-name firehose_delivery_role
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
+aws firehose delete-delivery-stream --delivery-stream-name evalTelemetryFHStream
+aws firehose delete-delivery-stream --delivery-stream-name evalAnalyticsFHStream
+aws kinesis delete-stream --stream-name evalTelemetryStream
+aws s3api delete-bucket --bucket kinesis-bot-datagen
+aws s3api delete-bucket --bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}"
