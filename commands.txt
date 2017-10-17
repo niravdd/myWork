@@ -20,9 +20,9 @@ aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryF
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
 
-aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://FHInput.json
+aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
 
-aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
+aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream,RoleARN=arn:aws:iam::505314836537:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
 
 aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 aws iam delete-role --role-name redshift_fullaccess_role
@@ -40,3 +40,5 @@ aws s3api delete-bucket --bucket kinesis-bot-datagen
 
 
 ## aws redshift create-cluster --cluster-identifier examplecluster --master-username masteruser --master-user-password TopSecret1 --node-type ds2.xlarge --cluster-type single-node
+
+## QuickSight: 54.70.204.128/27

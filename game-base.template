@@ -12,6 +12,12 @@
             "data": [ "Level 1", "Level 2", "Level 3", "Level 4", "Level 5", "Level 6", "Level 7", "Level 8", "Level 9" ]
         }
     )}}",
+    "squadelementmap": "{{random.weightedArrayElement(
+        {
+            "weights": [ 0.20,0.40,0.10,0.30 ],
+            "data": [ "Earth", "Water", "Fire", "Air", "Space" ]
+        }
+    )}}",
     "gamenumber": {{random.number(
         {
             "min":1,
@@ -48,6 +54,24 @@
             "max":100
         }
     )}},
+    "squadguard": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squaddamage": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
+    "squadinventoryitemcount": {{random.number(
+        {
+            "min":10,
+            "max":100
+        }
+    )}},
     "bosspower": {{random.number(
         {
             "min":40,
@@ -78,6 +102,18 @@
             "max":120
         }
     )}},
+    "bossguard": {{random.number(
+        {
+            "min":40,
+            "max":120
+        }
+    )}},
+    "bossdamage": {{random.number(
+        {
+            "min":0,
+            "max":70
+        }
+    )}},
     "result": "{{random.weightedArrayElement(
         {
             "weights": [ 0.51, 0.42, 0.07 ],
@@ -88,7 +124,7 @@
 
 
 ============= Redshift Queries
-create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, result varchar(8));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 select * from eval02table limit 500;
 select count(*) from eval02table;
 select count(distinct playerid) from eval02table;
