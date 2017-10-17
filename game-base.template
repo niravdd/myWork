@@ -82,21 +82,17 @@
         {
             "weights": [ 0.51, 0.42, 0.07 ],
             "data": [ "Won","Lost","DNF" ]
+        }
     )}}"
 }
 
 
 ============= Redshift Queries
-create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16)));
-select * from eval01table limit 500;
-select count(*) from eval01table;
-select count(distinct handle) from eval01table;
-select count(distinct email) from eval01table;
-select count(distinct playerip) from eval01table;
-select count(distinct playerid) from eval01table;
-select count(distinct playerlevel) from eval01table;
-select count(*) from eval01table group by country;
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, result varchar(8));
+select * from eval02table limit 500;
+select count(*) from eval02table;
+select count(distinct playerid) from eval02table;
 
-delete from eval01table where 1=1;
-drop table eval01table;
+delete from eval02table where 1=1;
+drop table eval02table;
 ==============

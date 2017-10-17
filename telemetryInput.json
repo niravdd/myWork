@@ -4,7 +4,7 @@
         "ClusterJDBCURL": "jdbc:redshift://evalcluster.c7gsydnfkqan.us-west-2.redshift.amazonaws.com:5439/evaldatabase",
         "CopyCommand": {
             "DataTableName": "eval02table",
-            "DataTableColumns": "datestamp, playerid, datestamp timestamptz, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
+            "DataTableColumns": "datestamp, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
             "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
         },
         "Username": "evaluser",
