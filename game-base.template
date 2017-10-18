@@ -27,90 +27,90 @@
     "squadpower": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":14
         }
     )}},
     "squadagility": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":16
         }
     )}},
     "squadhealth": {{random.number(
         {
-            "min":10,
-            "max":100
+            "min":8,
+            "max":12
         }
     )}},
     "squadluck": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":20
         }
     )}},
     "squadspecial": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":18
         }
     )}},
     "squadguard": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":12
         }
     )}},
     "squaddamage": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":15
         }
     )}},
     "squadinventoryitemcount": {{random.number(
         {
             "min":10,
-            "max":100
+            "max":15
         }
     )}},
     "bosspower": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bossagility": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bosshealth": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bossluck": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bossspecial": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bossguard": {{random.number(
         {
             "min":40,
-            "max":120
+            "max":50
         }
     )}},
     "bossdamage": {{random.number(
         {
-            "min":0,
+            "min":40,
             "max":70
         }
     )}},
