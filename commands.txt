@@ -1,3 +1,56 @@
+aws configure
+
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+# Note VPC ID
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.1.0/24
+# Note Subnet ID
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.2.0/24
+# Note Subnet ID
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.3.0/24
+# Note Subnet ID
+
+aws ec2 create-internet-gateway
+# Note IGW ID
+
+aws ec2 attach-internet-gateway --vpc-id <vpc-id> --internet-gateway-id <igw-id>
+
+aws ec2 create-route-table --vpc-id <vpc-id>
+# Note route-table ID
+
+aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block 0.0.0.0/0 --gateway-id <igw-id>
+
+aws ec2 describe-route-tables --route-table-id <route-table-id>
+# Verify route has been created correctly
+
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=<vpc-id>" --query 'Subnets[*].{ID:SubnetId,CIDR:CidrBlock}'
+# Extract all subnet IDs
+
+## Choose one or more subnets to be associated with the public route, and make it a public subnet
+aws ec2 associate-route-table --subnet-id <subnet-id> --route-table-id <route-table-id>
+
+## Enable public IP for instances created in the public subnet
+aws ec2 modify-subnet-attribute --subnet-id <subnet-id> --map-public-ip-on-launch
+
+## Create a key pair to use for SSH access into the bastian host
+aws ec2 create-key-pair --key-name myOregonKeyPair --query 'KeyMaterial' --output text > myOregonKeyPair.pem
+chmod 400 myOregonKeyPair.pem
+
+## Create security groups
+aws ec2 create-security-group --group-name BastianHostAccess --description "Allow access for Bastian Host" --vpc-id <vpc-id>
+# Note the "GroupId" generated
+
+# Add rule to allow SSH access to the Bastian Host from *anywhere*
+aws ec2 authotize-security-group-ingress --group-id <security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+
+## Now create the Bastian Host
+aws ec2 run-instances --image-id <give AMI ID> --count 1 --instance-type t2.micro --key-name myOregonKeyPair.pem --security-group-ids <security-group-id> --subnet-id <subnet-id> 
+# Note the instance ID reported back
+
+## Get the public IP to ssh into it
+aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].{PublicIpAddress}'
+ssh -i myOregonKeyPair.pem ec2-user@<public-ip-address>
+
+#############################################################################################
 aws sts get-caller-identity --query "Account" --output text
 # aws s3api create-bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
 
@@ -39,6 +92,21 @@ aws s3api delete-bucket --bucket kinesis-bot-datagen
 # aws s3api delete-bucket --bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}"
 
 
-## aws redshift create-cluster --cluster-identifier examplecluster --master-username masteruser --master-user-password TopSecret1 --node-type ds2.xlarge --cluster-type single-node
+## aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s$w0rd1 --node-type ds2.xlarge --cluster-type single-node
 
 ## QuickSight: 54.70.204.128/27
+
+
+#############################################################################################
+## Terminate Bastian Host instance
+aws ec2 terminate-instances --instance-ids <instance-id>
+
+## Iterate for more than 1 resource
+aws ec2 delete-security-group --group-id <security-group-id>
+aws ec2 delete-subnet --subnet-id <subnet-id1>
+aws ec2 delete-subnet --subnet-id <subnet-id2>
+aws ec2 delete-subnet --subnet-id <subnet-id3>
+aws ec2 delete-route-table --route-table-id <route-table-id>
+aws ec2 detach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
+aws ec2 delete-internet-gateway --internet-gateway-id <igw-id>
+aws ec2 delete-vpc --vpc-id <vpc-id>
