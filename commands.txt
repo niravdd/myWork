@@ -43,7 +43,7 @@ aws ec2 create-security-group --group-name BastianHostAccess --description "Allo
 aws ec2 authotize-security-group-ingress --group-id <security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
 
 ## Now create the Bastian Host
-aws ec2 run-instances --image-id <give AMI ID> --count 1 --instance-type t2.micro --key-name myOregonKeyPair.pem --security-group-ids <security-group-id> --subnet-id <subnet-id> 
+aws ec2 run-instances --image-id <give AMI ID> --count 1 --instance-type t2.micro --key-name myOregonKeyPair --security-group-ids <security-group-id> --subnet-id <subnet-id> 
 # Note the instance ID reported back
 
 ## Get the public IP to ssh into it
