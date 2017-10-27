@@ -1,0 +1,61 @@
+{
+    "Clusters": [
+        {
+            "ClusterIdentifier": "evalcluster",
+            "NodeType": "ds2.xlarge",
+            "ClusterStatus": "available",
+            "MasterUsername": "evaluser",
+            "DBName": "evaldatabase",
+            "Endpoint": {
+                "Address": "evalcluster.c7gsydnfkqan.us-west-2.redshift.amazonaws.com",
+                "Port": 5439
+            },
+            "ClusterCreateTime": "2017-09-07T00:47:45.974Z",
+            "AutomatedSnapshotRetentionPeriod": 1,
+            "ClusterSecurityGroups": [],
+            "VpcSecurityGroups": [
+                {
+                    "VpcSecurityGroupId": "sg-254b405f",
+                    "Status": "active"
+                }
+            ],
+            "ClusterParameterGroups": [
+                {
+                    "ParameterGroupName": "default.redshift-1.0",
+                    "ParameterApplyStatus": "in-sync"
+                }
+            ],
+            "ClusterSubnetGroupName": "redshiftclustersubnet",
+            "VpcId": "vpc-2a66f04c",
+            "AvailabilityZone": "us-west-2a",
+            "PreferredMaintenanceWindow": "mon:11:00-mon:11:30",
+            "PendingModifiedValues": {},
+            "ClusterVersion": "1.0",
+            "AllowVersionUpgrade": true,
+            "NumberOfNodes": 1,
+            "PubliclyAccessible": true,
+            "Encrypted": false,
+            "ClusterPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCSidoN5DP1EcSxidC+gomUkcrgPfL1Ti0ntYz0PfqoASbcFuTgUGzTZVUfU08QhaHkg9xQ/vklWPW5cHLU0qEMTnIsYuqRCVA0nPqg3mf9QpNiQoyk4dph9ks6H5wgk+2BVdxR4k9846mMBF9Pia/nv8WvtSrynAhsSJBtcF4Q7YDp2oydjQTgh2ahRlrcUDBCoYzpxF8hEeMLy3iWTndaNVjOXi8+VHvHYoVrmJHOP6g+8feJJN5s8NQF93J5oZScXjoaHRciJKADtWOQmgiiRcDvtV/PhQlvP4Jyolih+1OYqqHI+M4OyGQ9f2puNsKPQhwa7waQyETRO/haQidl Amazon-Redshift\n",
+            "ClusterNodes": [
+                {
+                    "NodeRole": "SHARED",
+                    "PrivateIPAddress": "10.0.1.159",
+                    "PublicIPAddress": "54.69.37.209"
+                }
+            ],
+            "ElasticIpStatus": {
+                "ElasticIp": "34.213.235.158",
+                "Status": "active"
+            },
+            "ClusterRevisionNumber": "1497",
+            "Tags": [],
+            "EnhancedVpcRouting": false,
+            "IamRoles": [
+                {
+                    "IamRoleArn": "arn:aws:iam::505314836537:role/testRoleRedshift",
+                    "ApplyStatus": "in-sync"
+                }
+            ]
+        }
+    ]
+}
