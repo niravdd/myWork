@@ -1,54 +1,67 @@
 aws configure
+# Set up region=us-west-2 and keys
 
 aws ec2 create-vpc --cidr-block 10.0.0.0/16
-# Note VPC ID
+# Replace all following instances of <vpc-id> in this script with the "VpcId" from the JSON that is returned in your console window.
 aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.1.0/24
-# Note Subnet ID
+# Replace all following instances of <subnet-id1> in this script with the "SubnetId" from the JSON that is returned in your console window.
 aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.2.0/24
-# Note Subnet ID
+# Replace all following instances of <subnet-id2> in this script with the "SubnetId" from the JSON that is returned in your console window.
 aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.3.0/24
-# Note Subnet ID
+# Replace all following instances of <subnet-id3> in this script with the "SubnetId" from the JSON that is returned in your console window.
 
 aws ec2 create-internet-gateway
-# Note IGW ID
+# Replace all following instances of <igw-id> in this script with the "InternetGatewayId" from the JSON that is returned in your console window.
 
 aws ec2 attach-internet-gateway --vpc-id <vpc-id> --internet-gateway-id <igw-id>
 
 aws ec2 create-route-table --vpc-id <vpc-id>
-# Note route-table ID
+# Replace all following instances of <route-table-id> in this script with the "RouteTableId" from the JSON that is returned in your console window.
 
 aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block 0.0.0.0/0 --gateway-id <igw-id>
 
 aws ec2 describe-route-tables --route-table-id <route-table-id>
-# Verify route has been created correctly
+# Verify route has been created correctly. There will be two routes, the first which is the default route showing that traffic in the 10.0.0.0/16 network will stay local, and the second of which will be the route you just added, with your "GatewayId" showing and a "DestinationCidrBlock": "0.0.0.0/0" attached to it.
 
 aws ec2 describe-subnets --filters "Name=vpc-id,Values=<vpc-id>" --query 'Subnets[*].{ID:SubnetId,CIDR:CidrBlock}'
 # Extract all subnet IDs
 
 ## Choose one or more subnets to be associated with the public route, and make it a public subnet
-aws ec2 associate-route-table --subnet-id <subnet-id> --route-table-id <route-table-id>
+aws ec2 associate-route-table --subnet-id <subnet-id1> --route-table-id <route-table-id>
 
 ## Enable public IP for instances created in the public subnet
-aws ec2 modify-subnet-attribute --subnet-id <subnet-id> --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id <subnet-id1> --map-public-ip-on-launch
 
 ## Create a key pair to use for SSH access into the bastian host
-aws ec2 create-key-pair --key-name myOregonKeyPair --query 'KeyMaterial' --output text > myOregonKeyPair.pem
-chmod 400 myOregonKeyPair.pem
+aws ec2 create-key-pair --key-name myGamingKeyPair --query 'KeyMaterial' --output text > myGamingKeyPair.pem
+
+## Grant the file owner (you!) read permission
+chmod 400 myGamingKeyPair.pem
 
 ## Create security groups
 aws ec2 create-security-group --group-name BastianHostAccess --description "Allow access for Bastian Host" --vpc-id <vpc-id>
-# Note the "GroupId" generated
+# Replace all following instances of <bastian-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
+aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id <vpc-id>
+# Replace all following instances of <redshift-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
 
 # Add rule to allow SSH access to the Bastian Host from *anywhere*
-aws ec2 authotize-security-group-ingress --group-id <security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+# Add rule to allow SSH access to Redshift from Quicksight
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 54.70.204.128/27
 
-## Now create the Bastian Host
-aws ec2 run-instances --image-id <give AMI ID> --count 1 --instance-type t2.micro --key-name myOregonKeyPair.pem --security-group-ids <security-group-id> --subnet-id <subnet-id> 
-# Note the instance ID reported back
+## Now create the Bastian Host (based on an AMI we prepared earlier) (Nirav's bastion AMI in us-west-2 is ami-dbec22a3)
+aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myGamingKeyPair --security-group-ids <redshift-security-group-id> --subnet-id <subnet-id1>
+# Replace all following instances of <instance-id> in this script with the "InstanceId" from the JSON that is returned in your console window.
 
-## Get the public IP to ssh into it
-aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].{PublicIpAddress}'
-ssh -i myOregonKeyPair.pem ec2-user@<public-ip-address>
+## Get the public IP so that you can connect to it
+aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text
+# Replace all following instances of <public-ip-address> in this script with the IP address that is returned in your console window.
+
+# Add rule to allow SSH access to Redshift from the Bastian Host
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr <public-ip-address>
+
+## Get into the instance
+ssh -i myGamingKeyPair.pem ec2-user@<public-ip-address>
 
 #############################################################################################
 aws sts get-caller-identity --query "Account" --output text
