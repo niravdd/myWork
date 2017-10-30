@@ -6,7 +6,7 @@
     "playerid": {{random.number(
         {
             "min":1000000000,
-            "max":1000009999
+            "max":1000000999
         }
     )}},
     "country": "{{random.weightedArrayElement(
@@ -17,7 +17,7 @@
     )}}",
     "useragent": "{{random.weightedArrayElement(
         {
-            "weights": [ 0.15, 0.16, 0.04, 0.06, 0.06, 0.03, 0.5 ],
+            "weights": [ 0.20, 0.26, 0.04, 0.06, 0.06, 0.03, 0.35 ],
             "data": [ "Mozilla Firefox", "Chrome", "Brave", "Safari", "Opera", "Internet Explorer", "Unknown" ]
         }
     )}}",
@@ -31,7 +31,7 @@
     )}}",
     "status": "{{random.weightedArrayElement(
         {
-            "weights": [ 0.91, 0.02, 0.07 ],
+            "weights": [ 0.91, 0.002, 0.088 ],
             "data": [ "Player","DevTest","Blacklisted" ]
         }
     )}}"

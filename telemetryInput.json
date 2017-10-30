@@ -18,7 +18,7 @@
             "Prefix": "eval02table",
             "BufferingHints": {
                 "SizeInMBs": 5,
-                "IntervalInSeconds": 60
+                "IntervalInSeconds": 300
             },
             "CompressionFormat": "UNCOMPRESSED",
             "EncryptionConfiguration": {
