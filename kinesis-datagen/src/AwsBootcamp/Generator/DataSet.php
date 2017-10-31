@@ -162,68 +162,68 @@ class DataSet {
      */
     protected function _computeField($k, $v) {
         switch ($v['type']) { 
-            case 'randomNumber':
-                if (!isset($v['randomNumber']['min'])) { 
-                    throw new \Exception('Invalid configuration. Must define a randomNumber[min] value : ' . print_r($v, true)); 
-                }
-                if (!isset($v['randomNumber']['max'])) { 
-                    throw new \Exception('Invalid configuration. Must define a randomNumber[max] value : ' . print_r($v, true)); 
-                }
+        case 'randomNumber':
+            if (!isset($v['randomNumber']['min'])) { 
+                throw new \Exception('Invalid configuration. Must define a randomNumber[min] value : ' . print_r($v, true)); 
+            }
+            if (!isset($v['randomNumber']['max'])) { 
+                throw new \Exception('Invalid configuration. Must define a randomNumber[max] value : ' . print_r($v, true)); 
+            }
 
-                return rand($v['randomNumber']['min'], $v['randomNumber']['max']);
+            return rand($v['randomNumber']['min'], $v['randomNumber']['max']);
             break;
 
-            case 'date':
-                if (!isset($v['format'])) { 
-                    throw new \Exception('Invalid configuration. Must define a format value for date : ' . print_r($v, true)); 
-                }
+        case 'date':
+            if (!isset($v['format'])) { 
+                throw new \Exception('Invalid configuration. Must define a format value for date : ' . print_r($v, true)); 
+            }
 
-                return date($v['format']);
+            return date($v['format']);
             break;
 
-            case 'randomList':
-                if (!isset($v['randomList'])) { 
-                    throw new \Exception('Invalid configuration. Must define a randomList value : ' . print_r($v, true)); 
-                }
+        case 'randomList':
+            if (!isset($v['randomList'])) { 
+                throw new \Exception('Invalid configuration. Must define a randomList value : ' . print_r($v, true)); 
+            }
 
-                return $v['randomList'][rand(0, sizeof($v['randomList']) - 1)];
+            return $v['randomList'][rand(0, sizeof($v['randomList']) - 1)];
             break;
 
-            case 'weightedList':
-                if (!isset($this->_weightedData[$k])) { 
-                    $this->_weightedData[$k] = array('config' => $v['weightedList'], 'current' => array_keys($v['weightedList']));
-                }
+        case 'weightedList':
+            if (!isset($this->_weightedData[$k])) { 
+                $this->_weightedData[$k] = array('config' => $v['weightedList'], 'current' => array_keys($v['weightedList']));
+            }
 
-				return $this->_getRandomWeightedElement($this->_weightedData[$k]['config']);
+            return $this->_getRandomWeightedElement($this->_weightedData[$k]['config']);
             break;
 
-            case 'constant':
-                if (!isset($v['constant'])) { 
-                    throw new \Exception('Invalid configuration. Must define a constant value : ' . print_r($v, true)); 
-                }
+        case 'constant':
+            if (!isset($v['constant'])) { 
+                throw new \Exception('Invalid configuration. Must define a constant value : ' . print_r($v, true)); 
+            }
 
-                return $v['constant'];
+            return $v['constant'];
             break;
 
-            case 'rules':
-				return $this->_computeRules($v);		
+        case 'rules':
+            return $this->_computeRules($v);
             break;
 
-            case 'mathExpression':
-				return $this->_computeMathExpression($v);
+        case 'mathExpression':
+            return $this->_computeMathExpression($v);
             break;
 
-            case 'faker':
-                if (!isset($v['property'])) { 
-                    throw new \Exception('Invalid configuration. Must define a property value : ' . print_r($v, true)); 
-                }
+        case 'faker':
+            if (!isset($v['property'])) { 
+                throw new \Exception('Invalid configuration. Must define a property value : ' . print_r($v, true)); 
+            }
 
-                $propertyName = $v['property'];
-                return $this->_faker->$propertyName;
+            $propertyName = $v['property'];
+            return $this->_faker->$propertyName;
             break;
-            
-            default:
-                throw new \Exception('Invalid configuration. Unknown type defined : ' . $v['type']);
+
+        default:
+            throw new \Exception('Invalid configuration. Unknown type defined : ' . $v['type']);
             break;
         }
     }
@@ -235,7 +235,7 @@ class DataSet {
      * @return mixed Value computed by the rules
      */
     protected function _computeRules($v) {
-		foreach($v['rules'] as $value => $patternRule) { 
+        foreach($v['rules'] as $value => $patternRule) { 
             $rule = str_replace($this->_patternFields, $this->_currentData, $patternRule);
 
             if (false !== strpos($rule, '{') || false !== strpos($rule, '}')) {
@@ -254,7 +254,7 @@ class DataSet {
         }
 
         throw new \Exception('None of the rules provided matched - cant return any value');
-	}
+    }
 
     /**
      * Compute a mathematical expression
@@ -262,14 +262,14 @@ class DataSet {
      * @param string $v Math expression
      * @return mixed Evaluated result
      */
-	protected function _computeMathExpression($v) { 
+    protected function _computeMathExpression($v) { 
         $rule = str_replace($this->_patternFields, $this->_currentData, $v['mathExpression']);
 
         if (false !== strpos($rule, '{') || false !== strpos($rule, '}')) {
             throw new \Exception('Check your config file. Unable to replace all fields defined in this math expression : ' . $rule);
         }
         return $this->_evalMath->evaluate($rule);
-	}
+    }
 
     /**
      * Validate data (based on global conditions / rules) against expected distribution
@@ -290,7 +290,7 @@ class DataSet {
             $currentValue = $dataRow[$k];
             ++$this->_currentDistribution[$k][$currentValue];
         }
-        
+
         return true;
     }
 
@@ -301,14 +301,14 @@ class DataSet {
      * @return mixed Value
      */
     protected function _getRandomWeightedElement(array $weightedValues) {
-	    $rand = mt_rand(1, (int) array_sum($weightedValues));
+        $rand = mt_rand(1, (int) array_sum($weightedValues));
 
-	    foreach ($weightedValues as $key => $value) {
-    		$rand -= $value;
-	    	if ($rand <= 0) {
-	  	    	return $key;
-      		}
-    	}
+        foreach ($weightedValues as $key => $value) {
+            $rand -= $value;
+            if ($rand <= 0) {
+                return $key;
+            }
+        }
     }
 
     /**
