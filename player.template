@@ -43,7 +43,7 @@
 
 
 ============= Redshift Queries
-create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16)));
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
 select * from eval01table limit 500;
 select count(*) from eval01table;
 select count(distinct handle) from eval01table;
@@ -56,3 +56,55 @@ select count(*) from eval01table group by country;
 delete from eval01table where 1=1;
 drop table eval01table;
 ==============
+
+
+select country, status, count(*) from eval01table group by country, status order by country;
+select playerid, country, status from eval01table group by playerid, country, status order by country;
+select count(playerid), playerid, country from eval01table group by playerid, country;
+select count(playerid), playerid, country, status from eval01table group by playerid, country, status order by country;
+select count(playerid), playerid, country from eval01table group by playerid, country order by country, playerid;
+
+==============
+Athena:
+
+CREATE EXTERNAL TABLE IF NOT EXISTS evaldatabase.eval01table (
+  `playerip` string,
+  `handle` string,
+  `email` string,
+  `uuid` string,
+  `playerid` bigint,
+  `country` string,
+  `useragent` string,
+  `datestamp` string,
+  `walletbalance` double,
+  `playerlevel` string,
+  `status` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://kinesis-bot-datagen/eval01table2017/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+
+
+----------------- Doesn't work ----------------
+CREATE EXTERNAL TABLE IF NOT EXISTS evaldatabase.eval01table (
+  `playerip` string,
+  `handle` string,
+  `email` string,
+  `uuid` string,
+  `playerid` bigint,
+  `country` string,
+  `useragent` string,
+  `datestamp` timestamp,
+  `walletbalance` double,
+  `playerlevel` string,
+  `status` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1',
+  "timestamp.formats" = "yyyy-MM-dd HH:mm:ss+TZ"
+) LOCATION 's3://kinesis-bot-datagen/eval01table2017/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+------------------------------------------------

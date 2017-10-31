@@ -3,7 +3,7 @@
     "playerid": {{random.number(
         {
             "min":1000000000,
-            "max":1000009999
+            "max":1000000999
         }
     )}},
     "playerlevel": "{{random.weightedArrayElement(
@@ -132,3 +132,38 @@ select count(distinct playerid) from eval02table;
 delete from eval02table where 1=1;
 drop table eval02table;
 ==============
+
+select count(playerlevel), playerlevel, result from eval02table group by playerlevel, result order by playerlevel+result;
+select count(squadelementmap), squadelementmap from eval02table group by squadelementmap order by squadelementmap;
+
+==============
+Athena:
+
+CREATE EXTERNAL TABLE IF NOT EXISTS evaldatabase.eval02table (
+  `datestamp` string,
+  `playerid` bigint,
+  `playerlevel` string,
+  `squadelementmap` string,
+  `gamenumber` int,
+  `squadpower` int,
+  `squadagility` int,
+  `squadhealth` int,
+  `squadluck` int,
+  `squadspecial` int,
+  `squadguard` int,
+  `squaddamage` int,
+  `squadinventoryitemcount` int,
+  `bosspower` int,
+  `bossagility` int,
+  `bosshealth` int,
+  `bossluck` int,
+  `bossspecial` int,
+  `bossguard` int,
+  `bossdamage` int,
+  `result` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://kinesis-bot-datagen/eval02table2017/'
+TBLPROPERTIES ('has_encrypted_data'='false');
