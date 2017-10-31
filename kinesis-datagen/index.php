@@ -13,11 +13,12 @@ require __DIR__ . '/vendor/autoload.php';
 
 class cli { public static $log = null; public static function log($m) { self::$log .= '[' . date('Y-m-d H:i:s') . '] ' . $m . PHP_EOL; } }
 
+$ec2role = 'datagenRole';
 $credentials = array('key' => null, 'secret' => null);
 $json = array();
 if (isset($_REQUEST['HTTP_HOST']) && $_REQUEST['HTTP_HOST'] != 'localhost') { 
     // Fetch creds from ec2 metadata instance (if available)
-    $creds = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/ec2-s3Role');
+    $creds = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/' . $ec2Role);
     $json = json_decode($creds, true);
 } else { 
     $credentialsFile = __DIR__ . '/config/credentials.php';
