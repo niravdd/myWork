@@ -10,6 +10,7 @@ In order to run, make sure to have the following :
 ## Usage
 
 - Create a new cloudformation stack using the cloudformation.json file (which should be in the s3 bucket that you created previously). 
+- If you are using the console to create the cloudformation stack, then make sure to check the box saying : `"I acknowledge that AWS CloudFormation might create IAM resources."`
 - The cloudformation script will install php7, apache and deploy the code on the ec2 instance. 
 - Check the output to get the link of the web page. For example : http://ec2-34-22-91-12.compute-1.amazonaws.com/kinesis-datagen
 
