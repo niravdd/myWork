@@ -20,7 +20,10 @@ if (isset($_REQUEST['HTTP_HOST']) && $_REQUEST['HTTP_HOST'] != 'localhost') {
     $creds = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/ec2-s3Role');
     $json = json_decode($creds, true);
 } else { 
-    $credentials = require __DIR__ . '/config/credentials.php';
+    $credentialsFile = __DIR__ . '/config/credentials.php';
+    if (file_exists($credentialsFile)) { 
+        $credentials = require $credentialsFile;
+    }
 }
 
 $defaultKey = isset($json['AccessKeyId']) ? $json['AccessKeyId'] : $credentials['key'];
