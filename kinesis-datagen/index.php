@@ -16,9 +16,10 @@ class cli { public static $log = null; public static function log($m) { self::$l
 $ec2role = 'datagenRole';
 $credentials = array('key' => null, 'secret' => null);
 $json = array();
-if (isset($_REQUEST['HTTP_HOST']) && $_REQUEST['HTTP_HOST'] != 'localhost') { 
+if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != 'localhost') { 
+    $metadataRole = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/');
     // Fetch creds from ec2 metadata instance (if available)
-    $creds = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/' . $ec2Role);
+    $creds = file_get_contents('http://169.254.169.254/latest/meta-data/iam/security-credentials/' . $metadataRole);
     $json = json_decode($creds, true);
 } else { 
     $credentialsFile = __DIR__ . '/config/credentials.php';
