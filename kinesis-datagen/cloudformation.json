@@ -1,5 +1,6 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
+
     "Description" : "AWS template to deploy data generator",
 
     "Parameters" : {
@@ -8,6 +9,13 @@
             "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instance",
             "Type": "AWS::EC2::KeyPair::KeyName",
             "ConstraintDescription" : "Can contain only ASCII characters."
+        },
+
+        "S3BucketName": {
+            "Description" : "Name of an existing S3 Bucket",
+            "Type": "String",
+            "ConstraintDescription" : "Name of existing S3 Bucket (code will be taken from there)",
+            "Default" : "kinesis-datagen"
         },
 
         "InstanceType" : {
@@ -80,8 +88,8 @@
             "cn-north-1"     : { "PV64" : "ami-a857c591", "HVM64" : "ami-ac57c595", "HVMG2" : "NOT_SUPPORTED" },
             "eu-central-1"   : { "PV64" : "ami-a03503bd", "HVM64" : "ami-b43503a9", "HVMG2" : "ami-b03503ad"  }
         }
-
     },
+
     "Resources" : {
         "datagenRole": {
             "Type": "AWS::IAM::Role",
@@ -169,7 +177,16 @@
                         },
 
                         "commands" : {
-                            "download": { "command": "aws s3 cp s3://kinesis-datagen/kinesis-datagen.tar /var/www/html/kinesis-datagen.tar\n" },
+                            "download": { "command":
+                                { "Fn::Join" : ["", [
+                                            "aws s3 cp s3://",
+                                            { "Ref" : "S3BucketName" },
+                                            "/kinesis-datagen.tar /var/www/html/kinesis-datagen.tar\n",
+                                        ]
+                                    ]
+                                }
+                            },
+
                             "extract": { "command": "cd /var/www/html/; tar -xvf kinesis-datagen.tar\n" },
                             "restart" : { "command": "sudo service httpd restart\n" }
                         }
