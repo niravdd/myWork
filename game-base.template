@@ -167,3 +167,6 @@ WITH SERDEPROPERTIES (
   'serialization.format' = '1'
 ) LOCATION 's3://kinesis-bot-datagen/eval02table2017/'
 TBLPROPERTIES ('has_encrypted_data'='false');
+===============
+
+select count(playerid), playerid, result from eval02table group by playerid, result order by result;
