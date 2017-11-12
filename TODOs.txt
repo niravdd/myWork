@@ -2,6 +2,11 @@ TODOs
 
 0. Update deck slides, publish new version to the SRC portal 
 1. Make GAM310 (Bastian Linux Host) image public & the Windows Host (TBD)
-	. Install Redshift client
+	. Install Redshift client, pgcli/pgsql
 	. Install Python3, pip3, AWS CLI
 	. 
+
+
+2. Which features are most selling/popular?
+3. Where are players getting stuck up? Heatmap
+4. Ingest - Store - Analyze - Consume

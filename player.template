@@ -52,6 +52,27 @@ select count(distinct playerip) from eval01table;
 select count(distinct playerid) from eval01table;
 select count(distinct playerlevel) from eval01table;
 select count(*) from eval01table group by country;
+######
+select playerid, country, email, walletbalance from eval01table order by walletbalance desc limit 20;
+select playerid, country, email, walletbalance from eval01table limit 100;
+select playerid, country, email, walletbalance as wallet, COUNT( CASE WHEN walletbalance > 1000 THEN walletbalance ELSE NULL END) as weirdbalance from eval01table group by playerid, country, email, walletbalance limit 100;
+###########
+Try to build SQL Statements which can show:
+1. Player accounts created in the last 15 minutes
+2. Player accounts from a particular country
+3. Player accounts who have wallet balance > 1000 and are not at level x yet
+4. Player accounts who have wallet balance < 100
+    select playerid, country, email, walletbalance from eval01table where walletbalance < 100 limit 100;
+    select playerid, country, email, walletbalance from eval01table where walletbalance < 100 order by walletbalance limit 100;
+    select playerid, country, email, walletbalance from eval01table where walletbalance > 0 and walletbalance < 100 order by walletbalance limit 100;
+5. Player accounts who use Firefox and from Japan
+    select playerid, email, playerlevel, walletbalance, useragent from eval01table where country = 'Japan' and useragent like '%Firefox%' limit 100;
+6. Player accounts from Australia who are playing Level 9
+    select playerid, email, playerlevel, walletbalance, useragent from eval01table where country = 'Australia' and playerlevel = 'Level 9' limit 100;
+7. Player accounts who are blacklisted in the last 24 hours. Further filter to a particular country. Get a count of blacklisted players from all countries.
+
+
+
 
 delete from eval01table where 1=1;
 drop table eval01table;
