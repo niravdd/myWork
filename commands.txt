@@ -140,6 +140,8 @@ aws s3api delete-bucket --bucket kinesis-bot-datagen
 #############################################################################################
 ## Terminate Bastian Host instance
 aws ec2 terminate-instances --instance-ids <instance-id>
+aws redshift delete-cluster --cluster-identifier examplecluster --skip-final-cluster-snapshot
+aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
 
 
 ## Iterate for more than 1 resource, as required
