@@ -1,0 +1,121 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="/">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<p class="lower-link">Welcome!</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">In this workshop, we build telemetry/analytics data processing pipelines to assist game developers/architects, designers and producers make certain game balancing decisions as well as troubleshooting the game. We work with a fictitious RPG and ingest data for in-game events. We then analyze the data to help with game balancing and other relevant recommendations for game developers and designers. As a participant, you will use Amazon Kinesis, Amazon Kinesis Firehose, Amazon Analytics, Amazon EMR, Amazon Redshift, Amazon S3, Amazon Athena and Amazon QuickSight. Prerequisites include having your own laptop and an interest in big data services, game data processing & analytics. This workshop will benefit developers and architects, in addition to game designers, producers, and others interested in building analytics pipelines on AWS.</p>
+					<div class="session">
+						<h3>WORKSHOP DETAILS</h3>
+						<p>This workshop will be broken down into a series of labs that flow on from each other (that is, you must complete each lab in order before proceeding with the next). The four lab exercises that will be covered are:</p>
+						<div class="indent-show">
+							<p>Lab 1: Building an Analytics Pipeline</p>
+							<p>Lab 2: Building a Serverless Analytics Pipeline</p>
+							<p>Lab 3: Performing Analytics on a Stream</p>
+							<p>Lab 4: Building a Big Data Analytics Environment</p>
+						</div>
+						<p>As a reminder, you should have a laptop device (which you likely have if you're reading this) and a clean AWS account, with <span class="bold">AdministratorAccess</span> policy-level access. AWS Credits will be provided to the value of $USD30.</p>
+						<p>If you require assistance in any of the lab exercises, please click on the button at the top-right corner of all of the lab instruction pages to request help. A facilitator will come around to your seat when they are available.
+						<h3 class="overline">TO START THE WORKSHOP</h3>
+						<p>... please enter the seat number for which you are seated at below:</p>
+						<div class="indent-show"><div class="expand"><input type="text" id="seat">&nbsp;<a class="border" href="javascript:void();" onClick="validateSeat();">SUBMIT</a>&nbsp;<span id="message">&nbsp;</span></div></div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script>
+		function validateSeat() {
+			var seat = document.getElementById("seat").value ;
+			if (isNaN(seat) || seat < 1 || seat > 99) {
+				// Not valid - show error
+				document.getElementById("message").innerHTML = 'Please enter a seat number between 1 & 99';
+				setTimeout(function() {
+					document.getElementById("message").innerHTML = '&nbsp;';
+				}, 5000);
+			} else {
+				// Initialize the Amazon Cognito credentials provider
+				AWS.config.region = 'eu-west-1'; // Region
+				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+					IdentityPoolId: 'eu-west-1:2067869c-18ec-4ea1-a12d-41bc840abc56',
+				});
+
+				var input = {
+					seat: document.getElementById("seat").value,
+					lab: '1'
+				}
+
+				var lambda = new AWS.Lambda();
+				lambda.invoke({
+					FunctionName: 'cmp317WorkshopUpdate',
+					Payload: JSON.stringify(input)
+				}, function (err, data) {
+					if (err) {
+						console.log(err, err.stack);
+						document.getElementById("message").innerHTML = 'There was a problem registering your seat in the backend database';
+						setTimeout(function() {
+							document.getElementById("message").innerHTML = '&nbsp;';
+						}, 5000);
+					} else {
+						window.location.href = '/lab_1.html?seat=' + document.getElementById("seat").value;
+					}
+				})
+
+			}
+		}
+	</script>
+</body>
+
+</html>

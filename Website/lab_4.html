@@ -1,0 +1,205 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="/">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<p class="lower-link">Lab 4 - Building a Big Data Analytics Environment</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">In the first lab, our build job was executed on the same host that runs the Jenkins web application. As build processes can consume a significant portion of a system’s compute resources, many organizations push build jobs to slave servers to ensure that there’s always sufficient resources to allow users to continue to access the Jenkins web application whilst many build jobs are occurring. In this lab, we’ll deploy our build slaves using Spot Fleet instances to try to minimize the costs of running these build slaves.</p>
+					<p>To do this, you'll deploy the ÉC2 Fleet Jenkins Plugin and associate the plugin with a Spot Fleet that you create. The plugin will scale out build slaves running on Spot instances when there are build jobs queued - and conversely will scale back in when the build queue is empty.</p>
+					<div class="session">
+						<h3>PROVISION A SPOT FLEET FOR YOUR BUILD SLAVE(S)</h3>
+						<p>Before installing the plugin, create a Spot Fleet that will be used by the plugin.</p>
+<!-- Up to here -->
+
+						<div class="indent-show">
+							<p>&bull; Use a <span class="bold">Request and Maintain</span> request type - this will ensure that the Spot Fleet will automatically attempt to replace any instances that are outbid on, and leave the target capacity set at <spot class="bold">1</spot> instance;<br />
+							&bull; Use the <span class="bold">Amazon Linux AMI</span>;<br />
+							&bull; Specify <span class="bold">m3.medium</span> and <span class="bold">m3.large.</p>
+						</div>
+						<p>You will need to access the SSH interfaces of some Linux EC2 instances created in this workshop. To do so in a secure manner, please create a new EC2 key pair with a name of <span class="bold">Spot CICD Workshop Key Pair</span>.
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-1-content">
+							<p>1. Log in to your AWS Account;</p>
+							<p>2. Switch to the <span class="bold">EU (Ireland)</span> region;</p>
+							<p>3. Provision a new EC2 Key Pair;</p>
+							<div class="indent">
+								<p>a. Go to the <span class="bold">EC2</span> console and click on the <span class="bold">Key Pairs</span> option from the left frame (or go to <a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#KeyPairs" target="_blank">https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#KeyPairs</a>);</p>
+								<p>b. Click on the <span class="bold">Create Key Pair</span> button;</p>
+								<p>c. Enter <span class="bold">Spot CICD Workshop Key Pair</span> as the Key pair name and click on the <span class="bold">Create</span> button;</p>
+								<p>d. Your web browser should download a .pem file – keep this file as it will be required to access the EC2 instances that we create in this workshop.</p>
+								<p>e. If you're using a Windows system, convert the .pem file to a puTTY .ppk file.</p>
+							</div>
+						</div>
+
+						<h3 class="overline">LAUNCH THE CLOUDFORMATION STACK</h3>
+						<p>So that we can concentrate on the aspects of this workshop that directly relate to Spot instances and CI/CD pipelines, we have a CloudFormation template that will deploy the base AWS infrastructure that needs to be set up for all of the labs within the workshop - saving you from having to create things like VPCs, Security Groups, IAM policies and so forth.</p>
+						<p>Deploy the CloudFormation template located at <a href="https://s3-eu-west-1.amazonaws.com/reinvent2017-spotcicdworkshop/spot_cicd_workshop.json" target="_blank">https://s3-eu-west-1.amazonaws.com/reinvent2017-spotcicdworkshop/spot_cicd_workshop.json</a>, give it a stack name of <span class="bold">SpotCICDWorkshop</span> and ensure that you supply the Key Pair you created above as a parameter to the CloudFormation template.</p>
+						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-2-content">
+							<p>1. Go to the <span class="bold">CloudFormation</span> console (or go to <a href="https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1" target="_blank">https://eu-west-1.console.aws.amazon.com/cloudformation/home?region=eu-west-1</a>);</p>
+							<p>2. Click on the <span class="bold">Create Stack</span> button towards the top of the console;</p>
+							<p>3. At the Select Template screen, select the <span class="bold">Specify an Amazon S3 template URL</span> radio button and type in <a href="https://s3-eu-west-1.amazonaws.com/reinvent2017-spotcicdworkshop/spot_cicd_workshop.json" target="_blank">https://s3-eu-west-1.amazonaws.com/reinvent2017-spotcicdworkshop/spot_cicd_workshop.json</a> as the URL, then click on the <span class="bold">Next</span> button;</p>
+							<p>4. At the Specify Details screen, enter in <span class="bold">SpotCICDWorkshop</span> as the Stack name. Under the Parameters section, select the <span class="bold">Spot CICD Workshop Key Pair</span> option in the Keypair dropdown. Then click on the <span class="bold">Next</span> button;</p>
+							<p>5. At the Options screen, there is no need to make any changes to the default options – simply click on the <span class="bold">Next</span> button;</p>
+							<p>6. Finally at the Review screen, verify your settings, mark the <span class="bold">I acknowledge that AWS CloudFormation might create IAM resources with custom names</span> checkbox and then click on the <span class="bold">Create</span> button. Wait for the stack to complete provisioning, which should take a couple of minutes.</p>
+						</div>
+						<p></p>
+						<p>When the stack has completed being provisioned, select the Output tab for our stack and make note of the value of the <span class="bold">JenkinsMasterALBDNSName</span>.<p>
+
+						<h3 class="overline">OBTAIN THE INITIAL ADMIN PASSWORD FOR YOUR JENKINS DEPLOYMENT</h3>
+						<p>One of the resources deployed by the CloudFormation template was an on-demand EC2 instance that will perform an installation of Jenkins during the bootstrapping process. To prevent anyone on the Internet from being able to access this new Jenkins deployment, the install process sets a default password located at <span class="bold">/var/lib/jenkins/secrets/initialAdminPassword</span>. Obtain this password.</p>
+						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-3-content">
+							<p>1. Go to the <span class="bold">EC2</span> console (or go to <a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1" target="_blank">https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1</a>) and search for the EC2 Instance with a Name of <span class="bold">Jenkins Master (On-demand)</span>. Right-click on this instance and select <span class="bold">Instance Settings</span> > <span class="bold">Get System Log</span>;</p>
+							<p>2. A pop-up element should appear – if this element does not contain any text, the instance bootstrapping process has likely not got up to the stage where the system log has been transferred back to the AWS console - wait a few moments and then hit the Refresh icon toward the top-right corner of the element.</p>
+							<p>3. When text does appear in the element, scroll all of the way down toward the bottom of the system log and look for a line that starts with <span class="bold">Initial Admin Password for Jenkins:</span> Note down this password.</p>
+						</div>
+
+						<h3 class="overline">CONFIGURE, THEN LOG IN TO JENKINS</h3>
+						<p>Earlier, you would have noted the DNS name for the JenkinsMasterALB resource created by the CloudFormation template. This DNS name can be entered in to your web browser to access your Jenkins instance. Use the password obtained in the previous section to log in to your Jenkins instance.</p>
+						<p>Once you have logged in to Jenkins, install the suggested plugins, configure the first set of credentials in Jenkins and then log in to Jenkins using these credentials.</p> 
+						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-4-content">
+							<p>1. In a new browser tab/window, enter the <span class="bold">JenkinsMasterALBDNSName</span> that you noted above - this is the DNS name of the Application Load Balancer created by the CloudFormation template;</p>
+							<p>2. At the Unlock Jenkins screen, enter the initial Admin password obtained from previous section, then click on the <span class="bold">Continue</span> button;</p>
+							<p>3. At the Customize Jenkins screen, click on the <span class="bold">Install suggested plugins</span> option – Jenkins will now download and install a number of plugins. Once it has done this, a Create First Admin User screen will appear;</p>
+							<p>4. Fill in all fields and set up the first user in Jenkins – remember the credentials that you set here as they will need to be used to log in to Jenkins. When done, click on the <span class="bold">Save and Finish</span> button;</p>
+							<p>5. Setup of Jenkins is now complete – click on the <span class="bold">Start using Jenkins</span> button, then log in using the credentials that you have just set up;</p>
+						</div>
+
+						<h3 class="overline">CREATE YOUR FIRST BUILD JOB IN JENKINS</h3>
+						<p>There's little point in having a Jenkins server running in your environment if it's going to sit idle - The first build job that we will configure will build an open-source Java version of <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life" taregt="_blank">Conway's Game of Life</a>, the source code for which is hosted on <a href="https://github.com/" target="_blank">GitHub</a>.</p> 
+						<div class="indent-show">
+							<p>1. At the Welcome to Jenkins! screen, click on the <span class="bold">Create new jobs</span> link;</p>
+							<p>2. Enter an item name of <span class="bold">Game of Life</span>, then select the <span class="bold">Freestyle project</span> option and click the <span class="bold">OK</span> button;</p>
+							<p>3. Underneath the Source Code Management section of the next screen, we need to tell Jenkins where the source code for our project lies. Select the <span class="bold">Git</span> radio button. For the Repository URL, enter <a href="https://github.com/wakaleo/game-of-life.git" target="_blank">https://github.com/wakaleo/game-of-life.git</a></p>
+							<p>4. We need to instruct Jenkins to delete any previous build artefacts, compile our code, run our unit tests and generate a .jar file. Under the Build section, click on the <span class="bold">Add build step</span> button and select the <span class="bold">Invoke top-level Maven targets</span> option. In the Goals field, type in <span class="bold">clean package</span></p>
+							<p>5. Next, we’ll get Jenkins to keep track of the unit tests that are carried out during the build process. Under the Post-build Actions section, click on the <span class="bold">Add post-build action</span> button and select the <span class="bold">Publish Junit test result report</span> option. Then at the Test report XMLs field, enter in <span class="bold">**/target/surefire-reports/*.xml</span></p>
+							<p>6. Finally, click on the <span class="bold">Save</span> button – our first build task has been created!</p>
+						</div>
+						<p></p>
+						<p>Now it’s time to test out our Jenkins server with a build – click on the <span class="bold">Build Now</span> link on the left side. A Build Scheduled message should appear and you should see a build in progress under the Build History. It should only take a minute for the build to complete and if the build process was successful, a blue dot icon should appear next to the build number.<p>
+
+						<h3 class="overline">PROCEED TO LAB 2</h3>
+						<p>You've now completed Lab 1 - click on the following button to proceed to instructions for the next lab.</p> 
+						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab()">PROCEED TO LAB 2</a></div></div>
+						<p></p>
+						<p>Note: When a reasonable amount of participants have progressed to Lab 2, we will show a couple of slides to go over:</p>
+						<div class="indent-show">
+							<p>&bull; the best practices for using Spot instances for batch processing workloads;<br />
+							&bull; to describe the archtecture of and what we're planning to achieve in lab 2; and<br />
+							&bull; to go over points worth highlighting before tackling lab 2.</p>
+						</div>
+						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script>
+		function help(table) {
+			document.getElementById("help_message").innerHTML = '<a href="javascript:void();">Sending request...</a>';
+			// Initialize the Amazon Cognito credentials provider
+			AWS.config.region = 'eu-west-1'; // Region
+			AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+				IdentityPoolId: 'eu-west-1:2067869c-18ec-4ea1-a12d-41bc840abc56',
+			});
+
+			var url = new URL(window.location.href);
+			var seat_num = url.searchParams.get("seat");
+
+			var input = {
+				seat: seat_num
+			};
+
+			var lambda = new AWS.Lambda();
+			lambda.invoke({
+				FunctionName: 'cmp317WorkshopHelp',
+				Payload: JSON.stringify(input)
+			}, function (err, data) {
+				if (err) {
+					console.log(err, err.stack);
+					document.getElementById("help_message").innerHTML = '<a href="javascript:void();">There was a problem sending your request</a>';
+				} else {
+					console.log(JSON.parse(data.Payload));
+					document.getElementById("help_message").innerHTML = '<a href="javascript:void();">Your request has been sent</a>';
+				}
+			})
+
+			setTimeout(function() {
+				document.getElementById("help_message").innerHTML = '<a href="javascript:void();">&nbsp;</a>';
+			}, 5000);
+		}
+
+		function nextLab() {
+			var url = new URL(window.location.href);
+			window.location.href = '/lab_2.html?seat=' + url.searchParams.get("seat");
+		}
+
+		function reveal(button, content) {
+			document.getElementById(button).className = 'indent-hide';
+			document.getElementById(content).className = 'indent-show';
+		}
+	</script>
+</body>
+
+</html>

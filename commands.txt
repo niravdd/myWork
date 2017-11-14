@@ -1,9 +1,9 @@
-# https://s3-ap-southeast-2.amazonaws.com/ndd-reinvent-data/workshopguide.html
+# http://s3-ap-southeast-2.amazonaws.com/ndd-reinvent-data/workshopguide.html
 
-## TODO ADD STEP TO GET THE CREDENTIALS
-
+## Configure user credentials
+# Ensure you have your credentials. If your AWS IAM user doesn't have an Access Key then you'll need to follow these steps to generate one: http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html
 aws configure
-# Set up region=us-west-2 and keys
+# Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
 
 aws ec2 create-vpc --cidr-block 10.0.0.0/16
 # Replace all following instances of <vpc-id> in this script with the "VpcId" from the JSON that is returned in your console window.
@@ -25,46 +25,50 @@ aws ec2 create-route-table --vpc-id <vpc-id>
 aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block 0.0.0.0/0 --gateway-id <igw-id>
 
 aws ec2 describe-route-tables --route-table-id <route-table-id>
-# Verify route has been created correctly. There will be two routes, the first which is the default route showing that traffic in the 10.0.0.0/16 network will stay local, and the second of which will be the route you just added, with your "GatewayId" showing and a "DestinationCidrBlock": "0.0.0.0/0" attached to it.
+# Verify route has been created correctly. There will be two routes, the first which is the default route showing that traffic destined for the 10.0.0.0/16 network will stay local, and the second of which will be the route you just added, with your "GatewayId" showing and a "DestinationCidrBlock": "0.0.0.0/0" attached to it.
 
 aws ec2 describe-subnets --filters "Name=vpc-id,Values=<vpc-id>" --query 'Subnets[*].{ID:SubnetId,CIDR:CidrBlock}'
-# Extract all subnet IDs
+# This should show 3 subnets with the CIDR blocks listed above.
 
-## Choose one or more subnets to be associated with the public route, and make it a public subnet
+## Associate your first subnet with the public route, making it a public subnet
 aws ec2 associate-route-table --subnet-id <subnet-id1> --route-table-id <route-table-id>
 
 ## Enable public IP for instances created in the public subnet
 aws ec2 modify-subnet-attribute --subnet-id <subnet-id1> --map-public-ip-on-launch
 
-## Create a key pair to use for SSH access into the bastian host
+## Create a key pair to use for SSH access into the Bastion Host
 aws ec2 create-key-pair --key-name myGamingKeyPair --query 'KeyMaterial' --output text > myGamingKeyPair.pem
 
 ## Grant the file owner (you!) read permission
 chmod 400 myGamingKeyPair.pem
 
 ## Create security groups
-aws ec2 create-security-group --group-name BastianHostAccess --description "Allow access for Bastian Host" --vpc-id <vpc-id>
-# Replace all following instances of <bastian-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
+aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id <vpc-id>
+# Replace all following instances of <bastion-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
 aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id <vpc-id>
 # Replace all following instances of <redshift-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
 
-# Add rule to allow SSH access to the Bastian Host from *anywhere*
-aws ec2 authorize-security-group-ingress --group-id <bastian-security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+# Add rule to allow SSH access to the Bastion Host from *anywhere*
+aws ec2 authorize-security-group-ingress --group-id <bastion-security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+# Add rule to allow SQL access to the Redshift cluster from anywhere
+# TODO IS THIS NECESSARY SEEING THAT WE GRANT ACCESS TO THE BASTION HOST BELOW??? SEEMS A BIT TOO OPEN TO THE WORLD.
 aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 0.0.0.0/0
+# Need to enable FH access to Redshift
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 52.89.255.224/27
 
-# Add rule to allow SSH access to Redshift from Quicksight
+# Add rule to allow access to Redshift from Quicksight
 aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 54.70.204.128/27
 
-## Now create the Bastian Host (based on an AMI we prepared earlier) (Nirav's bastion AMI in us-west-2 is ami-dbec22a3)
-aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myGamingKeyPair --security-group-ids <redshift-security-group-id> --subnet-id <subnet-id1>
+## Now create the Bastion Host (based on an AMI we prepared earlier) (Nirav's bastion AMI in us-west-2 is ami-dbec22a3)
+aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myGamingKeyPair --security-group-ids <bastion-security-group-id> --subnet-id <subnet-id1>
 # Replace all following instances of <instance-id> in this script with the "InstanceId" from the JSON that is returned in your console window.
 
 ## Get the public IP so that you can connect to it
 aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text
 # Replace all following instances of <public-ip-address> in this script with the IP address that is returned in your console window.
 
-# Add rule to allow SSH access to Redshift from the Bastian Host
-aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr <public-ip-address>
+# Add rule to allow access to Redshift from the Bastion Host
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr <public-ip-address>/32
 
 ## Get into the instance
 ssh -i myGamingKeyPair.pem ec2-user@<public-ip-address>
@@ -73,7 +77,7 @@ ssh -i myGamingKeyPair.pem ec2-user@<public-ip-address>
 
 ##Configure the AWS CLI
 aws configure
-# Set up region=us-west-2 and keys
+# Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
 
 ## Store your AWS Account ID as a variable
 accountid="$(aws sts get-caller-identity --query "Account" --output text)"
@@ -110,7 +114,12 @@ aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsF
 
 ## TODO NEED TO CREATE REDSHIFT CLUSTER
 aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids <subnet-id1> <subnet-id2> <subnet-id3>
-aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s$w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids <redshift-security-group-id> 
+aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s^w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids <redshift-security-group-id> 
+
+## Connect to the Redshift DB and create the tables in Redshift
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+
 
 ## TODO NEED TO UPDATE THE JSON
 aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
@@ -138,14 +147,15 @@ aws s3api delete-bucket --bucket kinesis-bot-datagen
 
 ## Cleanup
 #############################################################################################
-## Terminate Bastian Host instance
+## Terminate Bastion Host instance
 aws ec2 terminate-instances --instance-ids <instance-id>
 aws redshift delete-cluster --cluster-identifier examplecluster --skip-final-cluster-snapshot
 aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
 
+# TODO DELETE KEY PAIR, S3 buckets
 
 ## Iterate for more than 1 resource, as required
-aws ec2 delete-security-group --group-id <bastian-security-group-id>
+aws ec2 delete-security-group --group-id <bastion-security-group-id>
 aws ec2 delete-security-group --group-id <redshift-security-group-id>
 aws ec2 delete-subnet --subnet-id <subnet-id1>
 aws ec2 delete-subnet --subnet-id <subnet-id2>
