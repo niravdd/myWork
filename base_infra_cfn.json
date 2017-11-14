@@ -6,7 +6,7 @@
   "Parameters" : {
 
     "Keypair" : {
-      "Description" : "Key Pair created in Step 3 in Lab 1.",
+      "Description" : "Key Pair to enable ssh access to Bastian Host",
       "Type" : "AWS::EC2::KeyPair::KeyName"
     },
 
@@ -23,7 +23,7 @@
       "Properties" : {
         "CidrBlock" : "192.168.0.0/22",
         "EnableDnsHostnames" : "true",
-        "Tags" : [ {"Key" : "Name", "Value" : "Gaming Analytics Workshop" } ]
+        "Tags" : [ {"Key" : "Name", "Value" : "GAM310 VPC" } ]
       }
     },
 
@@ -34,7 +34,7 @@
         "AvailabilityZone" : "us-west-2a",
         "CidrBlock" : "192.168.0.0/24",
         "MapPublicIpOnLaunch" : "true",
-        "Tags" : [ {"Key" : "Name", "Value" : "Gaming Analytics Workshop Subnet A" } ]
+        "Tags" : [ {"Key" : "Name", "Value" : "GAM310 - Subnet A" } ]
       }
     },
 
@@ -45,7 +45,7 @@
         "AvailabilityZone" : "us-west-2b",
         "CidrBlock" : "192.168.1.0/24",
         "MapPublicIpOnLaunch" : "true",
-        "Tags" : [ {"Key" : "Name", "Value" : "Gaming Analytics Workshop Subnet B" } ]
+        "Tags" : [ {"Key" : "Name", "Value" : "GAM310 - Subnet B" } ]
       }
     },
 
@@ -56,7 +56,7 @@
         "AvailabilityZone" : "us-west-1c",
         "CidrBlock" : "192.168.2.0/24",
         "MapPublicIpOnLaunch" : "true",
-        "Tags" : [ {"Key" : "Name", "Value" : "Gaming Analytics Workshop Subnet C" } ]
+        "Tags" : [ {"Key" : "Name", "Value" : "GAM310 - Subnet C" } ]
       }
     },
 
@@ -79,7 +79,7 @@
       "Type" : "AWS::EC2::RouteTable",
       "Properties" : {
         "VpcId" : {"Ref" : "VPC"},
-        "Tags" : [ {"Key" : "Name", "Value" : "Gaming Analytics Workshop Route Table" } ]
+        "Tags" : [ {"Key" : "Name", "Value" : "GAM310 - Route Table" } ]
       }
     },
 
@@ -117,39 +117,39 @@
       }
     },
 
-    "SecurityGroupEC2TODO" : {
+    "SecurityGroupEC2" : {
       "Type" : "AWS::EC2::SecurityGroup",
       "Properties" : {
-        "GroupName" : "Gaming Analytics Workshop ALB Security Group",
-        "GroupDescription" : "Security group that governs access to the Application Load Balancer used in the Spot CICD Workshop",
-        "SecurityGroupIngress" : [
-          {
-            "IpProtocol" : "tcp",
-            "FromPort" : "80",
-            "ToPort" : "80",
-            "CidrIp" : "0.0.0.0/0"
-          }
-        ],
-        "VpcId" : {"Ref" : "VPC"}
-      }
-    },
-
-    "SecurityGroupRedshiftTODO" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "Properties" : {
-        "GroupName" : "Spot CICD Workshop Jenkins Security Group",
-        "GroupDescription" : "Security group that governs access to Jenkins Master EC2 instances used in the Spot CICD Workshop",
+        "GroupName" : "GAM310 - Bastian Host Security Group",
+        "GroupDescription" : "Security group that governs access to the Bastian host used in the Workshop",
         "SecurityGroupIngress" : [
           {
             "IpProtocol" : "tcp",
             "FromPort" : "22",
             "ToPort" : "22",
             "CidrIp" : "0.0.0.0/0"
+          }
+        ],
+        "VpcId" : {"Ref" : "VPC"}
+      }
+    },
+
+    "SecurityGroupRedshift" : {
+      "Type" : "AWS::EC2::SecurityGroup",
+      "Properties" : {
+        "GroupName" : "GAM310 - Redshift Cluster Security Group",
+        "GroupDescription" : "Security group that governs access to the Redshift Cluster used in the Workshop",
+        "SecurityGroupIngress" : [
+          {
+            "IpProtocol" : "tcp",
+            "FromPort" : "5439",
+            "ToPort" : "5439",
+            "CidrIp" : "0.0.0.0/0"
           },
           {
             "IpProtocol" : "tcp",
-            "FromPort" : "8080",
-            "ToPort" : "8080",
+            "FromPort" : "8192",
+            "ToPort" : "8192",
             "CidrIp" : "0.0.0.0/0"
           }
         ],
@@ -157,493 +157,7 @@
       }
     },
 
-    "SecurityGroupTODO" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "Properties" : {
-        "GroupName" : "Spot CICD Workshop EFS Security Group",
-        "GroupDescription" : "Security group that allows access to EFS volume targets from the Jenkins Master EC2 instance used in the Spot CICD Workshop",
-        "SecurityGroupIngress" : [
-          {
-            "IpProtocol" : "tcp",
-            "FromPort" : "2049",
-            "ToPort" : "2049",
-            "SourceSecurityGroupId" : { "Ref" : "SecurityGroupJenkins"}
-          }
-        ],
-        "VpcId" : {"Ref" : "VPC"}
-      }
-    },
-
-    "IAMUserJenkinsSpotFleet" : {
-      "Type" : "AWS::IAM::User",
-      "Properties" : {
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "ec2:*",
-                    "iam:PassRole",
-                    "iam:ListRoles",
-                    "iam:PassRole",
-                    "iam:ListInstanceProfiles"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsSpotFleetPolicy"
-          },
-          {
-            "PolicyDocument" : {
-              "Version": "2012-10-17",
-              "Statement": [
-                {
-                  "Action": [
-                    "ecs:RegisterTaskDefinition",
-                    "ecs:ListClusters",
-                    "ecs:DescribeContainerInstances",
-                    "ecs:ListTaskDefinitions",
-                    "ecs:DescribeTaskDefinition"
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*"
-                },
-                {
-                  "Action": [
-                    "ecs:StopTask",
-                    "ecs:ListContainerInstances"
-                  ],
-                  "Effect": "Allow",
-                  "Resource": { "Fn::GetAtt" : [ "ECSCluster", "Arn" ] }
-                },
-                {
-                  "Action": [
-                    "ecs:RunTask"
-                  ],
-                  "Effect": "Allow",
-                  "Resource": { "Fn::Join" : [ "", [ "arn:aws:ecs:eu-west-1:", { "Ref" : "AWS::AccountId" }, ":task-definition/SpotCICDWorkshopECSSlaves-jnlp-slave:*" ] ] }
-                },
-                {
-                  "Action": [
-                    "ecs:StopTask",
-                    "ecs:DescribeTasks"
-                  ],
-                  "Effect": "Allow",
-                  "Resource": { "Fn::Join" : [ "", [ "arn:aws:ecs:eu-west-1:", { "Ref" : "AWS::AccountId" }, ":task/*" ] ] }
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsECSPolicy"
-          }
-        ],
-        "UserName" : "SpotCICDWorkshopJenkinsSpotFleet"
-      }
-    },
-
-    "IAMRoleJenkins" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "ec2.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "elasticloadbalancing:RegisterTargets"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsALBPolicy"
-          }, 
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "s3:*"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsS3Policy"
-          }, 
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "lambda:invokeFunction",
-                    "ecr:GetAuthorizationToken"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsLambdaPolicy"
-          }
-        ]
-      }
-    },
-
-    "IAMRoleJenkinsECSSlave" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "ecs-tasks.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "s3:*"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopJenkinsS3Policy"
-          }
-        ]
-      }
-    },
-
-    "IAMRoleTestHost" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "ec2.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "s3:*"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopTestHostS3Policy"
-          }
-        ]
-      }
-    },
-
-    "IAMRoleSpotDeploy" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "lambda.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "dynamodb:getItem",
-                    "dynamodb:putItem",
-                    "ec2:*",
-                    "iam:PassRole",
-                    "iam:ListRoles",
-                    "iam:PassRole",
-                    "iam:ListInstanceProfiles"
-                  ],
-                  "Resource": "*"
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopLambdaSpotDeployPolicy"
-          }
-        ]
-      }
-    },
-
-    "IAMRoleJenkinsDNSRegistration" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "lambda.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "Path" : "/",
-        "Policies" : [
-          {
-            "PolicyDocument" : {
-              "Version" : "2012-10-17",
-              "Statement" : [
-                {
-                  "Effect" : "Allow",
-                  "Action" : [
-                    "ecs:DescribeContainerInstances",
-                    "ec2:DescribeInstances",
-                    "route53:ChangeResourceRecordSets"
-                  ],
-                  "Resource": "*"
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": "logs:CreateLogGroup",
-                  "Resource": { "Fn::Join" : [ "", [ "arn:aws:logs:eu-west-1:", { "Ref" : "AWS::AccountId" }, ":*" ] ] }
-                },
-                {
-                  "Effect": "Allow",
-                  "Action": [
-                    "logs:CreateLogStream",
-                    "logs:PutLogEvents"
-                  ],
-                  "Resource": [
-                    { "Fn::Join" : [ "", [ "arn:aws:logs:eu-west-1:", { "Ref" : "AWS::AccountId" }, ":log-group:/aws/lambda/SpotCICDWorkshop_JenkinsDNSRegistration:*" ] ] }
-                  ]
-                }
-              ]
-            },
-            "PolicyName" : "SpotCICDWorkshopLambdaJenkinsDNSRegistration"
-          }
-        ]
-      }
-    },
-
-    "IAMRoleECSInstanceRole" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "ec2.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "ManagedPolicyArns" : [ "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role" ],
-        "Path" : "/"
-      }
-    },
-
-    "IAMRoleECSServiceRole" : {
-      "Type" : "AWS::IAM::Role",
-      "Properties" : {
-        "AssumeRolePolicyDocument" : {
-          "Version" : "2012-10-17",
-          "Statement" : [
-            {
-              "Effect" : "Allow",
-              "Principal" : {
-                "Service" : [ "ecs.amazonaws.com" ]
-              },
-              "Action" : [ "sts:AssumeRole" ]
-            }
-          ]
-        },
-        "ManagedPolicyArns" : [ "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceRole" ],
-        "Path" : "/"
-      }
-    },
-
-    "JenkinsInstanceProfile" : {
-      "Type" : "AWS::IAM::InstanceProfile",
-      "Properties" : {
-        "Path" : "/",
-        "Roles" : [
-          {
-            "Ref" : "IAMRoleJenkins"
-          }
-        ]
-      }
-    },
-
-    "TestHostInstanceProfile" : {
-      "Type" : "AWS::IAM::InstanceProfile",
-      "Properties" : {
-        "Path" : "/",
-        "Roles" : [
-          {
-            "Ref" : "IAMRoleTestHost"
-          }
-        ]
-      }
-    },
-
-    "ECSInstanceProfile" : {
-      "Type" : "AWS::IAM::InstanceProfile",
-      "Properties" : {
-        "Path" : "/",
-        "Roles" : [
-          {
-            "Ref" : "IAMRoleECSInstanceRole"
-          }
-        ]
-      }
-    },
-
-    "DeploymentArtifactS3Bucket" : {
-      "Type" : "AWS::S3::Bucket"
-    },
-
-    "TestEnvironmentTrackingDynamoDBTable" : {
-      "Type" : "AWS::DynamoDB::Table",
-      "Properties" : {
-        "AttributeDefinitions" : [
-          {
-            "AttributeName" : "JobBaseName",
-            "AttributeType" : "S"   
-          },
-          {
-            "AttributeName" : "BuildID",
-            "AttributeType" : "N"
-          }
-        ],
-        "KeySchema" : [
-          {
-            "AttributeName" : "JobBaseName",
-            "KeyType" : "HASH"
-          },
-          {
-            "AttributeName" : "BuildID",
-            "KeyType" : "RANGE"
-          }
-        ],
-        "ProvisionedThroughput" : {
-          "ReadCapacityUnits" : "5",
-          "WriteCapacityUnits" : "5"
-        },
-        "TableName" : "SpotCICDWorkshopTestEnvironmentTracking"
-      }
-    },
-
-    "JenkinsMasterALB" : {
-      "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
-      "Properties" : {
-        "Name" : "JenkinsMasterALB",
-        "Scheme" : "internet-facing",
-        "SecurityGroups" : [
-          { "Ref" : "SecurityGroupALB" }
-        ], 
-        "Subnets" : [
-          { "Ref" : "SubnetA" },
-          { "Ref" : "SubnetB" },
-          { "Ref" : "SubnetC" }          
-        ]
-      }
-    },
-
-    "JenkinsMasterALBTargetGroup" : {
-      "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
-      "Properties" : {
-        "HealthCheckIntervalSeconds" : "15",
-        "HealthCheckPath" : "/login",
-        "HealthCheckPort" : "8080",
-        "HealthCheckProtocol" : "HTTP",
-        "HealthCheckTimeoutSeconds" : "5",
-        "HealthyThresholdCount" : "2",
-        "Matcher" : {
-          "HttpCode" : "200"
-        },
-        "Name" : "JenkinsMasterALBTargetGroup",
-        "Port" : "8080",
-        "Protocol" : "HTTP",
-        "Targets" : [ 
-          { "Id" : { "Ref" : "JenkinsMasterEC2Instance" }, "Port" : "8080" }
-        ],
-        "UnhealthyThresholdCount" : "4",
-        "VpcId" : { "Ref" : "VPC" }
-      }
-    },
-
-    "JenkinsMasterALBListener" : {
-      "Type" : "AWS::ElasticLoadBalancingV2::Listener",
-      "Properties" : {
-        "DefaultActions" : [
-          {
-            "Type" : "forward",
-            "TargetGroupArn" : { "Ref" : "JenkinsMasterALBTargetGroup" }
-          }
-        ], 
-        "LoadBalancerArn" : { "Ref" : "JenkinsMasterALB" }, 
-        "Port" : "80",
-        "Protocol" : "HTTP"
-      } 
-    },
-
-    "JenkinsMasterEC2Instance" : {
+    "BastianHostEC2Instance" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
         "BlockDeviceMappings" : [
@@ -657,418 +171,25 @@
           }
         ],
         "IamInstanceProfile" : { "Ref" : "JenkinsInstanceProfile" },
-        "ImageId" : { "Ref" : "AmazonLinuxAMI" },
+        "ImageId" : { "Ref" : "ami-04c1097c" },
         "InstanceType" : "t2.micro",
         "KeyName" : { "Ref" : "Keypair" },
         "SecurityGroupIds" : [
-          { "Ref" : "SecurityGroupJenkins" }
+          { "Ref" : "SecurityGroupEC2" }
         ],
-        "SubnetId" : { "Ref" : "SubnetA" },
+        "SubnetId" : { "Ref" : "SubnetA", "SubnetB", "SubnetC" },
         "Tags" : [
-          { "Key" : "Name", "Value" : "Jenkins Master (On-demand)" }
+          { "Key" : "Name", "Value" : "Bastian Host (On-demand)" }
         ],
         "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
           "#!/bin/bash\n",
           "# Install all pending updates to the system\n",
           "yum -y update\n",
-          "# Configure YUM to be able to access official Jenkins RPM packages\n",
-          "wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo\n",
-          "# Import the Jenkins repository public key\n",
-          "rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key\n",
-          "# Configure YUM to be able to access contributed Maven RPM packages\n",
-          "wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo\n",
-          "# Update the release version in the Maven repository configuration for this mainline release of Amazon Linux\n",
-          "sed -i s/\\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo\n",
-          "# Install the Java 8 SDK, Git, Jenkins and Maven\n",
-          "yum -y install java-1.8.0-openjdk jenkins git apache-maven\n",
-          "# Set the default version of java to run out of the Java 8 SDK path (required by Jenkins)\n",
-          "update-alternatives --set java /usr/lib/jvm/jre-1.8.0-openjdk.x86_64/bin/java\n",
-          "# Start the Jenkins service\n",
-          "service jenkins start\n",
-          "# Obtain the initial Admin password for Jenkins\n",
-          "sleep 30\n",
-          "echo Initial Admin Password for Jenkins: \n",
-          "cat /var/lib/jenkins/secrets/initialAdminPassword\n"
+          "cd /home/ec2-user\n"
+          "git clone https://github.com/niravdd/myWork.git\n"
         ]]}}
       }
     },
-
-    "LambdaSpotDeployFunction" : {
-      "Type" : "AWS::Lambda::Function",
-      "Properties" : {
-        "Code" : {
-          "ZipFile" : { "Fn::Join" : ["", [
-            "'use strict';\n",
-            "var AWS = require('aws-sdk');\n",
-            "var actions = {\n",
-            "  deploy: function (ec2, ddb, request_payload) {\n",
-            "    return new Promise(function (resolve, reject) {\n",
-            "      var ec2_params = {\n",
-            "        SpotFleetRequestConfig: {\n",
-            "          IamFleetRole: 'arn:aws:iam::", { "Ref" : "AWS::AccountId" }, ":role/aws-ec2-spot-fleet-tagging-role',\n",
-            "          LaunchSpecifications: [ {\n",
-            "              IamInstanceProfile: { Arn: '", { "Fn::GetAtt" : [ "TestHostInstanceProfile", "Arn" ] }, "' },\n",
-            "              ImageId: '", { "Ref" : "AmazonLinuxAMI" }, "',\n",
-            "              InstanceType: 'm3.medium',\n",
-            "              KeyName: '", { "Ref" : "Keypair" }, "',\n",
-            "              SecurityGroups: [ { GroupId: '", { "Fn::GetAtt" : [ "SecurityGroupJenkins", "GroupId" ] }, "' } ],\n",
-            "              SubnetId: '", { "Ref" : "SubnetA" }, ", ", { "Ref" : "SubnetB" }, ", ", { "Ref" : "SubnetC" }, "',\n",
-            "              UserData: new Buffer('#!/bin/bash\\nyum -y update\\nyum -y install java-1.8.0-openjdk tomcat8\\naws s3 cp s3://", { "Ref" : "DeploymentArtifactS3Bucket" }, "/gameoflife-web/target/gameoflife.war /usr/share/tomcat8/webapps/gameoflife.war\\nservice tomcat8 start\\n').toString('base64')\n",
-            "          } ],\n",
-            "          SpotPrice: '0.111',\n",
-            "          TargetCapacity: 1\n",
-            "        }\n",
-            "      };\n",
-            "      ec2.requestSpotFleet(ec2_params, function(err, ec2_data) {\n",
-            "        if (err) { return reject(err); }\n",
-            "        console.log('[INFO]', 'SpotFleetRequestId: ', ec2_data.SpotFleetRequestId);\n",
-            "        return new Promise(function (resolve, reject) {\n",
-            "          var ddb_params = {\n",
-            "            Item: {\n",
-            "              'JobBaseName': { S: request_payload.jobBaseName },\n",
-            "              'BuildID': { N: request_payload.buildId },\n",
-            "              'SpotFleetRequestID': { S: ec2_data.SpotFleetRequestId }\n",
-            "            },\n",
-            "            ReturnConsumedCapacity: 'TOTAL',\n",
-            "            TableName: '", { "Ref" : "TestEnvironmentTrackingDynamoDBTable" }, "'\n",
-            "          };\n",
-            "          ddb.putItem(ddb_params, function(err, ddb_data) {\n",
-            "            if (err) { return reject(err); }\n",
-            "            console.log('[INFO]', 'Consumed Capacity Units: ', ddb_data.ConsumedCapacity.CapacityUnits);\n",
-            "            return resolve();\n",
-            "          });\n",
-            "        });\n",
-            "      });\n",
-            "    });\n",
-            "  },\n",
-            "  terminate: function (ec2, ddb, request_payload) {\n",
-            "    return new Promise(function (resolve, reject) {\n",
-            "      var ddb_params = {\n",
-            "        Key: {\n",
-            "          'JobBaseName': { S: request_payload.jobBaseName },\n",
-            "          'BuildID': { N: request_payload.buildId }\n",
-            "        },\n",
-            "        TableName: '", { "Ref" : "TestEnvironmentTrackingDynamoDBTable" }, "'\n",
-            "      }\n",
-            "      ddb.getItem(ddb_params, function(err, ddb_data) {\n",
-            "        if (err) { return reject(err); }\n",
-            "        console.log('[INFO]', 'SpotFleetRequestId: ', ddb_data.Item.SpotFleetRequestID.S);\n",
-            "        return new Promise(function (resolve, reject) {\n",
-            "          var ec2_params = {\n",
-            "            SpotFleetRequestIds: [ddb_data.Item.SpotFleetRequestID.S],\n",
-            "            TerminateInstances: true\n",
-            "          };\n",
-            "          ec2.cancelSpotFleetRequests(ec2_params, function(err, ec2_data) {\n",
-            "            if (err) { return reject(err); }\n",
-            "            return resolve();\n",
-            "          });\n",
-            "        });\n",
-            "      });\n",
-            "    });\n",
-            "  }\n",
-            "};\n",
-            "exports.handler = function (event, context, callback) {\n",
-            "  var p = actions[event.action];\n",
-            "  if (!p) {\n",
-            "    return callback('Unknown action');\n",
-            "  }\n",
-            "  var msgAction = event.action.toUpperCase() + ' ';\n",
-            "  var ec2 = new AWS.EC2();\n",
-            "  var ddb = new AWS.DynamoDB();\n",
-            "  console.log('[INFO]', 'Attempting', msgAction);\n",
-            "  return p(ec2, ddb, event).then(function (data) {\n",
-            "    return callback(null, data);\n",
-            "  }).catch(function (err) {\n",
-            "    console.log('[ERROR]', JSON.stringify(err));\n",
-            "    return callback(err);\n",
-            "  });\n",
-            "};\n"
-          ]]}
-        },
-        "Description" : "Handles the deployment and termination of Test Environments that use Spot instances in the reInvent 2017 Spot CICD Workshop.",
-        "FunctionName" : "SpotCICDWorkshop_SpotDeploy",
-        "Handler" : "index.handler",
-        "MemorySize" : "128",
-        "Role" : { "Fn::GetAtt" : [ "IAMRoleSpotDeploy", "Arn" ] },
-        "Runtime" : "nodejs6.10",
-        "Timeout" : "60"
-      }
-    },
-
-    "LambdaJenkinsDNSRegistration" : {
-      "Type" : "AWS::Lambda::Function",
-      "Properties" : {
-        "Code" : {
-          "ZipFile" : { "Fn::Join" : ["", [
-            "'use strict';\n",
-            "var AWS = require('aws-sdk');\n",
-            "exports.handler = (event, context, callback) => {\n",
-            "  if (event.detail.taskDefinitionArn.startsWith('", { "Ref" : "ECSTaskDefinitionJenkinsMaster" }, "')) {\n",
-            "    if (event.detail.lastStatus == 'RUNNING') {\n",
-            "      var ecs = new AWS.ECS();\n",
-            "      var ec2 = new AWS.EC2();\n",
-            "      var r53 = new AWS.Route53();\n",
-            "      return new Promise(function(resolve, reject) {\n",
-            "        var ecs_params = {\n",
-            "          'cluster' : '", { "Ref" : "ECSCluster" }, "',\n",
-            "          'containerInstances' : [ event.detail.containerInstanceArn.substr(event.detail.containerInstanceArn.length - 36) ]\n",
-            "        };\n",
-            "        ecs.describeContainerInstances(ecs_params, function(err, ecs_data) {\n",
-            "          if (err) {\n",
-            "            return reject(err);\n",
-            "          }\n",
-            "          console.log('[ECS] ', ecs_data.containerInstances[0].ec2InstanceId);\n",
-            "          return new Promise(function(resolve, reject) {\n",
-            "            var ec2_params = {\n",
-            "              'InstanceIds' : [ ecs_data.containerInstances[0].ec2InstanceId ] \n",
-            "            };\n",
-            "            ec2.describeInstances(ec2_params, function(err, ec2_data) {\n",
-            "              if (err) {\n",
-            "                return reject(err);\n",
-            "              }\n",
-            "              console.log('[EC2] ', ec2_data.Reservations[0].Instances[0].PrivateIpAddress);\n",
-            "              return new Promise(function(resolve, reject) {\n",
-            "                var r53_params = {\n",
-            "                  'ChangeBatch' : {\n",
-            "                    'Changes': [\n",
-            "                      {\n",
-            "                        'Action': 'UPSERT',\n",
-            "                        'ResourceRecordSet': {\n",
-            "                          'Name': 'master.jenkins.local',\n",
-            "                          'ResourceRecords': [\n",
-            "                            {\n",
-            "                              'Value': ec2_data.Reservations[0].Instances[0].PrivateIpAddress\n",
-            "                            }\n",
-            "                          ],\n",
-            "                          'TTL': '60',\n",
-            "                          'Type': 'A'\n",
-            "                        }\n",
-            "                      }\n",
-            "                    ],\n",
-            "                    'Comment': 'Dynamic Registration of Jenkins Master internal IP'\n",
-            "                  },\n",
-            "                  'HostedZoneId': '", { "Ref" : "Route53InternalZone" }, "'\n",
-            "                };\n",
-            "                r53.changeResourceRecordSets(r53_params, function(err, r53_data) {\n",
-            "                  if (err) {\n",
-            "                    return reject(err);\n",
-            "                  }\n",
-            "                  console.log('[R53] ', r53_data);\n",
-            "                });\n",
-            "              });\n",
-            "            });\n",
-            "          });\n",
-            "        });\n",
-            "      });\n",
-            "    }\n",
-            "  }\n",
-            "};\n"
-          ]]}
-        },
-        "Description" : "Handles the dynammic regiistration of the IP address where the Jenkins Master ECS Task is running for the reInvent 2017 Spot CICD Workshop.",
-        "FunctionName" : "SpotCICDWorkshop_JenkinsDNSRegistration",
-        "Handler" : "index.handler",
-        "MemorySize" : "128",
-        "Role" : { "Fn::GetAtt" : [ "IAMRoleJenkinsDNSRegistration", "Arn" ] },
-        "Runtime" : "nodejs6.10",
-        "Timeout" : "60"
-      }
-    },
-
-    "EFSJenkins" : {
-      "Type" : "AWS::EFS::FileSystem"
-    },
-
-    "EFSJenkinsMountTargetA" : {
-      "Type" : "AWS::EFS::MountTarget",
-      "Properties" : {
-        "FileSystemId" : { "Ref" : "EFSJenkins" },
-        "SecurityGroups" : [ { "Ref" : "SecurityGroupEFS" } ],
-        "SubnetId" : { "Ref" : "SubnetA" }
-      }
-    },
-
-    "EFSJenkinsMountTargetB" : {
-      "Type" : "AWS::EFS::MountTarget",
-      "Properties" : {
-        "FileSystemId" : { "Ref" : "EFSJenkins" },
-        "SecurityGroups" : [ { "Ref" : "SecurityGroupEFS" } ],
-        "SubnetId" : { "Ref" : "SubnetB" }
-      }
-    },
-
-    "EFSJenkinsMountTargetC" : {
-      "Type" : "AWS::EFS::MountTarget",
-      "Properties" : {
-        "FileSystemId" : { "Ref" : "EFSJenkins" },
-        "SecurityGroups" : [ { "Ref" : "SecurityGroupEFS" } ],
-        "SubnetId" : { "Ref" : "SubnetC" }
-      }
-    },
-
-    "ECSCluster" : {
-      "Type" : "AWS::ECS::Cluster",
-      "Properties" : {
-        "ClusterName" : "SpotCICDWorkshopECSCluster"
-      }
-    },
-
-    "ECSTaskDefinitionJenkinsMaster" : {
-      "Type" : "AWS::ECS::TaskDefinition",
-      "Properties" : {
-        "ContainerDefinitions" : [
-          {
-            "Cpu" : "512",
-            "Essential" : "true",
-            "Image" : "010319267690.dkr.ecr.eu-west-1.amazonaws.com/jenkins-master:latest",
-            "Memory" : "1536",
-            "MountPoints" : [
-              {
-                "SourceVolume" : "JENKINS_HOME",
-                "ContainerPath" : "/var/lib/jenkins"
-              }
-            ],
-            "Name" : "SpotCICDWorkshopJenkinsMaster",
-            "PortMappings" : [
-              {
-                "ContainerPort" : "8080",
-                "HostPort" : "8080"
-              },
-              {
-                "ContainerPort" : "5000",
-                "HostPort" : "5000"
-              }
-            ]
-          } 
-        ],
-        "Volumes" : [
-          {
-            "Host" : { "SourcePath" : "/mnt/efs/jenkins_home" },
-            "Name" : "JENKINS_HOME"
-          }
-        ]
-      }
-    },
-
-    "ECSServiceJenkinsMaster" : {
-      "Type" : "AWS::ECS::Service",
-      "Properties" : {
-        "Cluster" : { "Ref" : "ECSCluster" },
-        "DeploymentConfiguration" : {
-          "MaximumPercent" : "100",
-          "MinimumHealthyPercent" : "50"
-        },
-        "DesiredCount" : "0",
-        "LoadBalancers" : [
-          {
-            "TargetGroupArn" : { "Ref" : "JenkinsMasterALBTargetGroup" },
-            "ContainerPort" : "8080",
-            "ContainerName" : "SpotCICDWorkshopJenkinsMaster"
-          }
-        ],
-        "Role" : { "Fn::GetAtt" : [ "IAMRoleECSServiceRole", "Arn" ] },
-        "ServiceName" : "JenkinsMaster",
-        "TaskDefinition" : { "Ref" : "ECSTaskDefinitionJenkinsMaster" }
-      }
-    },
-
-    "CloudWatchAlarmECSScaleUp" : {
-      "Type" : "AWS::CloudWatch::Alarm",
-      "Properties" : {
-        "AlarmDescription" : "Spot CICD Workshop ECS Cluster ScaleUp Alarm",
-        "AlarmName" : "SpotCICDWorkshopECSScaleUp",
-        "ComparisonOperator" : "GreaterThanThreshold",
-        "Dimensions" : [
-          { 
-            "Name" : "ClusterName",
-            "Value" : "SpotCICDWorkshopECSCluster" 
-          }
-        ],
-        "EvaluationPeriods" : "3",
-        "MetricName" : "CPUReservation",
-        "Namespace" : "AWS/ECS",
-        "Period" : "60",
-        "Statistic" : "Average",
-        "Threshold" : "70"
-      }
-    },
-
-    "CloudWatchAlarmECSScaleDown" : {
-      "Type" : "AWS::CloudWatch::Alarm",
-      "Properties" : {
-        "AlarmDescription" : "Spot CICD Workshop ECS Cluster ScaleDown Alarm",
-        "AlarmName" : "SpotCICDWorkshopECSScaleDown",
-        "ComparisonOperator" : "LessThanThreshold",
-        "Dimensions" : [
-          { 
-            "Name" : "ClusterName",
-            "Value" : "SpotCICDWorkshopECSCluster" 
-          }
-        ],
-        "EvaluationPeriods" : "3",
-        "MetricName" : "CPUReservation",
-        "Namespace" : "AWS/ECS",
-        "Period" : "60",
-        "Statistic" : "Average",
-        "Threshold" : "50"
-      }
-    },
-
-    "Route53InternalZone" :{
-      "Type" : "AWS::Route53::HostedZone",
-      "Properties" : {
-        "HostedZoneConfig" : {
-          "Comment": "Internal DNS Zone for the reInvent 2017 Spot CICD Workshop."
-        },
-        "Name" : "jenkins.local",
-        "VPCs" : [ 
-          {
-            "VPCId" : { "Ref" : "VPC" },
-            "VPCRegion" : "eu-west-1"
-          }
-        ]
-      }
-    },
-
-    "EventECSTaskStateChange" : {
-      "Type" : "AWS::Events::Rule",
-      "Properties" : {
-        "Description" : "Event fires when an ECS Task on the SpotCICDWorkshopECSCluster changes state",
-        "EventPattern" : {
-          "source": [
-            "aws.ecs"
-          ],
-          "detail-type": [
-            "ECS Task State Change"
-          ],
-          "detail": {
-            "clusterArn": [
-              { "Fn::GetAtt" : [ "ECSCluster", "Arn" ] }
-            ]
-          }
-        },
-        "Name" : "ECSTaskStateChange",
-        "State" : "ENABLED",
-        "Targets" : [
-          {
-            "Arn" : { "Fn::GetAtt" : [ "LambdaJenkinsDNSRegistration", "Arn" ] },
-            "Id" : "DNSReg"
-          }
-        ]
-      }
-    },
-
-    "PermissionForEventsToInvokeLambda": {
-      "Type": "AWS::Lambda::Permission",
-      "Properties": {
-        "FunctionName": { "Ref": "LambdaJenkinsDNSRegistration" },
-        "Action": "lambda:InvokeFunction",
-        "Principal": "events.amazonaws.com",
-        "SourceArn": { "Fn::GetAtt": ["EventECSTaskStateChange", "Arn"] }
-      }
-    }
-
-  },
 
   "Outputs" : {
 
@@ -1079,33 +200,39 @@
       }
     },
 
-    "EFSFileSystemID" : {
-      "Description" : "File System ID of the EFS volume used to persist JENKINS_HOME data",
+    "VPC ID" : {
+      "Description" : "VPC ID",
       "Value" : {
-        "Ref" : "EFSJenkins"
+        "Fn::GetAtt" : [ "VPC", "VpcId" ]
       }
     },
 
-    "JenkinsMasterALBDNSName" : {
-      "Description" : "DNS Name for the ALB that sits in front of the Jenkins Master instance",
+    "SubnetA" : {
+      "Description" : "Subnet in us-west-2a",
       "Value" : {
-        "Fn::GetAtt" : [ "JenkinsMasterALB", "DNSName" ]
+        "Fn::GetAtt" : [ "SubnetA", "SubnetId" ]
       }
     },
 
-    "JenkinsMasterALBTargetGroupARN" : {
-      "Description" : "ARN for the Jenkins Master ALB Target Group",
+    "SubnetB" : {
+      "Description" : "Subnet in us-west-2b",
       "Value" : {
-        "Ref" : "JenkinsMasterALBTargetGroup"
+        "Fn::GetAtt" : [ "SubnetB", "SubnetId" ]
       }
     },
 
-    "JenkinsECSJavaSlaveIAMRole" : {
-      "Description" : "ARN to be used with Jenkins Java build slaves running on ECS.",
+    "SubnetC" : {
+      "Description" : "Subnet in us-west-2c",
       "Value" : {
-        "Fn::GetAtt" : [ "IAMRoleJenkinsECSSlave", "Arn" ]
+        "Fn::GetAtt" : [ "SubnetC", "SubnetId" ]
+      }
+    },
+
+    "BastianHostInstance" : {
+      "Description" : "Bastian Host ID",
+      "Value" : {
+        "Fn::GetAtt" : [ "BastianHostEC2Instance", "PublicIP" ]
       }
     }
-
   }
 }
