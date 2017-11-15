@@ -16,7 +16,6 @@
 
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
 	<link rel="stylesheet" href="style.css" type="text/css" media="all">
-	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
 </head>
 <body class="template-aside yellow page-sessions loading" data-page="sessions">
 	<div class="video">
@@ -60,19 +59,95 @@
 				<div class="indent">
 					<p class="intro">In this lab, we’ll deploy Jenkins on to an on-demand EC2 instance and set up a simple build pipeline. This will form the basis of future labs that we will work on during this workshop. This will also simulate how a lot of customers have their CI/CD applications deployed – in a static manner using on-demand (or maybe reserved) instances.</p>
 					<div class="session">
-						<h3>CREATE A NEW EC2 KEY PAIR</h3>
-						<p>You will need to access the SSH interfaces of some Linux EC2 instances created in this workshop. To do so in a secure manner, please create a new EC2 key pair with a name of <span class="bold">Spot CICD Workshop Key Pair</span>.
+						<h3>CHANGE THE FIREHOSE POLICY JSON DOCUMENT</h3>
+						<p>You need to change the <span class="bold">iam-fh-policy.json</span> document.</p>
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content">
-							<p>1. Log in to your AWS Account;</p>
-							<p>2. Switch to the <span class="bold">EU (Ireland)</span> region;</p>
-							<p>3. Provision a new EC2 Key Pair;</p>
-							<div class="indent">
-								<p>a. Go to the <span class="bold">EC2</span> console and click on the <span class="bold">Key Pairs</span> option from the left frame (or go to <a href="https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#KeyPairs" target="_blank">https://eu-west-1.console.aws.amazon.com/ec2/v2/home?region=eu-west-1#KeyPairs</a>);</p>
-								<p>b. Click on the <span class="bold">Create Key Pair</span> button;</p>
-								<p>c. Enter <span class="bold">Spot CICD Workshop Key Pair</span> as the Key pair name and click on the <span class="bold">Create</span> button;</p>
-								<p>d. Your web browser should download a .pem file – keep this file as it will be required to access the EC2 instances that we create in this workshop.</p>
-								<p>e. If you're using a Windows system, convert the .pem file to a puTTY .ppk file.</p>
+							<p>
+							Account ID: <input type="text" value="" id="accountidinput" name="accountidinput" /><br/>
+							S3 Bucket Name: <input type="text" value="" id="s3bucketinput" name="s3bucketinput" /><br/>
+							<button type="button" onclick="changetext()">Update script text</button>
+							</p>
+							<pre>
+							<p id="iam-fh-policy">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::%BUCKETNAME%",
+                "arn:aws:s3:::%BUCKETNAME%/*",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+            ]
+        },
+        {
+          "Sid": "",
+          "Effect": "Allow",
+          "Action": [
+            "lambda:InvokeFunction",
+            "lambda:GetFunctionConfiguration"
+          ],
+          "Resource": "arn:aws:lambda:us-west-2:%ACCOUNTID%:function:KinesisDataGeneratorCognitoSetup:$LATEST"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:%ACCOUNTID%:log-group:/aws/kinesisfirehose/evalAnalyticsFHStream:log-stream:*",
+                "arn:aws:logs:us-west-2:%ACCOUNTID%:log-group:/aws/kinesisfirehose/evalTelemetryFHStream:log-stream:*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream",
+                "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream"
+            ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": [
+            "arn:aws:kms:region:accountid:key/DUMMY_KEY_ID"
+          ],
+          "Condition": {
+            "StringEquals": {
+              "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+            },
+            "StringLike": {
+              "kms:EncryptionContext:aws:kinesis:arn": [
+                    "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream",
+                    "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream"
+                ]
+            }
+          }
+        }
+    ]
+}
+							</p>
+							</pre>
 							</div>
 						</div>
 
@@ -146,6 +221,12 @@
 
 		</div>
 	</div>
+	<script>
+	function changetext() {
+	document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
+	document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%BUCKETNAME\%/g,document.getElementById("s3bucketinput").value);
+	}
+	</script>
 	<script>
 		function help(table) {
 			document.getElementById("help_message").innerHTML = '<a href="javascript:void();">Sending request...</a>';
