@@ -1,7 +1,7 @@
-i{
+{
     "RedshiftDestinationConfiguration": {
-        "RoleARN": "arn:aws:iam::263991896715:role/firehose_delivery_role",
-        "ClusterJDBCURL": "jdbc:redshift://examplecluster.cdu6s9jyjft8.us-west-2.redshift.amazonaws.com:5439/evaldb",
+        "RoleARN": "arn:aws:iam::505314836537:role/firehose_delivery_role",
+        "ClusterJDBCURL": "jdbc:redshift://evalcluster.c7gsydnfkqan.us-west-2.redshift.amazonaws.com:5439/evaldatabase",
         "CopyCommand": {
             "DataTableName": "eval02table",
             "DataTableColumns": "datestamp, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
@@ -13,12 +13,12 @@ i{
             "DurationInSeconds": 3600
         },
         "S3Configuration": {
-            "RoleARN": "arn:aws:iam::263991896715:role/firehose_delivery_role",
+            "RoleARN": "arn:aws:iam::505314836537:role/firehose_delivery_role",
             "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
             "Prefix": "eval02table",
             "BufferingHints": {
                 "SizeInMBs": 5,
-                "IntervalInSeconds": 300
+                "IntervalInSeconds": 60
             },
             "CompressionFormat": "UNCOMPRESSED",
             "EncryptionConfiguration": {
