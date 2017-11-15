@@ -176,6 +176,10 @@ table {
     border-collapse: collapse;
     border-spacing: 0
 }
+.btn {
+    background-color:grey;
+    cursor:pointer;
+}
 .extended-nav .ui-accordion-header .ui-icon {
     background: url(../images/sprites/sprite.png) no-repeat
 }
@@ -2676,7 +2680,7 @@ section.ec-subpage .dot:before {
     padding-top: 1rem
 }
 .section-certification p.white-button {
-    color: #000;
+    color: #ccc;
     background: #fff;
     width: 89px;
     padding: 1%;

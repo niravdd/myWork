@@ -44,7 +44,7 @@
 			<div class="text">
 				<h2 class="headline-s1">GAM310</h2>
 				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
-				<p class="lower-link">Welcome!</p>
+				<p class="lower-link">Welcome to the Workshop!</p>
 			</div>
 		</div>
 	</header>
@@ -64,6 +64,296 @@
 						</div>
 						<p>As a reminder, you should have a laptop device (which you likely have if you're reading this) and a clean AWS account, with <span class="bold">AdministratorAccess</span> policy-level access. AWS Credits will be provided to the value of $USD30.</p>
 						<p>If you require assistance in any of the lab exercises, please click on the button at the top-right corner of all of the lab instruction pages to request help. A facilitator will come around to your seat when they are available.
+
+						<h3 class="overline">PRE-REQUISITES</h3>
+						<p>This workshop has some pre-requisites.</p>
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-1-content">
+							<p>1. You must have your own AWS account</p>
+							<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions here: <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html target="_blank">http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html</a></p>
+							<p>3. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
+						</div>
+
+						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
+						<p>You must now set up the landing zone for your data pipelines. For this we will use CloudFormation!</p>
+						<p>Please enter the command <span class="bold">aws cloudformation base_infra_cfn.json GET THIS WORKING!!!</span> If you have troubles with the CloudFormation, please follow the CLI commands in this section.</p>
+						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-2-content">
+							<p><pre>
+aws ec2 create-vpc --cidr-block 10.0.0.0/16
+# Replace all following instances of <vpc-id> in this script with the "VpcId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.1.0/24
+# Replace all following instances of <subnet-id1> in this script with the "SubnetId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.2.0/24
+# Replace all following instances of <subnet-id2> in this script with the "SubnetId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.3.0/24
+# Replace all following instances of <subnet-id3> in this script with the "SubnetId" from the JSON that is returned in your console window.
+
+aws ec2 create-internet-gateway
+# Replace all following instances of <igw-id> in this script with the "InternetGatewayId" from the JSON that is returned in your console window.
+
+aws ec2 attach-internet-gateway --vpc-id <vpc-id> --internet-gateway-id <igw-id>
+
+aws ec2 create-route-table --vpc-id <vpc-id>
+# Replace all following instances of <route-table-id> in this script with the "RouteTableId" from the JSON that is returned in your console window.
+
+aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block 0.0.0.0/0 --gateway-id <igw-id>
+
+aws ec2 describe-route-tables --route-table-id <route-table-id>
+# Verify route has been created correctly. There will be two routes, the first which is the default route showing that traffic destined for the 10.0.0.0/16 network will stay local, and the second of which will be the route you just added, with your "GatewayId" showing and a "DestinationCidrBlock": "0.0.0.0/0" attached to it.
+
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=<vpc-id>" --query 'Subnets[*].{ID:SubnetId,CIDR:CidrBlock}'
+# This should show 3 subnets with the CIDR blocks listed above.
+
+## Associate your first subnet with the public route, making it a public subnet
+aws ec2 associate-route-table --subnet-id <subnet-id1> --route-table-id <route-table-id>
+
+## Enable public IP for instances created in the public subnet
+aws ec2 modify-subnet-attribute --subnet-id <subnet-id1> --map-public-ip-on-launch
+
+## Create a key pair to use for SSH access into the Bastion Host
+aws ec2 create-key-pair --key-name myGamingKeyPair --query 'KeyMaterial' --output text > myGamingKeyPair.pem
+
+## Grant the file owner (you!) read permission
+chmod 400 myGamingKeyPair.pem
+
+## Create security groups
+aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id <vpc-id>
+# Replace all following instances of <bastion-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
+aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id <vpc-id>
+# Replace all following instances of <redshift-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
+
+# Add rule to allow SSH access to the Bastion Host from *anywhere*
+aws ec2 authorize-security-group-ingress --group-id <bastion-security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+# Add rule to allow SQL access to the Redshift cluster from anywhere
+# TODO IS THIS NECESSARY SEEING THAT WE GRANT ACCESS TO THE BASTION HOST BELOW??? SEEMS A BIT TOO OPEN TO THE WORLD.
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 0.0.0.0/0
+# Need to enable FH access to Redshift
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 52.89.255.224/27
+
+# Add rule to allow access to Redshift from Quicksight
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 54.70.204.128/27
+
+## Now create the Bastion Host (based on an AMI we prepared earlier) (Nirav's bastion AMI in us-west-2 is ami-dbec22a3)
+aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myGamingKeyPair --security-group-ids <bastion-security-group-id> --subnet-id <subnet-id1>
+# Replace all following instances of <instance-id> in this script with the "InstanceId" from the JSON that is returned in your console window.
+
+## Get the public IP so that you can connect to it
+aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text
+# Replace all following instances of <public-ip-address> in this script with the IP address that is returned in your console window.
+
+# Add rule to allow access to Redshift from the Bastion Host
+aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr <public-ip-address>/32
+							</pre>
+							</p>
+						</div>
+						<p><br />
+							Now that you have set up your Bastion Host, log into it with the following command:
+						<pre>
+ssh -i myGamingKeyPair.pem ec2-user@<public-ip-address>
+						</pre>
+						</p>
+
+
+						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
+						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline!</p>
+						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-3-content">
+							<p>
+							<pre>
+##Configure the AWS CLI
+aws configure
+# Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
+
+## Store your AWS Account ID as a variable
+accountid="$(aws sts get-caller-identity --query "Account" --output text)"
+## Create an S3 bucket for your game telemetry files
+# aws s3api create-bucket --bucket "workshop-data-${accountid}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
+## Create an S3 bucket for your game bot
+aws s3api create-bucket --bucket "workshop-bot-${accountid}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
+
+## WE NEED TO ENSURE THE JSON IS IN THEIR ROOT USER FOLDER - VERIFY WHETHER THIS IS NECESSARY
+## Create a role for Redshift from the policy document provided
+aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
+## Apply a policy to the role to allow full access to Redshift
+aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy --policy-document file://iam-redshift-policy.json
+
+## Create your Kinesis stream for telemetry
+aws kinesis create-stream --stream-name evalTelemetryStream --shard-count 10
+## Create your Kinesis stream for analytics
+aws kinesis create-stream --stream-name evalAnalyticsStream --shard-count 10
+
+## Create a role for Firehose from the policy document provided
+aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
+## Apply a policy to the role to allow full access to Firehose
+aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+
+## Create a log group and streams for telemetry
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
+
+## Create a log group and streams for analytics
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "RedshiftDelivery"
+
+## Create Redshift cluster
+aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids <subnet-id1> <subnet-id2> <subnet-id3>
+aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s^w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids <redshift-security-group-id> 
+
+## Connect to the Redshift DB and create the tables in Redshift
+# Update connect.sh with cluster details
+./connect.sh
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+
+## TODO NEED TO UPDATE THE JSON
+aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
+
+aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
+							</pre>
+							</p>
+						</div>
+
+						<h3 class="overline">CHANGE THE FIREHOSE POLICY JSON DOCUMENT</h3>
+						<p>You need to change the <span class="bold">iam-fh-policy.json</span> document.</p>
+						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-4-content">
+							<p>
+							Account ID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" /><br/>
+							S3 Bucket Name: &nbsp;&nbsp;<input type="text" value="" id="s3bucketinput" name="s3bucketinput" /><br/>
+							<button type="button" class="btn" onclick="changetext()">Update script text</button>
+							</p>
+							<pre>
+							<p id="iam-fh-policy">
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "s3:AbortMultipartUpload",
+                "s3:GetBucketLocation",
+                "s3:GetObject",
+                "s3:ListBucket",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutObject"
+            ],
+            "Resource": [
+                "arn:aws:s3:::%BUCKETNAME%",
+                "arn:aws:s3:::%BUCKETNAME%/*",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
+                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+            ]
+        },
+        {
+          "Sid": "",
+          "Effect": "Allow",
+          "Action": [
+            "lambda:InvokeFunction",
+            "lambda:GetFunctionConfiguration"
+          ],
+          "Resource": "arn:aws:lambda:us-west-2:%ACCOUNTID%:function:KinesisDataGeneratorCognitoSetup:$LATEST"
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:%ACCOUNTID%:log-group:/aws/kinesisfirehose/evalAnalyticsFHStream:log-stream:*",
+                "arn:aws:logs:us-west-2:%ACCOUNTID%:log-group:/aws/kinesisfirehose/evalTelemetryFHStream:log-stream:*"
+            ]
+        },
+        {
+            "Sid": "",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream",
+                "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream"
+            ]
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": [
+            "arn:aws:kms:region:accountid:key/DUMMY_KEY_ID"
+          ],
+          "Condition": {
+            "StringEquals": {
+              "kms:ViaService": "kinesis.us-west-2.amazonaws.com"
+            },
+            "StringLike": {
+              "kms:EncryptionContext:aws:kinesis:arn": [
+                    "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream",
+                    "arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream"
+                ]
+            }
+          }
+        }
+    ]
+}
+							</p>
+							</pre>
+							</div>
+
+						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
+						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+							<p>
+							<pre>
+## Cleanup
+aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+aws iam delete-role --role-name redshift_fullaccess_role
+aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
+aws iam delete-role --role-name firehose_delivery_role
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
+aws firehose delete-delivery-stream --delivery-stream-name evalTelemetryFHStream
+aws firehose delete-delivery-stream --delivery-stream-name evalAnalyticsFHStream
+aws kinesis delete-stream --stream-name evalTelemetryStream
+aws kinesis delete-stream --stream-name evalAnalyticsStream
+
+aws s3api delete-bucket --bucket kinesis-bot-datagen
+# aws s3api delete-bucket --bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}"
+
+## QuickSight: 54.70.204.128/27
+
+
+## Cleanup
+#############################################################################################
+## Terminate Bastion Host instance
+aws ec2 terminate-instances --instance-ids <instance-id>
+aws redshift delete-cluster --cluster-identifier examplecluster --skip-final-cluster-snapshot
+aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
+
+# TODO DELETE KEY PAIR, S3 buckets
+
+## Iterate for more than 1 resource, as required
+aws ec2 delete-security-group --group-id <bastion-security-group-id>
+aws ec2 delete-security-group --group-id <redshift-security-group-id>
+aws ec2 delete-subnet --subnet-id <subnet-id1>
+aws ec2 delete-subnet --subnet-id <subnet-id2>
+aws ec2 delete-subnet --subnet-id <subnet-id3>
+aws ec2 delete-route-table --route-table-id <route-table-id>
+aws ec2 detach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
+aws ec2 delete-internet-gateway --internet-gateway-id <igw-id>
+aws ec2 delete-vpc --vpc-id <vpc-id>
+							</pre>
+							</p>
+						</div>
+
 						<h3 class="overline">TO START THE WORKSHOP</h3>
 						<p>... please enter the seat number for which you are seated at below:</p>
 						<div class="indent-show"><div class="expand"><input type="text" id="seat">&nbsp;<a class="border" href="javascript:void();" onClick="validateSeat();">SUBMIT</a>&nbsp;<span id="message">&nbsp;</span></div></div>
@@ -76,6 +366,7 @@
 
 		</div>
 	</div>
+
 	<script>
 		function validateSeat() {
 			var seat = document.getElementById("seat").value ;
@@ -115,6 +406,20 @@
 
 			}
 		}
+
+		function reveal(button, content) {
+			if (document.getElementById(content).className == 'indent-show') {
+			document.getElementById(content).className = 'indent-hide';
+		} else {
+			document.getElementById(content).className = 'indent-show';
+		}
+		}
+
+		function changetext() {
+			document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
+			document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%BUCKETNAME\%/g,document.getElementById("s3bucketinput").value);
+		}
+
 	</script>
 </body>
 
