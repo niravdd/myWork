@@ -61,7 +61,7 @@
 					<div class="session">
 						<h3>CHANGE THE FIREHOSE POLICY JSON DOCUMENT</h3>
 						<p>You need to change the <span class="bold">iam-fh-policy.json</span> document.</p>
-						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO EXPAND INSTRUCTIONS</a></div></div>
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content">
 							<p>
 							Account ID: <input type="text" value="" id="accountidinput" name="accountidinput" /><br/>
@@ -268,9 +268,13 @@
 		}
 
 		function reveal(button, content) {
-			document.getElementById(button).className = 'indent-hide';
+			if (document.getElementById(content).className == 'indent-show') {
+			document.getElementById(content).className = 'indent-hide';
+		} else {
 			document.getElementById(content).className = 'indent-show';
 		}
+		}
+		
 	</script>
 </body>
 
