@@ -88,32 +88,32 @@ On_ICyan='\033[0;106m'    # Cyan
 On_IWhite='\033[0;107m'   # White
 
 ## Colouring works great! TODO: Further formatting.
-echo -e "${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off}"
+echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
 echo 
-echo "## To start, please verify that you have the aws-cli & botocore versions as below (or better). Ignore the OS versions."
-echo "## Recommended Minimum Versions:"
-echo "   Windows      : ${UWhite}${BIBlue}aws-cli/1.11.185 Python/3.6.2 {$White}Windows/10 ${UWhite}{$BIBlue}botocore/1.7.43${Color_Off}"
-echo "   Linux/Mac OSX: ${UWhite}${BIBlue}aws-cli/1.11.187 Python/3.6.2 {$White}Linux/4.9.51-10.52.amzn1.x86_64 ${UWhite}{$BIBlue}botocore/1.7.45${Color_Off}"
+echo -e "## To start, please verify that you have the aws-cli & botocore versions as below (or better). Ignore the OS versions."
+echo -e "## Recommended Minimum Versions:"
+echo -e "   Windows      : ${IBlue}aws-cli/1.11.185 Python/3.6.2${White} Windows/10 ${IBlue}botocore/1.7.43${Color_Off}"
+echo -e "   Linux/Mac OSX: ${IBlue}aws-cli/1.11.187 Python/3.6.2${White} Linux/4.9.51-10.52.amzn1.x86_64 ${IBlue}botocore/1.7.45${Color_Off}"
 echo 
-echo "## Displaying your version below, please visually compare the version...${BIRed}"
+echo -e "## Displaying your version below, please visually compare the version...${BIRed}"
 aws --version
-echo "${Color_Off}"
+echo -e "${Color_Off}"
 read -p "## Are you good to proceed with the script ('Y')? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
 if [ "$userResponse" = 'N' ] || [ "$userResponse" = 'n' ]; then
 	echo "## ABORTED: Please update and restart the script."
 	echo 
 	exit 1
 fi
-echo "## Setting up your AWS access now."
-echo "## Provide your Access Key, Secret Key & the Region choice below, for the aws-cli to function correctly."
-echo "## NOTE: Ensure that you provide 'us-west-2' as the Region and leave the 'Output Format' empty (default/unchanged)..."
+echo -e "## Setting up your AWS access now."
+echo -e "## Provide your Access Key, Secret Key & the Region choice below, for the aws-cli to function correctly."
+echo -e "## NOTE: Ensure that you provide 'us-west-2' as the Region and leave the 'Output Format' empty (default/unchanged)..."
 aws configure
 echo 
-echo "## Verify below if your AWS configuration has been correctly recorded. Hit CTRL+C to abort now, if it is not set up correctly..."
+echo -e "## Verify below if your AWS configuration has been correctly recorded. Hit CTRL+C to abort now, if it is not set up correctly..."
 aws configure list
 echo 
-echo "## Setting up necessary infrastructure for the Workshop..."
-echo "## Creating and setting up the VPC now..."
+echo -e "## Setting up necessary infrastructure for the Workshop..."
+echo -e "## Creating and setting up the VPC now..."
 
 IFS=' ' read -ra vpcid <<<$(aws ec2 create-vpc --cidr-block 10.0.0.0/16 | awk '/VpcId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 IFS=' ' read -ra subnetidA <<<$(aws ec2 create-subnet --vpc-id $vpcid --cidr-block 10.0.1.0/24 --availability-zone us-west-2a | awk '/SubnetId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
@@ -141,21 +141,21 @@ aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp
 IFS=' ' read -ra bastioninstanceid <<<$(aws ec2 run-instances --image-id ami-7f2afa07 --count 1 --instance-type t2.micro --key-name myWorkshopKeyPair --security-group-ids $bastionsgid --subnet-id $subnetidA | awk '/InstanceId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 IFS=' ' read -ra bastionpublicip <<<$(aws ec2 describe-instances --instance-id $bastioninstanceid --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)
 
-echo "## Make a note of your infrastructure IDs. Its recommended that you copy them to a text editor, for future reference through the workshop:"
-echo "   VPC ID in us-west-2  : $vpcid"
-echo "   Subnet in us-west-2a : $subnetidA"
-echo "   Subnet in us-west-2b : $subnetidB"
-echo "   Subnet in us-west-2c : $subnetidC"
-echo "   Internet Gateway ID  : $igwid"
-echo "   Route Table ID       : $rtbid"
-echo "   Subnets & their CIDRs: "
+echo -e "## Make a note of your infrastructure IDs. Its recommended that you copy them to a text editor, for future reference through the workshop:"
+echo -e "   VPC ID in us-west-2  : $vpcid"
+echo -e "   Subnet in us-west-2a : $subnetidA"
+echo -e "   Subnet in us-west-2b : $subnetidB"
+echo -e "   Subnet in us-west-2c : $subnetidC"
+echo -e "   Internet Gateway ID  : $igwid"
+echo -e "   Route Table ID       : $rtbid"
+echo -e "   Subnets & their CIDRs: "
 aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpcid" --query 'Subnets[*].{ID:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock,MapPublicIP:MapPublicIpOnLaunch}'
-echo "   Bastion Instance ID  : $bastioninstanceid"
-echo "   Bastion Public IP    : $bastionpublicip"
+echo -e "   Bastion Instance ID  : $bastioninstanceid"
+echo -e "   Bastion Public IP    : $bastionpublicip"
 echo 
-echo "## Pausing 60 seconds for the instance to be created and initialized properly."
-echo "## We will then initiating SSH to your new Bastion instance..."
-echo ""
+echo -e "## Pausing 60 seconds for the instance to be created and initialized properly."
+echo -e "## We will then initiating SSH to your new Bastion instance..."
+echo 
 sleep 60
-echo "ssh -i myWorkshopKeyPair.pem ec2-user@$bastionpublicip"
+echo -e "ssh -i myWorkshopKeyPair.pem ec2-user@$bastionpublicip"
 ssh -i myWorkshopKeyPair.pem ec2-user@$bastionpublicip
