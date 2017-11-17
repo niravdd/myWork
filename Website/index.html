@@ -77,80 +77,81 @@
 						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
 						<p>You must now set up the landing zone for your data pipelines. For this we will use CloudFormation!</p>
 						<p>Please enter the command <span class="bold">aws cloudformation base_infra_cfn.json GET THIS WORKING!!!</span> If you have troubles with the CloudFormation, please follow the CLI commands in this section.</p>
+						<p>This template will create a new VPC, subnets, routes, security groups, 
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
 							<p><pre>
 aws ec2 create-vpc --cidr-block 10.0.0.0/16
-# Replace all following instances of <vpc-id> in this script with the "VpcId" from the JSON that is returned in your console window.
-aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.1.0/24
-# Replace all following instances of <subnet-id1> in this script with the "SubnetId" from the JSON that is returned in your console window.
-aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.2.0/24
-# Replace all following instances of <subnet-id2> in this script with the "SubnetId" from the JSON that is returned in your console window.
-aws ec2 create-subnet --vpc-id <vpc-id> --cidr-block 10.0.3.0/24
-# Replace all following instances of <subnet-id3> in this script with the "SubnetId" from the JSON that is returned in your console window.
+# Replace all following instances of &lt;vpc-id&gt; in this script with the "VpcId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id &lt;vpc-id&gt; --cidr-block 10.0.1.0/24 --availability-zone us-west-2a
+# Replace all following instances of &lt;subnet-id1&gt; in this script with the "SubnetId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id &lt;vpc-id&gt; --cidr-block 10.0.2.0/24 --availability-zone us-west-2a
+# Replace all following instances of &lt;subnet-id2&gt; in this script with the "SubnetId" from the JSON that is returned in your console window.
+aws ec2 create-subnet --vpc-id &lt;vpc-id&gt; --cidr-block 10.0.3.0/24 --availability-zone us-west-2a
+# Replace all following instances of &lt;subnet-id3&gt; in this script with the "SubnetId" from the JSON that is returned in your console window.
 
 aws ec2 create-internet-gateway
-# Replace all following instances of <igw-id> in this script with the "InternetGatewayId" from the JSON that is returned in your console window.
+# Replace all following instances of &lt;igw-id&gt; in this script with the "InternetGatewayId" from the JSON that is returned in your console window.
 
-aws ec2 attach-internet-gateway --vpc-id <vpc-id> --internet-gateway-id <igw-id>
+aws ec2 attach-internet-gateway --vpc-id &lt;vpc-id&gt; --internet-gateway-id &lt;igw-id&gt;
 
-aws ec2 create-route-table --vpc-id <vpc-id>
-# Replace all following instances of <route-table-id> in this script with the "RouteTableId" from the JSON that is returned in your console window.
+aws ec2 create-route-table --vpc-id &lt;vpc-id&gt;
+# Replace all following instances of &lt;route-table-id&gt; in this script with the "RouteTableId" from the JSON that is returned in your console window.
 
-aws ec2 create-route --route-table-id <route-table-id> --destination-cidr-block 0.0.0.0/0 --gateway-id <igw-id>
+aws ec2 create-route --route-table-id &lt;route-table-id&gt; --destination-cidr-block 0.0.0.0/0 --gateway-id &lt;igw-id&gt;
 
-aws ec2 describe-route-tables --route-table-id <route-table-id>
+aws ec2 describe-route-tables --route-table-id &lt;route-table-id&gt;
 # Verify route has been created correctly. There will be two routes, the first which is the default route showing that traffic destined for the 10.0.0.0/16 network will stay local, and the second of which will be the route you just added, with your "GatewayId" showing and a "DestinationCidrBlock": "0.0.0.0/0" attached to it.
 
-aws ec2 describe-subnets --filters "Name=vpc-id,Values=<vpc-id>" --query 'Subnets[*].{ID:SubnetId,CIDR:CidrBlock}'
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=&lt;vpc-id&gt;" --query 'Subnets[*].{ID:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock}'
 # This should show 3 subnets with the CIDR blocks listed above.
 
 ## Associate your first subnet with the public route, making it a public subnet
-aws ec2 associate-route-table --subnet-id <subnet-id1> --route-table-id <route-table-id>
+aws ec2 associate-route-table --subnet-id &lt;subnet-id1&gt; --route-table-id &lt;route-table-id&gt;
 
 ## Enable public IP for instances created in the public subnet
-aws ec2 modify-subnet-attribute --subnet-id <subnet-id1> --map-public-ip-on-launch
+aws ec2 modify-subnet-attribute --subnet-id &lt;subnet-id1&gt; --map-public-ip-on-launch
 
 ## Create a key pair to use for SSH access into the Bastion Host
-aws ec2 create-key-pair --key-name myGamingKeyPair --query 'KeyMaterial' --output text > myGamingKeyPair.pem
+aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --output text &gt; myWorkshopKeyPair.pem
 
 ## Grant the file owner (you!) read permission
-chmod 400 myGamingKeyPair.pem
+chmod 400 myWorkshopKeyPair.pem
 
 ## Create security groups
-aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id <vpc-id>
-# Replace all following instances of <bastion-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
-aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id <vpc-id>
-# Replace all following instances of <redshift-security-group-id> in this script with the "GroupId" from the JSON that is returned in your console window.
+aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id &lt;vpc-id&gt;
+# Replace all following instances of &lt;bastion-security-group-id&gt; in this script with the "GroupId" from the JSON that is returned in your console window.
+aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id &lt;vpc-id&gt;
+# Replace all following instances of &lt;redshift-security-group-id&gt; in this script with the "GroupId" from the JSON that is returned in your console window.
 
 # Add rule to allow SSH access to the Bastion Host from *anywhere*
-aws ec2 authorize-security-group-ingress --group-id <bastion-security-group-id> --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id &lt;bastion-security-group-id&gt; --protocol tcp --port 22 --cidr 0.0.0.0/0
 # Add rule to allow SQL access to the Redshift cluster from anywhere
 # TODO IS THIS NECESSARY SEEING THAT WE GRANT ACCESS TO THE BASTION HOST BELOW??? SEEMS A BIT TOO OPEN TO THE WORLD.
-aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id &lt;redshift-security-group-id&gt; --protocol tcp --port 5439 --cidr 0.0.0.0/0
 # Need to enable FH access to Redshift
-aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 52.89.255.224/27
+aws ec2 authorize-security-group-ingress --group-id &lt;redshift-security-group-id&gt; --protocol tcp --port 5439 --cidr 52.89.255.224/27
 
 # Add rule to allow access to Redshift from Quicksight
-aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr 54.70.204.128/27
+aws ec2 authorize-security-group-ingress --group-id &lt;redshift-security-group-id&gt; --protocol tcp --port 5439 --cidr 54.70.204.128/27
 
 ## Now create the Bastion Host (based on an AMI we prepared earlier) (Nirav's bastion AMI in us-west-2 is ami-dbec22a3)
-aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myGamingKeyPair --security-group-ids <bastion-security-group-id> --subnet-id <subnet-id1>
-# Replace all following instances of <instance-id> in this script with the "InstanceId" from the JSON that is returned in your console window.
+aws ec2 run-instances --image-id ami-e2822398 --count 1 --instance-type t2.micro --key-name myWorkshopKeyPair --security-group-ids &lt;bastion-security-group-id&gt; --subnet-id &lt;subnet-id1&gt;
+# Replace all following instances of &lt;instance-id&gt; in this script with the "InstanceId" from the JSON that is returned in your console window.
 
 ## Get the public IP so that you can connect to it
-aws ec2 describe-instances --instance-id <instance-id> --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text
-# Replace all following instances of <public-ip-address> in this script with the IP address that is returned in your console window.
+aws ec2 describe-instances --instance-id &lt;instance-id&gt; --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text
+# Replace all following instances of &lt;public-ip-address&gt; in this script with the IP address that is returned in your console window.
 
 # Add rule to allow access to Redshift from the Bastion Host
-aws ec2 authorize-security-group-ingress --group-id <redshift-security-group-id> --protocol tcp --port 5439 --cidr <public-ip-address>/32
+aws ec2 authorize-security-group-ingress --group-id &lt;redshift-security-group-id&gt; --protocol tcp --port 5439 --cidr &lt;public-ip-address&gt;/32
 							</pre>
 							</p>
 						</div>
 						<p><br />
 							Now that you have set up your Bastion Host, log into it with the following command:
 						<pre>
-ssh -i myGamingKeyPair.pem ec2-user@<public-ip-address>
+ssh -i myWorkshopKeyPair.pem ec2-user@<public-ip-address>
 						</pre>
 						</p>
 
@@ -199,8 +200,8 @@ aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsF
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "RedshiftDelivery"
 
 ## Create Redshift cluster
-aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids <subnet-id1> <subnet-id2> <subnet-id3>
-aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s^w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids <redshift-security-group-id> 
+aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids &lt;subnet-id1&gt; &lt;subnet-id2&gt; &lt;subnet-id3&gt;
+aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s^w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids &lt;redshift-security-group-id&gt; 
 
 ## Connect to the Redshift DB and create the tables in Redshift
 # Update connect.sh with cluster details
@@ -334,22 +335,22 @@ aws s3api delete-bucket --bucket kinesis-bot-datagen
 ## Cleanup
 #############################################################################################
 ## Terminate Bastion Host instance
-aws ec2 terminate-instances --instance-ids <instance-id>
+aws ec2 terminate-instances --instance-ids &lt;instance-id&gt;
 aws redshift delete-cluster --cluster-identifier examplecluster --skip-final-cluster-snapshot
 aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
 
 # TODO DELETE KEY PAIR, S3 buckets
 
 ## Iterate for more than 1 resource, as required
-aws ec2 delete-security-group --group-id <bastion-security-group-id>
-aws ec2 delete-security-group --group-id <redshift-security-group-id>
-aws ec2 delete-subnet --subnet-id <subnet-id1>
-aws ec2 delete-subnet --subnet-id <subnet-id2>
-aws ec2 delete-subnet --subnet-id <subnet-id3>
-aws ec2 delete-route-table --route-table-id <route-table-id>
-aws ec2 detach-internet-gateway --internet-gateway-id <igw-id> --vpc-id <vpc-id>
-aws ec2 delete-internet-gateway --internet-gateway-id <igw-id>
-aws ec2 delete-vpc --vpc-id <vpc-id>
+aws ec2 delete-security-group --group-id &lt;bastion-security-group-id&gt;
+aws ec2 delete-security-group --group-id &lt;redshift-security-group-id&gt;
+aws ec2 delete-subnet --subnet-id &lt;subnet-id1&gt;
+aws ec2 delete-subnet --subnet-id &lt;subnet-id2&gt;
+aws ec2 delete-subnet --subnet-id &lt;subnet-id3&gt;
+aws ec2 delete-route-table --route-table-id &lt;route-table-id&gt;
+aws ec2 detach-internet-gateway --internet-gateway-id &lt;igw-id&gt; --vpc-id &lt;vpc-id&gt;
+aws ec2 delete-internet-gateway --internet-gateway-id &lt;igw-id&gt;
+aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
 							</pre>
 							</p>
 						</div>
