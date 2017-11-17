@@ -127,6 +127,8 @@ aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream
 
 aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
 
+aws firehose create-delivery-stream --delivery-stream-name directTelemetryFHStream --delivery-stream-type DirectPut --cli-input-json file://telemetryInput.json
+
 
 ## Cleanup
 aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy

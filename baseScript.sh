@@ -157,5 +157,5 @@ echo -e "## Pausing 60 seconds for the instance to be created and initialized pr
 echo -e "## We will then initiating SSH to your new Bastion instance..."
 echo 
 sleep 60
-echo -e "ssh -i myWorkshopKeyPair.pem ec2-user@$bastionpublicip"
-ssh -i myWorkshopKeyPair.pem ec2-user@$bastionpublicip
+echo -e "ssh -i ~/myWorkshopKeyPair.pem ec2-user@$bastionpublicip"
+ssh -i ~/myWorkshopKeyPair.pem ec2-user@$bastionpublicip
