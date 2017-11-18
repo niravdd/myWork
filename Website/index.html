@@ -87,9 +87,9 @@ aws sts get-caller-identity --query "Account" --output text
 						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
 						<p>You must now set up the landing zone for your data pipelines. For this we will use a bash script!</p>
 						<p>This script will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you.</p>
-						<p>Please enter the command <span class="bold"><pre>wget https://s3-us-west-2.amazonaws.com/gam310-2017/baseScript.sh</pre></span> </p>
+						<p>Please enter the command <span class="bold"><pre>curl https://s3-us-west-2.amazonaws.com/gam310-2017/baseScript.sh -o baseScript.sh</pre></span> </p>
 						<p>or if you're on Windows navigate to that URL, download the file, and using your command shell navigate to the folder you downloaded it to.</p>
-						<p>If you have troubles with the CloudFormation, please follow the CLI commands in this section.</p>
+						<p>If you have troubles with the script, please follow the CLI commands in this section.</p>
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
 							<p><pre>
@@ -297,7 +297,7 @@ vi iam-fh-policy.json
 							</p>
 
 						<h3 class="overline">PIPELINE 1 - SET UP LOG GROUPS, GAMEBOT AND REDSHIFT</h3>
-						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
+						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups, your game bot and Redshift.</p>
 						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-5-content">
 							<p>
@@ -334,9 +334,9 @@ sudo service httpd restart
 aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids &lt;subnet-id1&gt; &lt;subnet-id2&gt; &lt;subnet-id3&gt;
 aws redshift create-cluster --cluster-identifier workshopcluster --master-username workshopuser --master-user-password workshopP4SSWORD --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name workshopdb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids &lt;redshift-security-group-id&gt;
 
-## Connect to the Redshift DB and create the tables in Redshift
+## Connect to the Redshift DB and create the tables in Redshift. You'll need to wait for the Redshift cluster to be created, then copy the Cluster ID into the %REDSHIFTCLUSTER% placeholder here.
 pgcli postgres://workshopuser:workshopP4SSWORD@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
-create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
 create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 							</pre>
 							</p>
@@ -382,7 +382,7 @@ vi analyticsInput.json
         },
         "S3Configuration": {
             "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
-            "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
+            "BucketARN": "arn:aws:s3:::workshop-bot-%ACCOUNTID%",
             "Prefix": "eval01table",
             "BufferingHints": {
                 "SizeInMBs": 5,
@@ -446,7 +446,7 @@ vi telemetryInput.json
         },
         "S3Configuration": {
             "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
-            "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
+            "BucketARN": "arn:aws:s3:::workshop-bot-%ACCOUNTID%",
             "Prefix": "eval02table",
             "BufferingHints": {
                 "SizeInMBs": 5,
@@ -516,7 +516,9 @@ aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream
 							<p>6. Click the "New data set" button in the top left</p>
 							<p>7. Click the "Redshift - Auto-discovered" button</p>
 							<p>8. A "New Redshift data source" window will appear. For the "Data source name" enter "GamingWorkshop". For "Instance ID" click the drop-down arrow on the right of the selection box, and select "workshopcluster". The "Database name" should be automatically populated with "workshopdb", but you will need to enter a "Username" of "workshopuser" and "Password" of "workshopP4SSWORD". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
-							<p>9. Select "eval01table" and hit the "Select" button on the bottom right</p>
+							<p>9. Select "eval01table" and click the "Select" button on the bottom right</p>
+							<p>10. Select "Directly query your data" and click the "Visualize" button on the bottom right</p>
+							<p>11. Explore your data!</p>
 							</pre>
 						</div>
 
