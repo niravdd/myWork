@@ -95,15 +95,7 @@ catch (\Exception $e) {
             <textarea class="form-control form-control-sm" rows="27" name="config"><?php echo json_encode($config, JSON_PRETTY_PRINT); ?></textarea>
           </div>
           <div class="form-group">
-          <?php 
-            /** Commenting those to avoid using expired tokens
-            <small>Key</small>
-            <input class="small" type="text" name="key" value="<?php echo $key; ?>" placeholder="aws key"/>
-            <small>Secret</small>  
-            <input class="small" type="text" name="secret" value="<?php echo $secret; ?>" placeholder="aws secret"/>
-            */ 
-          ?>
-            <small>Region</small>  
+           <small>Region</small>  
             <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
             <small>StreamName</small>  
             <input class="small" type="text" name="streamName" value="<?php echo $streamName; ?>" placeholder="Kinesis streamName"/>
