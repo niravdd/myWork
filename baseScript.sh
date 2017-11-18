@@ -178,14 +178,14 @@ echo -e "${BIWhite}AZ\t\tCIDR Blocks\tSubnet ID\tMap Public IP on Launch?${Color
 aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpcid" --query 'Subnets[*].{ID:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock,MapPublicIP:MapPublicIpOnLaunch}' --output text
 echo 
 
-sed -i -- 's/varBastionInstanceID/$bastioninstanceid/g' cleanupScript.sh
-sed -i -- 's/varBastionsgid/$bastionsgid/g' cleanupScript.sh
-sed -i -- 's/varSubnetidA/$subnetidA/g' cleanupScript.sh
-sed -i -- 's/varSubnetidB/$subnetidB/g' cleanupScript.sh
-sed -i -- 's/varSubnetidC/$subnetidC/g' cleanupScript.sh
-sed -i -- 's/varRTBid/$rtbid/g' cleanupScript.sh
-sed -i -- 's/varIGWid/$igwid/g' cleanupScript.sh
-sed -i -- 's/varVPCid/$vpcid/g' cleanupScript.sh
+sed -i -- 's/varBastionInstanceID/$bastioninstanceid/g' cleanupBaseInfra.sh
+sed -i -- 's/varBastionsgid/$bastionsgid/g' cleanupBaseInfra.sh
+sed -i -- 's/varSubnetidA/$subnetidA/g' cleanupBaseInfra.sh
+sed -i -- 's/varSubnetidB/$subnetidB/g' cleanupBaseInfra.sh
+sed -i -- 's/varSubnetidC/$subnetidC/g' cleanupBaseInfra.sh
+sed -i -- 's/varRTBid/$rtbid/g' cleanupBaseInfra.sh
+sed -i -- 's/varIGWid/$igwid/g' cleanupBaseInfra.sh
+sed -i -- 's/varVPCid/$vpcid/g' cleanupBaseInfra.sh
 
 echo -e "## Pausing 30 more seconds for the instance to be created and initialized properly."
 echo -e "## We will then initiate SSH'ing to your new Bastion instance..."
