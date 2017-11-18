@@ -71,13 +71,25 @@
 						<div class="indent-hide" id="1-1-content">
 							<p>1. You must have your own AWS account</p>
 							<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions here: <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html target="_blank">http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html</a></p>
-							<p>3. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
+							<p>3. You must have SSH installed on your computer.</p>
+							<p>4. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
+							<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
+								<pre>
+aws sts get-caller-identity --query "Account" --output text
+								</pre>
+							</p>
+							<p>
+							Account ID: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" />&nbsp;
+							<button type="button" class="btn" onclick="changetext()">Update script text</button>
+							</p>
 						</div>
 
 						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
-						<p>You must now set up the landing zone for your data pipelines. For this we will use CloudFormation!</p>
-						<p>Please enter the command <span class="bold">aws cloudformation base_infra_cfn.json GET THIS WORKING!!!</span> If you have troubles with the CloudFormation, please follow the CLI commands in this section.</p>
-						<p>This template will create a new VPC, subnets, routes, security groups, 
+						<p>You must now set up the landing zone for your data pipelines. For this we will use a bash script!</p>
+						<p>This script will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you.</p>
+						<p>Please enter the command <span class="bold"><pre>wget https://s3-us-west-2.amazonaws.com/gam310-2017/baseScript.sh</pre></span> </p>
+						<p>or if you're on Windows navigate to that URL, download the file, and using your command shell navigate to the folder you downloaded it to.</p>
+						<p>If you have troubles with the CloudFormation, please follow the CLI commands in this section.</p>
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
 							<p><pre>
@@ -145,16 +157,12 @@ aws ec2 describe-instances --instance-id &lt;instance-id&gt; --query 'Reservatio
 
 # Add rule to allow access to Redshift from the Bastion Host
 aws ec2 authorize-security-group-ingress --group-id &lt;redshift-security-group-id&gt; --protocol tcp --port 5439 --cidr &lt;public-ip-address&gt;/32
+
+## Get into the instance
+ssh -i myWorkshopKeyPair.pem ec2-user@&lt;public-ip-address&gt;
 							</pre>
 							</p>
 						</div>
-						<p><br />
-							Now that you have set up your Bastion Host, log into it with the following command:
-						<pre>
-ssh -i myWorkshopKeyPair.pem ec2-user@<public-ip-address>
-						</pre>
-						</p>
-
 
 						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
 						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline!</p>
@@ -168,12 +176,13 @@ aws configure
 
 ## Store your AWS Account ID as a variable
 accountid="$(aws sts get-caller-identity --query "Account" --output text)"
-## Create an S3 bucket for your game telemetry files
-# aws s3api create-bucket --bucket "workshop-data-${accountid}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
 ## Create an S3 bucket for your game bot
 aws s3api create-bucket --bucket "workshop-bot-${accountid}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
 
-## WE NEED TO ENSURE THE JSON IS IN THEIR ROOT USER FOLDER - VERIFY WHETHER THIS IS NECESSARY
+## Download the required policy documents
+wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-redshift-policy.json
+wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-redshift-policy.json
+wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-fh-policy.json
 ## Create a role for Redshift from the policy document provided
 aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
 ## Apply a policy to the role to allow full access to Redshift
@@ -186,46 +195,22 @@ aws kinesis create-stream --stream-name evalAnalyticsStream --shard-count 10
 
 ## Create a role for Firehose from the policy document provided
 aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
-## Apply a policy to the role to allow full access to Firehose
-aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
-
-## Create a log group and streams for telemetry
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
-
-## Create a log group and streams for analytics
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "RedshiftDelivery"
-
-## Create Redshift cluster
-aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids &lt;subnet-id1&gt; &lt;subnet-id2&gt; &lt;subnet-id3&gt;
-aws redshift create-cluster --cluster-identifier examplecluster --master-username evaluser --master-user-password evalP4s^w0rd1 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name evaldb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids &lt;redshift-security-group-id&gt; 
-
-## Connect to the Redshift DB and create the tables in Redshift
-# Update connect.sh with cluster details
-./connect.sh
-create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
-create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
-
-## TODO NEED TO UPDATE THE JSON
-aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
-
-aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
 							</pre>
 							</p>
 						</div>
 
-						<h3 class="overline">CHANGE THE FIREHOSE POLICY JSON DOCUMENT</h3>
-						<p>You need to change the <span class="bold">iam-fh-policy.json</span> document.</p>
-						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<h3 class="overline">PIPELINE 1 - CHANGE THE FIREHOSE POLICY JSON DOCUMENT</h3>
+						<p>You need to change the <span class="bold">iam-fh-policy.json</span> document. Enter the following command:</p>
+						<p>
+						<pre>
+vi iam-fh-policy.json
+						</pre>
+						</p>
+						<p>
+						Expand the script below, enter your account number, and hit the "Update script text" button.
+						</p>
+						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO TOGGLE THE SCRIPT</a></div></div>
 						<div class="indent-hide" id="1-4-content">
-							<p>
-							Account ID: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" /><br/>
-							S3 Bucket Name: &nbsp;&nbsp;<input type="text" value="" id="s3bucketinput" name="s3bucketinput" /><br/>
-							<button type="button" class="btn" onclick="changetext()">Update script text</button>
-							</p>
 							<pre>
 							<p id="iam-fh-policy">
 {
@@ -243,8 +228,8 @@ aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::%BUCKETNAME%",
-                "arn:aws:s3:::%BUCKETNAME%/*",
+                "arn:aws:s3:::workshop-bot-%ACCOUNTID%",
+                "arn:aws:s3:::workshop-bot-%ACCOUNTID%/*",
                 "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
                 "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
             ]
@@ -306,12 +291,239 @@ aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream
 }
 							</p>
 							</pre>
-							</div>
+							</div><br />
+							<p>
+							Highlight the text above, then copy it to your clipboard. Switch back to your console where you should be in vi, hit the "I" key to insert your text, then CTRL-V to paste the text. You then need to hit ESC then type ":wq" to write your changes and quit.
+							</p>
+
+						<h3 class="overline">PIPELINE 1 - SET UP LOG GROUPS, GAMEBOT AND REDSHIFT</h3>
+						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+							<p>
+							<pre>
+## Apply a policy to the role to allow full access to Firehose
+aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+
+## Create a log group and streams for telemetry
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
+
+## Create a log group and streams for analytics
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "RedshiftDelivery"
+
+## Install your gamebot!
+sudo yum install php71.x86_64
+sudo yum install -y httpd24
+sudo service httpd start
+sudo chkconfig httpd on
+sudo groupadd www
+sudo usermod -a -G www ec2-user
+sudo chown -R root:www /var/www
+sudo chmod 2775 /var/www
+sudo find /var/www -type d -exec chmod 2775 {} +
+sudo find /var/www -type f -exec chmod 0664 {} +
+wget https://s3-us-west-2.amazonaws.com/gam310-2017/kinesis-datagen.tar
+sudo tar -xf kinesis-datagen.tar -C /var/www/html/
+sudo service httpd restart
+
+## Create Redshift cluster
+aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup  --description "My subnet group for the workshop" --subnet-ids &lt;subnet-id1&gt; &lt;subnet-id2&gt; &lt;subnet-id3&gt;
+aws redshift create-cluster --cluster-identifier workshopcluster --master-username workshopuser --master-user-password workshopP4SSWORD --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name workshopdb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids &lt;redshift-security-group-id&gt;
+
+## Connect to the Redshift DB and create the tables in Redshift
+pgcli postgres://workshopuser:workshopP4SSWORD@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
+create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+							</pre>
+							</p>
+						</div>
+
+
+						<h3 class="overline">PIPELINE 1 - CHANGE THE FIREHOSE ANALYTICS CONFIGURATION JSON DOCUMENT</h3>
+						<p>You need to change the <span class="bold">analyticsInput.json</span> document. First, we need to populate your Firehose configuration document with your Redshift Cluster ID. Enter the following to find out what your Redshift endpoint is:
+						<pre>
+aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[0].Endpoint.Address' --output text
+						</pre>
+						</p>
+						<p>
+						Redshift Endpoint Address: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="redshiftinput" name="redshiftinput" />&nbsp;
+						<button type="button" class="btn" onclick="changeredshifttext()">Update script text</button>
+						</p>
+						<p>Enter the following command:</p>
+						<p>
+						<pre>
+vi analyticsInput.json
+						</pre>
+						</p>
+						<p>
+						Expand the script below, enter your account number, and hit the "Update script text" button.
+						</p>
+						<div class="indent-show" id="1-6-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-6-button', '1-6-content')">CLICK TO TOGGLE THE SCRIPT</a></div></div>
+						<div class="indent-hide" id="1-6-content">
+							<pre>
+							<p id="analyticsInput">
+{
+    "RedshiftDestinationConfiguration": {
+        "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
+        "ClusterJDBCURL": "jdbc:redshift://%REDSHIFTCLUSTER%:5439/workshopdb",
+        "CopyCommand": {
+            "DataTableName": "eval01table",
+            "DataTableColumns": "playerip, handle, email, uuid, playerid, country, useragent, datestamp, walletbalance, playerlevel, status",
+            "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
+        },
+        "Username": "workshopuser",
+        "Password": "workshopP4SSWORD",
+        "RetryOptions": {
+            "DurationInSeconds": 3600
+        },
+        "S3Configuration": {
+            "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
+            "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
+            "Prefix": "eval01table",
+            "BufferingHints": {
+                "SizeInMBs": 5,
+                "IntervalInSeconds": 300
+            },
+            "CompressionFormat": "UNCOMPRESSED",
+            "EncryptionConfiguration": {
+                "NoEncryptionConfig": "NoEncryption"
+            },
+            "CloudWatchLoggingOptions": {
+                "Enabled": true,
+                "LogGroupName": "/aws/kinesisfirehose/evalAnalyticsFHStream",
+                "LogStreamName": "S3Delivery"
+            }
+        },
+        "ProcessingConfiguration": {
+            "Enabled": false
+        },
+        "S3BackupMode": "Disabled",
+        "CloudWatchLoggingOptions": {
+            "Enabled": true,
+            "LogGroupName": "/aws/kinesisfirehose/evalAnalyticsFHStream",
+            "LogStreamName": "RedshiftDelivery"
+        }
+    }
+}
+							</p>
+							</pre>
+							</div><br />
+							<p>
+							Highlight the text above, then copy it to your clipboard. Switch back to your console where you should be in vi, hit the "I" key to insert your text, then CTRL-V to paste the text. You then need to hit ESC then type ":wq" to write your changes and quit.
+							</p>
+
+						<h3 class="overline">PIPELINE 1 - CHANGE THE FIREHOSE TELEMETRY CONFIGURATION JSON DOCUMENT</h3>
+						<p>You need to change the <span class="bold">telemetryInput.json</span> document. Enter the following command:</p>
+						<p>
+						<pre>
+vi telemetryInput.json
+						</pre>
+						</p>
+						<p>
+						Expand the script below, enter your account number, and hit the "Update script text" button.
+						</p>
+						<div class="indent-show" id="1-7-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-7-button', '1-7-content')">CLICK TO TOGGLE THE SCRIPT</a></div></div>
+						<div class="indent-hide" id="1-7-content">
+							<pre>
+							<p id="telemetryInput">
+{
+    "RedshiftDestinationConfiguration": {
+        "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
+        "ClusterJDBCURL": "jdbc:redshift://%REDSHIFTCLUSTER%:5439/evaldatabase",
+        "CopyCommand": {
+            "DataTableName": "eval02table",
+            "DataTableColumns": "datestamp, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
+            "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
+        },
+        "Username": "workshopuser",
+        "Password": "workshopP4SSWORD",
+        "RetryOptions": {
+            "DurationInSeconds": 3600
+        },
+        "S3Configuration": {
+            "RoleARN": "arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role",
+            "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
+            "Prefix": "eval02table",
+            "BufferingHints": {
+                "SizeInMBs": 5,
+                "IntervalInSeconds": 60
+            },
+            "CompressionFormat": "UNCOMPRESSED",
+            "EncryptionConfiguration": {
+                "NoEncryptionConfig": "NoEncryption"
+            },
+            "CloudWatchLoggingOptions": {
+                "Enabled": true,
+                "LogGroupName": "/aws/kinesisfirehose/evalTelemetryFHStream",
+                "LogStreamName": "S3Delivery"
+            }
+        },
+        "ProcessingConfiguration": {
+            "Enabled": false
+        },
+        "S3BackupMode": "Disabled",
+        "CloudWatchLoggingOptions": {
+            "Enabled": true,
+            "LogGroupName": "/aws/kinesisfirehose/evalTelemetryFHStream",
+            "LogStreamName": "RedshiftDelivery"
+        }
+    }
+}
+							</p>
+							</pre>
+							</div><br />
+							<p>
+							Highlight the text above, then copy it to your clipboard. Switch back to your console where you should be in vi, hit the "I" key to insert your text, then CTRL-V to paste the text. You then need to hit ESC then type ":wq" to write your changes and quit.
+							</p>
+
+						<h3 class="overline">PIPELINE 1 - CREATE YOUR FIREHOSE STREAMS</h3>
+						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
+						<div class="indent-show" id="1-8-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-8-button', '1-8-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-8-content">
+							<pre>
+							<p id="fh-streams">
+aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
+
+aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream,RoleARN=arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
+							</p>
+							</pre>
+						</div>
+
+						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
+						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis</p>
+						<div class="indent-show" id="1-9-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-9-button', '1-9-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-9-content">
+							<p>1. Visit http://%BASTIONIP%/kinesis-datagen</p>
+							<p>2. Enter your Kinesis stream name into the StreamName field. This should be %ANALYTICSSTREAMNAME%.</p>
+							<p>3. Hit the "Generate" button.</p>
+							<p></p>
+							</pre>
+						</div>
+
+						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
+						<p>Let's get QuickSight working!</p>
+						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-10-content">
+							<p>1. Go to <span class="bold">https://quicksight.aws</span>.</p>
+							<p>2. Select "Sign Up For Free" (or "Sign In" if you've used it before and have an account)</p>
+							<p>3. Click on the Region in the top-right, and select "US West (Oregon)"</p>
+							<p>4. Close the Welcome window</p>
+							<p>5. Click the "New analysis" button in the top left</p>
+							<p>6. Click the "New data set" button in the top left</p>
+							<p>7. Click the "Redshift - Auto-discovered" button</p>
+							<p>8. A "New Redshift data source" window will appear. For the "Data source name" enter "GamingWorkshop". For "Instance ID" click the drop-down arrow on the right of the selection box, and select "workshopcluster". The "Database name" should be automatically populated with "workshopdb", but you will need to enter a "Username" of "workshopuser" and "Password" of "workshopP4SSWORD". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
+							<p>9. Select "eval01table" and hit the "Select" button on the bottom right</p>
+							</pre>
+						</div>
 
 						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
-						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-5-content">
+						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-15-content">
 							<p>
 							<pre>
 ## Cleanup
@@ -325,23 +537,22 @@ aws firehose delete-delivery-stream --delivery-stream-name evalTelemetryFHStream
 aws firehose delete-delivery-stream --delivery-stream-name evalAnalyticsFHStream
 aws kinesis delete-stream --stream-name evalTelemetryStream
 aws kinesis delete-stream --stream-name evalAnalyticsStream
-
-aws s3api delete-bucket --bucket kinesis-bot-datagen
-# aws s3api delete-bucket --bucket --bucket "workshop-data-${aws sts get-caller-identity --query "Account" --output text}"
+accountid="$(aws sts get-caller-identity --query "Account" --output text)"
+aws s3api delete-bucket --bucket "workshop-data-%ACCOUNTID%"
+aws s3api delete-bucket --bucket "workshop-bot-%ACCOUNTID%"
 
 ## QuickSight: 54.70.204.128/27
 
-
 ## Cleanup
 #############################################################################################
-## Terminate Bastion Host instance
+## You will need to run the following commands from your laptop:
 aws ec2 terminate-instances --instance-ids &lt;instance-id&gt;
 aws redshift delete-cluster --cluster-identifier examplecluster --skip-final-cluster-snapshot
 aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
-
-# TODO DELETE KEY PAIR, S3 buckets
+aws s3api delete-bucket --bucket  --region us-west-2
 
 ## Iterate for more than 1 resource, as required
+aws ec2 delete-key-pair --key-name myWorkshopKeyPair
 aws ec2 delete-security-group --group-id &lt;bastion-security-group-id&gt;
 aws ec2 delete-security-group --group-id &lt;redshift-security-group-id&gt;
 aws ec2 delete-subnet --subnet-id &lt;subnet-id1&gt;
@@ -418,9 +629,15 @@ aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
 
 		function changetext() {
 			document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-			document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%BUCKETNAME\%/g,document.getElementById("s3bucketinput").value);
+			document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
+			document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
+			document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
 		}
 
+		function changeredshifttext() {
+			document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
+			document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
+		}
 	</script>
 </body>
 

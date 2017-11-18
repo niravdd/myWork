@@ -133,6 +133,13 @@ aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --out
 chmod 400 ~/myWorkshopKeyPair.pem
 IFS=' ' read -ra bastionsgid <<<$(aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id $vpcid | awk '/GroupId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 80 --cidr 0.0.0.0/0
+curl https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ec2-policy.json -o iam-base-ec2-policy.json
+aws iam create-role --role-name BastionDataGenRole --assume-role-policy-document file://iam-base-ec2-policy.json
+aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --role-name BastionDataGenRole
+aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess --role-name BastionDataGenRole
+aws iam create-instance-profile --instance-profile-name BastionProfile
+aws iam add-role-to-instance-profile --role-name BastionDataGenRole --instance-profile-name BastionProfile
 
 IFS=' ' read -ra redshiftsgid <<<$(aws ec2 create-security-group --group-name RedshiftAccess --description "Allow access for Redshift" --vpc-id $vpcid | awk '/GroupId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp --port 5439 --cidr 0.0.0.0/0
@@ -140,6 +147,7 @@ aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp
 
 IFS=' ' read -ra bastioninstanceid <<<$(aws ec2 run-instances --image-id ami-7f2afa07 --count 1 --instance-type t2.micro --key-name myWorkshopKeyPair --security-group-ids $bastionsgid --subnet-id $subnetidA | awk '/InstanceId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 IFS=' ' read -ra bastionpublicip <<<$(aws ec2 describe-instances --instance-id $bastioninstanceid --query 'Reservations[*].Instances[*].PublicIpAddress' --output=text)
+aws ec2 associate-iam-instance-profile --instance-id $bastioninstanceid --iam-instance-profile Name=BastionProfile
 
 echo -e "## Make a note of your infrastructure IDs. Its recommended that you copy them to a text editor, for future reference through the workshop:"
 echo -e "   VPC ID in us-west-2  : $vpcid"
