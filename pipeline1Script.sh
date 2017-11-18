@@ -133,8 +133,9 @@ IFS=' ' read -ra accountid <<<$(aws sts get-caller-identity --query "Account" --
 bucketname=workshop-data-${accountid}
 echo -e "## Creating a bucket in Amazon S3 - \'${BIPurple}$bucketname${Color_Off}\'..."
 aws s3api create-bucket --bucket $bucketname --acl private --create-bucket-configuration LocationConstraint=us-west-2
-sed -i -- 's/varAccountID/$accountid/g' *
-sed -i -- 's/varBucketName/$bucketname/g' *
+sed -i -- "s/varAccountID/$accountid/g" *.json
+sed -i -- "s/varBucketName/$bucketname/g" *.json
+sed -i -- "s/varBucketName/$bucketname/g" cleanupPipeline1Infra.sh
 
 echo -e "## Creating the roles now..."
 aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
@@ -148,7 +149,7 @@ IFS=' ' read -ra redshiftsgid <<<$(aws ec2 create-security-group --group-name Re
 aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp --port 5439 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp --port 8192 --cidr 0.0.0.0/0
 
-sed -i -- 's/varRedshiftsgid/$redshiftsgid/g' cleanupPipeline1Infra.sh
+sed -i -- "s/varRedshiftsgid/$redshiftsgid/g" cleanupPipeline1Infra.sh
 
 echo -e "## Creating the Redshift Cluster now..."
 aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup --description "My subnet group for the workshop" --subnet-ids subnetA subnetB subnetC
@@ -176,8 +177,10 @@ echo
 IFS=' ' read -ra redshiftClusterEndpoint <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].Endpoint.Address' --output text)
 IFS=' ' read -ra redshiftClusterPort <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].Endpoint.Port' --output text)
 
-sed -i -- 's/varRedshiftClusterEndpoint/$redshiftClusterEndpoint/g' *
-sed -i -- 's/5439/$redshiftClusterPort/g' *
+sed -i -- "s/varRedshiftClusterEndpoint/$redshiftClusterEndpoint/g" *.json
+sed -i -- "s/varRedshiftClusterEndpoint/$redshiftClusterEndpoint/g" connectRedshift.sh
+sed -i -- "s/5439/$redshiftClusterPort/g" *.json
+sed -i -- "s/5439/$redshiftClusterPort/g" connectRedshift.sh
 
 echo -e "${Color_Off}"
 echo 
@@ -208,4 +211,4 @@ aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH -
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json
 
 echo -e ""
-echo -e "## Setup complete!"
+echo -e "${BIGreen}## Setup complete!${Color_Off}"
