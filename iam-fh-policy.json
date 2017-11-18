@@ -13,10 +13,8 @@
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::kinesis-bot-datagen",
-                "arn:aws:s3:::kinesis-bot-datagen/*",
-                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%",
-                "arn:aws:s3:::%FIREHOSE_BUCKET_NAME%/*"
+                "arn:aws:s3:::varBucketName",
+                "arn:aws:s3:::varBucketName/*"
             ]
         },
         {
@@ -26,7 +24,7 @@
             "lambda:InvokeFunction",
             "lambda:GetFunctionConfiguration"
           ],
-          "Resource": "arn:aws:lambda:us-west-2:505314836537:function:KinesisDataGeneratorCognitoSetup:$LATEST"
+          "Resource": "arn:aws:lambda:us-west-2:varAccountID:function:KinesisDataGeneratorCognitoSetup:$LATEST"
         },
         {
             "Sid": "",
@@ -35,8 +33,9 @@
                 "logs:PutLogEvents"
             ],
             "Resource": [
-                "arn:aws:logs:us-west-2:505314836537:log-group:/aws/kinesisfirehose/evalAnalyticsFHStream:log-stream:*",
-                "arn:aws:logs:us-west-2:505314836537:log-group:/aws/kinesisfirehose/evalTelemetryFHStream:log-stream:*"
+                "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisfirehose/workshopAnalyticsFH:log-stream:*",
+                "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisfirehose/workshopTelemetryFH:log-stream:*",
+                "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisfirehose/workshopTelemetryFHDirect:log-stream:*"
             ]
         },
         {
@@ -48,8 +47,8 @@
                 "kinesis:GetRecords"
             ],
             "Resource": [
-                "arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream",
-                "arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream"
+                "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream",
+                "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream"
             ]
         },
         {
@@ -66,8 +65,8 @@
             },
             "StringLike": {
               "kms:EncryptionContext:aws:kinesis:arn": [
-                    "arn:aws:kinesis:us-west-2:505314836537:stream/evalTelemetryStream",
-                    "arn:aws:kinesis:us-west-2:505314836537:stream/evalAnalyticsStream"
+                    "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream",
+                    "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream"
                 ]
             }
           }
