@@ -176,10 +176,6 @@ table {
     border-collapse: collapse;
     border-spacing: 0
 }
-.btn {
-    background-color:grey;
-    cursor:pointer;
-}
 .extended-nav .ui-accordion-header .ui-icon {
     background: url(../images/sprites/sprite.png) no-repeat
 }
@@ -400,6 +396,16 @@ a[name] {
     margin-top: 0;
     margin-bottom: 1.375em
 }
+.body-copy p.code {
+    font-family: monospace, monospace;
+    font-size: 0.8em;
+    letter-spacing: .04em;
+    font-weight: 200;
+    color: #999;
+    line-height: 1.375em;
+    margin-top: 0;
+    margin-bottom: 1.375em
+}
 .headline-s1 {
     font-size: 74px;
     font-size: 7.4rem;
@@ -548,7 +554,7 @@ a[name] {
     margin-bottom: 0
 }
 .body-copy p {
-    max-width: 700px
+    max-width: 100%
 }
 .body-copy ol,
 .body-copy ul {
@@ -2259,7 +2265,7 @@ h4.headline-s4.s4-link {
     padding-top: 1.6rem;
     border-top: 1px solid #fff;
     margin: 9rem 0 6rem;
-    max-width: 700px
+    max-width: 100%
 }
 #section-sessions h4 {
     font-size: 18px;
@@ -2680,7 +2686,7 @@ section.ec-subpage .dot:before {
     padding-top: 1rem
 }
 .section-certification p.white-button {
-    color: #ccc;
+    color: #000;
     background: #fff;
     width: 89px;
     padding: 1%;

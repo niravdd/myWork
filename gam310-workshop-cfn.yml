@@ -128,7 +128,7 @@ Parameters:
     Description: Select Keypair to Assign to EC2 Instances
     Type: AWS::EC2::KeyPair::KeyName
   InstanceType:
-    Description: Select Instance Type.
+    Description: Select Bastion Instance Type.
     Type: String
     Default: t2.small
     AllowedValues:
@@ -613,7 +613,7 @@ Resources:
     Properties:
       IamInstanceProfile:
         Ref: IamInstanceProfile
-      ImageId: "ami-b04e92d0"
+      ImageId: "ami-32d8124a"
       InstanceInitiatedShutdownBehavior: stop
       InstanceType:
         Ref: InstanceType
@@ -641,9 +641,19 @@ Resources:
           chmod 2775 /var/www
           find /var/www -type d -exec chmod 2775 {} +
           find /var/www -type f -exec chmod 0664 {} +
-          wget https://s3-us-west-2.amazonaws.com/gam310-2017/kinesis-datagen.tar
-          tar -xf kinesis-datagen.tar -C /var/www/html/
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/kinesis-datagen.tar
+          tar -xf /home/ec2-user/kinesis-datagen.tar -C /var/www/html/
           service httpd restart
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-fh-policy.json
+          sed -i 's/varBucketName/${AWS::AccountId}/g' /home/ec2-user/iam-fh-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/analytics1Input.json
+          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/analytics1Input.json
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/analytics1Input.json
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/analytics1Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry1Input.json
+          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/telemetry1Input.json
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/telemetry1Input.json
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/telemetry1Input.json
   EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -661,6 +671,11 @@ Resources:
         - EIP
         - AllocationId
 
+  # S3 Bucket
+  WorkshopBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+
   # Redshift cluster
   RedshiftClusterSubnetGroup:
     Type: AWS::Redshift::ClusterSubnetGroup
@@ -677,8 +692,8 @@ Resources:
       ClusterType: single-node
       NodeType: ds2.xlarge
       DBName: workshopdb
-      MasterUsername: workshopuser
-      MasterUserPassword: workshopP4SSWORD
+      MasterUsername: wsuser
+      MasterUserPassword: wsPassword0
       ClusterParameterGroupName:
         Ref: RedshiftClusterParameterGroup
       VpcSecurityGroupIds:
@@ -700,7 +715,7 @@ Outputs:
   GameBotURLPublicDns:
     Description: Bastion Public DNS Name
     Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PublicDnsName, "/kinesis-datagen/" ] ]
-  PublicDNS:
+  BastionPublicDNS:
     Description: Bastion Gamebot URL
     Value:
       Fn::GetAtt:
@@ -712,7 +727,7 @@ Outputs:
       Ref: EIP
   ClusterEndpoint:
     Description: PGCLI Command for Redshift Endpoint
-    Value: !Join [ "", [ "pgcli postgres://workshopuser:workshopP4SSWORD@", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb" ] ]
+    Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb" ] ]
   ClusterName:
     Description: Name of Redshift Cluster
     Value:
@@ -729,12 +744,16 @@ Outputs:
     Description: Name of Redshift Security Group
     Value:
       Ref: RedshiftSecurityGroup
+  WorkshopBucket:
+    Description: Name of Workshop S3 Bucket
+    Value:
+      Ref: WorkshopBucket
   InstanceType:
-    Description: Instance Type.
+    Description: Bastion Host Instance Type
     Value:
       Ref: InstanceType
   EC2KeyPair:
-    Description: Key Pair used.
+    Description: Key Pair Used
     Value:
       Ref: Ec2KeyPair
   BastionSecurityGroup:
@@ -742,10 +761,14 @@ Outputs:
     Value:
       Ref: BastionSecurityGroup
   IAMRole:
-    Description: IAM Instance Profile Role Created.
+    Description: IAM Instance Profile Role Created
     Value:
       Ref: IamRole
+  AccountId:
+    Description: AWS Account ID
+    Value: !Ref "AWS::AccountId"
   StackRegion:
+    Description: The AWS Region the Stack
     Value: !Ref "AWS::Region"
   VPC:
     Description: Created VPC
@@ -821,7 +844,7 @@ Outputs:
     Value:
       Ref: BastionSecurityGroup
   PublicNetworkACLRuleNumbers:
-    Description: Public Network ACL Rules Numbers Created.
+    Description: Public Network ACL Rules Numbers Created
     Value:
       Fn::Join:
       - ''
@@ -839,7 +862,7 @@ Outputs:
         - !Ref AllowAllOutboundPublicRuleNumber
         - ")"
   PrivateNetworkACLRuleNumbers:
-    Description: Private Network ACL Rules Numbers Created.
+    Description: Private Network ACL Rules Numbers Created
     Value: !Join [ "", [ "Inbound (", !Ref AllowAllInboundPrivateRuleNumber, ") Outbound (", !Ref AllowAllOutboundPrivateRuleNumber, ")" ] ]
 
 Metadata:
