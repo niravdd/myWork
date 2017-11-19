@@ -152,7 +152,7 @@ aws ec2 authorize-security-group-ingress --group-id $redshiftsgid --protocol tcp
 sed -i -- "s/varRedshiftsgid/$redshiftsgid/g" cleanupPipeline1Infra.sh
 
 echo -e "## Creating the Redshift Cluster now..."
-aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup --description "My subnet group for the workshop" --subnet-ids subnetA subnetB subnetC
+aws redshift create-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup --description "My subnet group for the workshop" --subnet-ids $subnetidA $subnetidB $subnetidC
 aws redshift create-cluster --cluster-identifier workshopcluster --master-username wsuser --master-user-password wsPassword0 --cluster-type single-node --node-type ds2.xlarge --cluster-type single-node --db-name workshopdb --cluster-subnet-group-name workshopsubnetgroup --vpc-security-group-ids $redshiftsgid
 
 echo -e "## Waiting for the Redshift Cluster to be created & be ready for use..."
