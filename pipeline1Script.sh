@@ -93,7 +93,7 @@ echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E  
 echo 
 echo 
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
-echo -e "## Please ensure you have run the ${BIBlue}baseScript.sh${Color_Off} prior to starting this - else this script will encounter failures."
+echo -e "## Please ensure you have run the ${BIBlue}baseInfraScript.sh${Color_Off} prior to starting this - else this script will encounter failures."
 echo 
 read -n 1 -p "## Are you good to proceed with this script (any key)? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
 echo 

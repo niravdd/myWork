@@ -140,13 +140,20 @@ echo -e "## Associating the route table with the subnets now..."
 aws ec2 associate-route-table --route-table-id $rtbid --subnet-id $subnetidA 
 aws ec2 associate-route-table --route-table-id $rtbid --subnet-id $subnetidB
 aws ec2 associate-route-table --route-table-id $rtbid --subnet-id $subnetidC
-echo -e "## Creating a key pair for you now... Please find ~/myWorkshopKeyPair.pem"
-aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --output text > ~/myWorkshopKeyPair.pem
-chmod 400 ~/myWorkshopKeyPair.pem
+if [ ! -f ~/myWorkshopKeyPair.pem ]
+then
+	echo -e "## Creating a key pair for you now... Please find ~/myWorkshopKeyPair.pem"
+	aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --output text > ~/myWorkshopKeyPair.pem
+	chmod 400 ~/myWorkshopKeyPair.pem
+else
+	echo -e "## SSH key ~/myWorkshopKeyPair.pem exists... We'll use the same one..."
+fi
 echo -e "## Creating the security groups required..."
 IFS=' ' read -ra bastionsgid <<<$(aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id $vpcid | awk '/GroupId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 22 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 80 --cidr 0.0.0.0/0
+
+echo -e "## Creating an instance profile for the Bastion host..."
 curl https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ec2-policy.json -o iam-base-ec2-policy.json
 aws iam create-role --role-name BastionDataGenRole --assume-role-policy-document file://iam-base-ec2-policy.json
 aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --role-name BastionDataGenRole

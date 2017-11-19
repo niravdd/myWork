@@ -103,6 +103,8 @@ fi
 echo 
 echo -e "## All good! Deleting everything created from this host now..."
 ## Cleanup...
+aws iam delete-role --role-name BastionDataGenRole
+aws iam delete-instance-profile --instance-profile-name BastionProfile
 aws ec2 terminate-instances --instance-ids varBastionInstanceID
 aws ec2 delete-security-group --group-id varBastionsgid
 aws ec2 delete-subnet --subnet-id varSubnetidA
