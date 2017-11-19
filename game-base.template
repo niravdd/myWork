@@ -170,3 +170,24 @@ TBLPROPERTIES ('has_encrypted_data'='false');
 ===============
 
 select count(playerid), playerid, result from eval02table group by playerid, result order by result;
+
+
+=== Kinesis Analytics App Code ===
+CREATE OR REPLACE STREAM "DESTINATION_SQL_STREAM" (
+    "datestamp" timestamp, "playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
+    "squadguard" integer, "squaddamage" integer, "squadinventoryitemcount" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
+
+CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "DESTINATION_SQL_STREAM" 
+SELECT STREAM "datestamp", "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
+    "squadguard", "squaddamage", "squadinventoryitemcount", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
+FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
+-------------------------------------------------------------------
+CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FIREHOSE_STREAM" (
+    "datestamp" timestamp, "playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
+    "squadguard" integer, "squaddamage" integer, "squadinventoryitemcount" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
+
+CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FIREHOSE_STREAM" 
+SELECT STREAM "datestamp", "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
+    "squadguard", "squaddamage", "squadinventoryitemcount", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
+FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
+-------------------------------------------------------------------

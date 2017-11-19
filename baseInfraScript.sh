@@ -89,37 +89,31 @@ On_IWhite='\033[0;107m'   # White
 
 ## { Start...
 echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
-echo -e "${On_Blue}${BIRed}           0.  P R E R E Q U I S I T E S    &    S E T U P     ${Color_Off}"
-echo 
-echo -e "## To start, please verify that you have the aws-cli & botocore versions as below (or better). Ignore the OS versions."
+echo -e "${On_Blue}${BIRed}         0.  P R E R E Q U I S I T E S    &    S E T U P       ${Color_Off}\n\n"
+echo -e "## To start, please verify that you have the aws-cli & botocore versions as below (or better). Ignore the OS versions.\n\n"
 echo -e "## Recommended Minimum Versions:"
 echo -e "   Windows      : ${IBlue}aws-cli/1.11.185 Python/3.6.2${White} Windows/10 ${IBlue}botocore/1.7.43${Color_Off}"
-echo -e "   Linux/Mac OSX: ${IBlue}aws-cli/1.11.187 Python/3.6.2${White} Linux/4.9.51-10.52.amzn1.x86_64 ${IBlue}botocore/1.7.45${Color_Off}"
-echo 
+echo -e "   Linux/Mac OSX: ${IBlue}aws-cli/1.11.187 Python/3.6.2${White} Linux/4.9.51-10.52.amzn1.x86_64 ${IBlue}botocore/1.7.45${Color_Off}\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off} Displaying your version below, please visually compare the version...${IBlue}"
 aws --version
-echo -e "{$Color_Off}"
+echo -e "{$Color_Off}\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
 read -n 1 -p "## Are you good to proceed with the script (any key)? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
-echo 
 if [ "$userResponse" = 'N' ] || [ "$userResponse" = 'n' ]; then
-	echo "## ABORTED: Please update and restart the script."
-	echo 
+	echo -e "\n\n## ${BIRed}ABORTED${Color_Off}: Please update and restart the script.\n\n"
 	exit 1
 fi
-echo 
-echo -e "## All good then. Setting up your AWS access configuration now..."
+echo -e "\n\n## ${Green}All good then.${Color_Off} Setting up your AWS access configuration now...\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off} Provide your Access Key, Secret Key & the Region choice below, for the aws-cli to function correctly."
 echo -e "## NOTE: Ensure that you provide '${BIPurple}us-west-2${Color_Off}' as the Region and leave the 'Output Format' empty (default/unchanged)...${IRed}"
 aws configure
-echo -e "${Color_Off}"
-echo -e "## ${BIWhite}Action Required:${Color_Off} Review below if your AWS configuration has been correctly recorded. Hit CTRL+C to abort now... ${BIRed}"
+echo -e "${Color_Off}\n\n"
+echo -e "## ${BIWhite}Action Required:${Color_Off} Review below if your AWS configuration has been correctly recorded. Hit CTRL+C to abort now... ${IBlue}"
 aws configure list
-echo -e "${Color_Off}"
+echo -e "${Color_Off}\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
 read -n 1 -s -r -p "Press any key to continue... Hit CTRL+C to abort now..."
-echo 
-echo -e "## Setting up necessary infrastructure for the Workshop..."
+echo -e "\n\n## ${Green}Great!${Color_Off} Setting up necessary infrastructure for the Workshop..."
 echo -e "## Creating and setting up the VPC now..."
 
 IFS=' ' read -ra vpcid <<<$(aws ec2 create-vpc --cidr-block 10.0.0.0/16 | awk '/VpcId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
@@ -142,18 +136,18 @@ aws ec2 associate-route-table --route-table-id $rtbid --subnet-id $subnetidB
 aws ec2 associate-route-table --route-table-id $rtbid --subnet-id $subnetidC
 if [ ! -f ~/myWorkshopKeyPair.pem ]
 then
-	echo -e "## Creating a key pair for you now... Please find ~/myWorkshopKeyPair.pem"
+	echo -e "## Creating a key pair for you now... Please find it in ~/myWorkshopKeyPair.pem..."
 	aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --output text > ~/myWorkshopKeyPair.pem
 	chmod 400 ~/myWorkshopKeyPair.pem
 else
-	echo -e "## SSH key ~/myWorkshopKeyPair.pem exists... We'll use the same one..."
+	echo -e "## ${Red}SSH key ~/myWorkshopKeyPair.pem exists, so it was not created. We'll use the same one...${Color_Off}"
 fi
 echo -e "## Creating the security groups required..."
 IFS=' ' read -ra bastionsgid <<<$(aws ec2 create-security-group --group-name BastionHostAccess --description "Allow access for Bastion Host" --vpc-id $vpcid | awk '/GroupId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 22 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 80 --cidr 0.0.0.0/0
 
-echo -e "## Creating an instance profile for the Bastion host..."
+echo -e "## Creating and attaching an instance profile for/to the Bastion host..."
 curl https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ec2-policy.json -o iam-base-ec2-policy.json
 aws iam create-role --role-name BastionDataGenRole --assume-role-policy-document file://iam-base-ec2-policy.json
 aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --role-name BastionDataGenRole
@@ -167,24 +161,24 @@ echo -e "## Pausing 30 seconds for the instance to be created..."
 sleep 30
 IFS=' ' read -ra bastionpublicip <<<$(aws ec2 describe-instances --instance-id $bastioninstanceid --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
 aws ec2 associate-iam-instance-profile --instance-id $bastioninstanceid --iam-instance-profile Name=BastionProfile
-echo 
-echo -e "## ${BIWhite}Action Required:${Color_Off} Make a note of your infrastructure listed below."
-echo -e "## Its recommended that you copy them to a text editor, for future reference through the workshop:"
-echo -e "   VPC ID in us-west-2  : ${BIWhite}$vpcid${Color_Off}"
-echo -e "   Subnet in us-west-2a : ${BIWhite}$subnetidA${Color_Off}"
-echo -e "   Subnet in us-west-2b : ${BIWhite}$subnetidB${Color_Off}"
-echo -e "   Subnet in us-west-2c : ${BIWhite}$subnetidC${Color_Off}"
-echo -e "   Internet Gateway ID  : ${BIWhite}$igwid${Color_Off}"
-echo -e "   Route Table ID       : ${BIWhite}$rtbid${Color_Off}"
-echo 
-echo -e "   Bastion Instance ID  : ${BIWhite}$bastioninstanceid${Color_Off}"
-echo -e "   Bastion Public IP    : ${BIWhite}$bastionpublicip${Color_Off}"
-echo 
-echo -e "   Subnets & their CIDRs: "
-echo -e "${BIWhite}AZ\t\tCIDR Blocks\tSubnet ID\tMap Public IP on Launch?${Color_Off}"
-aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpcid" --query 'Subnets[*].{ID:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock,MapPublicIP:MapPublicIpOnLaunch}' --output text
-echo 
 
+echo -e "\n\n## ${BIWhite}Action Required:${Color_Off} Make a note of your infrastructure listed below."
+echo -e "## ${Red}Note:${White}Its necessary that you note them. Recommend you to copy them to a text editor for future reference through the workshop:"
+echo -e "========================================================================================"
+echo -e "   ${Cyan}VPC ID in us-west-2  : ${BIWhite}$vpcid${Color_Off}"
+echo -e "   ${Cyan}Subnet in us-west-2a : ${BIWhite}$subnetidA${Color_Off}"
+echo -e "   ${Cyan}Subnet in us-west-2b : ${BIWhite}$subnetidB${Color_Off}"
+echo -e "   ${Cyan}Subnet in us-west-2c : ${BIWhite}$subnetidC${Color_Off}"
+echo -e "   ${Cyan}Internet Gateway ID  : ${BIWhite}$igwid${Color_Off}"
+echo -e "   ${Cyan}Route Table ID       : ${BIWhite}$rtbid${Color_Off}"
+echo -e "\n\n   ${Cyan}Bastion Instance ID  : ${BIWhite}$bastioninstanceid${Color_Off}"
+echo -e "   ${Cyan}Bastion Public IP    : ${BIWhite}$bastionpublicip${Color_Off}"
+echo -e "\n\n   ${Cyan}Subnets & their CIDRs: "
+echo -e "${BIWhite}AZ\t\tCIDR Blocks\tSubnet ID\tMap Public IP on Launch?${IBlue}"
+aws ec2 describe-subnets --filters "Name=vpc-id,Values=$vpcid" --query 'Subnets[*].{ID:SubnetId,AZ:AvailabilityZone,CIDR:CidrBlock,MapPublicIP:MapPublicIpOnLaunch}' --output text
+echo -e "${Color_Off}========================================================================================\n\n"
+
+echo -e "## Preparing the ${BIBlue}cleanupBaseInfra.sh${Color_Off} for your infrastructure now... At the end of the workshop, we will run it..."
 sed -i -- "s/varBastionInstanceID/$bastioninstanceid/g" cleanupBaseInfra.sh
 sed -i -- "s/varBastionsgid/$bastionsgid/g" cleanupBaseInfra.sh
 sed -i -- "s/varSubnetidA/$subnetidA/g" cleanupBaseInfra.sh
@@ -194,9 +188,8 @@ sed -i -- "s/varRTBid/$rtbid/g" cleanupBaseInfra.sh
 sed -i -- "s/varIGWid/$igwid/g" cleanupBaseInfra.sh
 sed -i -- "s/varVPCid/$vpcid/g" cleanupBaseInfra.sh
 
-echo -e "## Pausing 30 more seconds for the instance to be created and initialized properly."
-echo -e "## We will then initiate SSH'ing to your new Bastion instance..."
-echo 
+echo -e "## ${Green}Done.${Color_Off} Now, pausing 30 more seconds for the instance to be created and initialized properly."
+echo -e "## When we continue, we'll SSH in to your new Bastion instance...\n\n"
 sleep 30
 echo -e "ssh -i ~/myWorkshopKeyPair.pem ec2-user@$bastionpublicip"
 ssh -i ~/myWorkshopKeyPair.pem ec2-user@$bastionpublicip

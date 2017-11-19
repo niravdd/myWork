@@ -1,0 +1,45 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "ReadWriteKinesis",
+            "Effect": "Allow",
+            "Action": [
+                "kinesis:DescribeStream",
+                "kinesis:GetShardIterator",
+                "kinesis:GetRecords",
+                "kinesis:PutRecord",
+                "kinesis:PutRecords"
+            ],
+            "Resource": [
+                "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream",
+                "arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream"
+            ]
+        },
+        {
+            "Sid": "ReadWriteFirehose",
+            "Effect": "Allow",
+            "Action": [
+                "firehose:DescribeDeliveryStream",
+                "firehose:Get*",
+                "firehose:PutRecord",
+                "firehose:PutRecordBatch"
+            ],
+            "Resource": [
+                "arn:aws:firehose:us-west-2:varAccountID:deliverystream/workshopAnalyticsFH",
+                "arn:aws:firehose:us-west-2:varAccountID:deliverystream/workshopTelemetryFH",
+                "arn:aws:firehose:us-west-2:varAccountID:deliverystream/workshopTelemetryFHDirect"
+            ]
+        },
+        {
+            "Sid": "KAWriteCloudWatchLogs",
+            "Effect": "Allow",
+            "Action": [
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisanalytics/workshopTelemetryKAApp:log-stream:*"
+            ]
+        }
+    ]
+}

@@ -89,7 +89,7 @@ On_IWhite='\033[0;107m'   # White
 
 ## { Start...
 echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
-echo -e "${On_Blue}${BIRed}           #.  C L E A N - U P    I N F R A S T R U C T U R E  ${Color_Off}"
+echo -e "${On_Blue}${BIRed}      #.  C L E A N - U P    I N F R A S T R U C T U R E       ${Color_Off}"
 echo 
 echo 
 echo -e "## ${BIWhite}Action Required:${BIRed}"
@@ -132,9 +132,14 @@ aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name ia
 aws iam delete-role --role-name redshift_fullaccess_role
 aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
 aws iam delete-role --role-name firehose_delivery_role
+aws iam delete-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy
+aws iam delete-role --role-name kinesisanalytics_delivery_role
+aws logs delete-log-group --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"
 aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
 aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
 aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
+IFS=' ' read -ra appCreateTime <<<$(aws kinesisanalytics describe-application --application-name workshopTelemetryKAApp --query 'ApplicationDetail.CreateTimestamp' --output text)
+aws kinesisanalytics delete-application workshopTelemetryKAApp --create-timestamp $appCreateTime
 aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect
 aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH
 aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH
