@@ -186,11 +186,16 @@ echo -e "${Color_Off}"
 echo 
 
 echo -e "## Creating the Kinesis Streams now..."
+echo -e "## Analytics' Stream..."
 ## Create your Kinesis stream for analytics
 aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10
+sleep 15
+echo -e "## Telemetry Stream..."
 ## Create your Kinesis stream for telemtry
 aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10
+sleep 15
 
+echo -e "## Creating the Kinesis Firehose Streams now..."
 ## Create a log group and streams for analytics
 aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "S3Delivery"
@@ -206,8 +211,14 @@ aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTeleme
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "S3Delivery"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "RedshiftDelivery"
 
+echo -e "## Analytics' Firehose Stream..."
+sleep 15
 aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
+echo -e "## Telemetry(1) Firehose Stream..."
+sleep 15
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
+echo -e "## Telemetry(2) Firehose Stream..."
+sleep 15
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json
 
 echo -e ""

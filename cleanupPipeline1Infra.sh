@@ -104,6 +104,26 @@ echo
 echo -e "## All good! Deleting everything created from this host now..."
 ## Cleanup...
 aws redshift delete-cluster --cluster-identifier workshopcluster --skip-final-cluster-snapshot
+echo -e "## Waiting for the Redshift Cluster to be deleted before proceeding..."
+echo -ne "## Checking ="
+## Can also use http://docs.aws.amazon.com/cli/latest/reference/redshift/wait/cluster-available.html here - but prefer to use own, so -
+testCondition="deleting"
+nCounter=0
+while [ "$testCondition" = "deleting" ];
+do
+	sleep 5
+	if [ "$nCounter" -lt "60" ]; then
+		echo -ne "="
+	else
+		echo -ne "o"
+		nCounter=0
+		IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
+	fi
+	nCounter=$[$nCounter+5]
+done
+echo -ne " [Available now!]"
+echo 
+
 aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
 aws ec2 delete-security-group --group-id varRedshiftsgid
 aws s3 rb s3://varBucketName --force
