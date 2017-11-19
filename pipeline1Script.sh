@@ -162,15 +162,16 @@ testCondition="creating"
 nCounter=0
 while [ "$testCondition" != "available" ];
 do
-	sleep 5
 	if [ "$nCounter" -lt "60" ]; then
 		echo -ne "="
 	else
 		echo -ne "o"
 		nCounter=0
 		IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
+		continue
 	fi
 	nCounter=$[$nCounter+5]
+	sleep 5
 done
 echo -ne " [Available now!]"
 echo 
