@@ -39,6 +39,8 @@ $streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'elasti
 $config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/game-base.template.php';
 $total = isset($_REQUEST['total']) ? $_REQUEST['total'] : 500;
 $batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : 400;
+$interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : 10000;
+$loop = isset($_REQUEST['loop']) ? $_REQUEST['loop'] : false;
 
 try {
     $kinesis = Aws\Kinesis\KinesisClient::factory(array(
@@ -52,7 +54,7 @@ try {
     ));
 
     $result = null;
-    if (isset($_REQUEST['submit'])) { 
+    if (isset($_REQUEST['submitFrm'])) { 
         $gen = new AwsBootcamp\Generator\DataSet($kinesis, $streamName);
         $dataSet = $gen->execute($config, $total, $batchSize);
 
@@ -84,26 +86,31 @@ catch (\Exception $e) {
         #container textarea { margin:10px auto; width:90%; background-color:white; font-size:0.7em; text-align:left; }
         #container input.small { width:100px; margin-right:20px; }
         #container input.tiny { width:50px; margin-right:20px; }
+		#container .marginRight { margin-right:40px; }
     </style>
   </head>
   <body id="container">
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
-        <form action="?" method="post">
+        <form name="frm" id="frm" action="?" method="post">
           <div class="form-group">
             <label for="exampleFormControlTextarea1">DataGenerator - Configuration</label>
             <textarea class="form-control form-control-sm" rows="27" name="config"><?php echo json_encode($config, JSON_PRETTY_PRINT); ?></textarea>
           </div>
           <div class="form-group">
-           <small>Region</small>  
+            <small>Region</small>  
             <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
             <small>StreamName</small>  
             <input class="small" type="text" name="streamName" value="<?php echo $streamName; ?>" placeholder="Kinesis streamName"/>
             <small>Total</small>  
             <input class="tiny" type="text" name="total" value="<?php echo $total; ?>" placeholder="total"/>
             <small>BatchSize</small>  
-            <input class="tiny" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>
-            <button type="submit" class="btn btn-primary" id="submit" name="submit">Generate</button>
+            <input class="tiny marginRight" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>  
+            <small>Interval (in ms)</small>  
+            <input class="tiny" type="text" name="interval" value="<?php echo $interval; ?>" placeholder="interval (in sec)"/>
+            <small>Sending in loop</small>  
+            <input class="tiny" type="checkbox" id="loop" name="loop" placeholder="loop" value="1" <?php if ($loop) { echo 'checked="checked"'; } ?> />
+            <button type="submit" class="btn btn-primary" id="submitFrm" name="submitFrm">Generate</button>
           </div>
         </form>
         <?php if($result) { ?>
@@ -114,3 +121,19 @@ catch (\Exception $e) {
     </div>
   </body>
 </html>
+<script>
+var interval = null;
+$(document).ready(function() {
+<?php if ($loop) { ?>
+	interval = setInterval(function() { refreshPage(); }, <?php echo $interval; ?>);
+    $('#loop').change(function() {
+        if(!this.checked) {
+			clearInterval(interval);
+		}
+    });
+<?php } ?> 
+	function refreshPage() { 
+		$('#submitFrm').click();
+	}
+});
+</script>
