@@ -154,7 +154,7 @@ return array(
             ),
         ),
 
-        'bosspecial' => array(
+        'bossspecial' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '40',

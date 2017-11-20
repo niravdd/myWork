@@ -34,8 +34,8 @@ $token = isset($json['Token']) ? $json['Token'] : null;
 
 $key = isset($_REQUEST['key']) ? $_REQUEST['key'] : $defaultKey;
 $secret = isset($_REQUEST['secret']) ? $_REQUEST['secret'] : $defaultSecret;
-$region = isset($_REQUEST['region']) ? $_REQUEST['region'] : 'us-east-1';
-$streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'elasticsearch-stream-01';
+$region = isset($_REQUEST['region']) ? $_REQUEST['region'] : 'us-west-2';
+$streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'workshopTelemetryStream';
 $config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/game-base.template.php';
 $total = isset($_REQUEST['total']) ? $_REQUEST['total'] : 500;
 $batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : 400;

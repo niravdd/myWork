@@ -17,6 +17,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
 	<link rel="stylesheet" href="style.css" type="text/css" media="all">
 	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+	<script src="gam310.js"></script>
 </head>
 <body class="template-aside yellow page-sessions loading" data-page="sessions">
 	<div class="video">
@@ -184,7 +185,7 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 						<div class="indent-show" id="1-9-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-9-button', '1-9-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-9-content">
 							<p>1. Visit http://${GameBotURLPublicDns}/kinesis-datagen</p>
-							<p>2. Enter your Kinesis stream name into the StreamName field. This should be %ANALYTICSSTREAMNAME%.</p>
+							<p>2. Enter the Region "us-west-2" and the StreamName "workshopAnalyticsStream".</p>
 							<p>3. Hit the "Generate" button.</p>
 							<p></p>
 							</pre>
@@ -251,9 +252,12 @@ aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
 							</p>
 						</div>
 
-						<h3 class="overline">TO START THE WORKSHOP</h3>
-						<p>... please enter the seat number for which you are seated at below:</p>
-						<div class="indent-show"><div class="expand"><input type="text" id="seat">&nbsp;<a class="border" href="javascript:void();" onClick="validateSeat();">SUBMIT</a>&nbsp;<span id="message">&nbsp;</span></div></div>
+						<h3 class="overline">PROCEED TO LAB 2</h3>
+						<p>You've now completed Lab 1 - click on the following button to proceed to instructions for the next lab.</p> 
+						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('2')">PROCEED TO LAB 2</a></div></div>
+						<p></p>
+						</div>
+						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
 					</div>
 				</div>
 			</div>
@@ -334,67 +338,6 @@ aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
     	code7.setOptions({
     		maxLines: code7.session.getLength()
     	});
-	</script>
-	<script>
-		function validateSeat() {
-			var seat = document.getElementById("seat").value ;
-			if (isNaN(seat) || seat < 1 || seat > 99) {
-				// Not valid - show error
-				document.getElementById("message").innerHTML = 'Please enter a seat number between 1 & 99';
-				setTimeout(function() {
-					document.getElementById("message").innerHTML = '&nbsp;';
-				}, 5000);
-			} else {
-				// Initialize the Amazon Cognito credentials provider
-				AWS.config.region = 'eu-west-1'; // Region
-				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
-					IdentityPoolId: 'eu-west-1:2067869c-18ec-4ea1-a12d-41bc840abc56',
-				});
-
-				var input = {
-					seat: document.getElementById("seat").value,
-					lab: '1'
-				}
-
-				var lambda = new AWS.Lambda();
-				lambda.invoke({
-					FunctionName: 'cmp317WorkshopUpdate',
-					Payload: JSON.stringify(input)
-				}, function (err, data) {
-					if (err) {
-						console.log(err, err.stack);
-						document.getElementById("message").innerHTML = 'There was a problem registering your seat in the backend database';
-						setTimeout(function() {
-							document.getElementById("message").innerHTML = '&nbsp;';
-						}, 5000);
-					} else {
-						window.location.href = '/lab_1.html?seat=' + document.getElementById("seat").value;
-					}
-				})
-
-			}
-		}
-
-		function reveal(button, content) {
-			if (document.getElementById(content).className == 'indent-show') {
-			document.getElementById(content).className = 'indent-hide';
-		} else {
-			document.getElementById(content).className = 'indent-show';
-		}
-		}
-
-		function changetext() {
-			document.getElementById("keypair").innerHTML = document.getElementById("keypair").innerHTML.replace(/\%KEYPAIR\%/g,document.getElementById("keypairinput").value);
-			document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-			document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-			document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-			document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-		}
-
-		function changeredshifttext() {
-			document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
-			document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
-		}
 	</script>
 </body>
 

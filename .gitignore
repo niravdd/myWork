@@ -1,7 +1,0 @@
-.gitignore
-.DS_Store
-kinesis-datagen/config/credentials.php
-kinesis-datagen/composer.lock
-myGamingKeyPair.pem
-myOregonKeyPair.pem
-nd-oregon-linux.pem
