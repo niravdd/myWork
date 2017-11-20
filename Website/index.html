@@ -96,101 +96,94 @@ aws cloudformation create-stack --stack-name GamingWorkshopStack --template-url 
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
 							<div id="code2">## Create a key pair to use for SSH access into the Bastion Host
-aws ec2 create-key-pair --key-name myWorkshopKeyPair --query 'KeyMaterial' --output text &gt; myWorkshopKeyPair.pem
+aws ec2 create-key-pair --key-name WorkshopKeyPair --query 'KeyMaterial' --output text &gt; WorkshopKeyPair.pem
 
 ## Grant the file owner (you!) read permission
-chmod 400 myWorkshopKeyPair.pem
+chmod 400 WorkshopKeyPair.pem
 </div>
 						</div><br />
-						<p>This CloudFormation template will take about 15 minutes to build.</p>
+						<p>This CloudFormation stack will take about 15 minutes to build.</p>
 
 						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
 						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline! Start by logging into the instance. You'll need to grab your KeyPair filename and the BastionPublicDNS from the Outputs of your CloudFormation stack. </p>
 						<div id="code3"># This will show all your outputs.
 aws cloudformation describe-stacks --stack-name GamingWorkshopStack
 
-# Look for the BastionPublicDNS Output value, then replace <WorkshopKeyPair.pem> and <BastionPublicDNS>
+# Look for the BastionPublicDNS Output value, then replace &lt;WorkshopKeyPair.pem&gt; and &lt;BastionPublicDNS&gt;
 ssh -i &lt;WorkshopKeyPair.pem&gt; ec2-user@&lt;BastionPublicDNS&gt;
 </div>
-
+						<p>Now that you're in the instance, configure the AWS CLI to use your account credentials and create your Kinesis streams!
 						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-3-content">
-							<p>
-							<pre>
-##Configure the AWS CLI
+							<p><div id="code4">##Configure the AWS CLI
 aws configure
 # Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
 
-## Store your AWS Account ID as a variable
-accountid="$(aws sts get-caller-identity --query "Account" --output text)"
-## Create an S3 bucket for your game bot
-aws s3api create-bucket --bucket "workshop-bot-${accountid}" --acl private --create-bucket-configuration LocationConstraint=us-west-2
-
-## Download the required policy documents
-wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-redshift-policy.json
-wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-redshift-policy.json
-wget https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-fh-policy.json
-## Create a role for Redshift from the policy document provided
-aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
-## Apply a policy to the role to allow full access to Redshift
-aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy --policy-document file://iam-redshift-policy.json
-
-## Create your Kinesis stream for telemetry
-aws kinesis create-stream --stream-name evalTelemetryStream --shard-count 10
 ## Create your Kinesis stream for analytics
-aws kinesis create-stream --stream-name evalAnalyticsStream --shard-count 10
-
-## Create a role for Firehose from the policy document provided
-aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
-							</pre>
+aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10
+## Create your Kinesis stream for telemetry
+aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10
+</div>
 							</p>
 						</div>
 
-						<h3 class="overline">PIPELINE 1 - SET UP LOG GROUPS AND CREATE REDSHIFT TABLES</h3>
+						<h3 class="overline">PIPELINE 1 - CREATE YOUR FIREHOSE DELIVERY STREAMS</h3>
+						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
+						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-4-content">
+							<p id="fh-streams"><div id="code5"># Create a Role for Firehose from the Policy document provided
+aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
+
+# Apply a Firehose policy to the Firehose Role
+aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+
+## Create a log group and streams for analytics
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "RedshiftDelivery"
+
+## Create a log group and streams for telemetry
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "RedshiftDelivery"
+
+## Create a log group and streams for telemetry - direct stream
+aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "S3Delivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "RedshiftDelivery"
+
+## Create a log group and streams for Kinesis Analytics' App
+aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"
+aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery"
+aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "FirehoseDelivery"
+
+# Create a Kinesis Firehose Delivery Stream for analytics
+aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
+
+# Create a Kinesis Firehose Delivery Stream for analytics
+aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
+</div></p>
+						</div>
+
+
+						<h3 class="overline">PIPELINE 1 - CREATE REDSHIFT TABLES</h3>
 						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups, your game bot and Redshift.</p>
 						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-5-content">
-							<p>
-							<pre>
-## Apply a policy to the role to allow full access to Firehose
-aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
-
-## Create a log group and streams for telemetry
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream" --log-stream-name "RedshiftDelivery"
-
-## Create a log group and streams for analytics
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream" --log-stream-name "RedshiftDelivery"
-
-## Connect to the Redshift DB and create the tables in Redshift. You'll need to wait for the Redshift cluster to be created, then copy the Cluster ID into the %REDSHIFTCLUSTER% placeholder here.
+							<p><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
 pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
 create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
+
 create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
-							</pre>
+</div>
 							</p>
-						</div>
-
-						<h3 class="overline">PIPELINE 1 - CREATE YOUR FIREHOSE STREAMS</h3>
-						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
-						<div class="indent-show" id="1-8-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-8-button', '1-8-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-8-content">
-							<pre>
-							<p id="fh-streams">
-aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json
-
-aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:%ACCOUNTID%:stream/evalTelemetryStream,RoleARN=arn:aws:iam::%ACCOUNTID%:role/firehose_delivery_role" --cli-input-json file://telemetryInput.json
-							</p>
-							</pre>
 						</div>
 
 						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
-						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis</p>
+						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis. You can get the URL from your CloudFormation Stack Outputs. It's entitled "GameBotURLPublicDns".</p>
 						<div class="indent-show" id="1-9-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-9-button', '1-9-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-9-content">
-							<p>1. Visit http://%BASTIONIP%/kinesis-datagen</p>
+							<p>1. Visit http://${GameBotURLPublicDns}/kinesis-datagen</p>
 							<p>2. Enter your Kinesis stream name into the StreamName field. This should be %ANALYTICSSTREAMNAME%.</p>
 							<p>3. Hit the "Generate" button.</p>
 							<p></p>
@@ -200,7 +193,7 @@ aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
 						<p>Let's get QuickSight working!</p>
 						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-10-content">
+						<div class="indent-hide" id="1-10-content"><br />
 							<p>1. Go to <span class="bold">https://quicksight.aws</span>.</p>
 							<p>2. Select "Sign Up For Free" (or "Sign In" if you've used it before and have an account)</p>
 							<p>3. Click on the Region in the top-right, and select "US West (Oregon)"</p>
@@ -219,22 +212,19 @@ aws firehose create-delivery-stream --delivery-stream-name evalTelemetryFHStream
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-15-content">
-							<p>
-							<pre>
-## Cleanup
-aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+							<p><div id="code7">aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 aws iam delete-role --role-name redshift_fullaccess_role
 aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
 aws iam delete-role --role-name firehose_delivery_role
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/evalTelemetryFHStream"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/evalAnalyticsFHStream"
-aws firehose delete-delivery-stream --delivery-stream-name evalTelemetryFHStream
-aws firehose delete-delivery-stream --delivery-stream-name evalAnalyticsFHStream
-aws kinesis delete-stream --stream-name evalTelemetryStream
-aws kinesis delete-stream --stream-name evalAnalyticsStream
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/TelemetryFHStream"
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/AnalyticsFHStream"
+aws firehose delete-delivery-stream --delivery-stream-name TelemetryFHStream
+aws firehose delete-delivery-stream --delivery-stream-name AnalyticsFHStream
+aws kinesis delete-stream --stream-name TelemetryStream
+aws kinesis delete-stream --stream-name AnalyticsStream
 accountid="$(aws sts get-caller-identity --query "Account" --output text)"
-aws s3api delete-bucket --bucket "workshop-data-%ACCOUNTID%"
-aws s3api delete-bucket --bucket "workshop-bot-%ACCOUNTID%"
+aws s3api delete-bucket --bucket "workshop-data-${accountid}"
+aws s3api delete-bucket --bucket "workshop-bot-${accountid}"
 
 ## QuickSight: 54.70.204.128/27
 
@@ -257,7 +247,7 @@ aws ec2 delete-route-table --route-table-id &lt;route-table-id&gt;
 aws ec2 detach-internet-gateway --internet-gateway-id &lt;igw-id&gt; --vpc-id &lt;vpc-id&gt;
 aws ec2 delete-internet-gateway --internet-gateway-id &lt;igw-id&gt;
 aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
-							</pre>
+</div>
 							</p>
 						</div>
 
@@ -303,6 +293,46 @@ aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
     	code3.setShowPrintMargin(false);
     	code3.setOptions({
     		maxLines: code3.session.getLength()
+    	});
+	</script>
+	<script>
+		var code4 = ace.edit("code4");
+		code4.setTheme("ace/theme/idle_fingers");
+    	code4.getSession().setMode("ace/mode/snippets");
+    	code4.setReadOnly(true);
+    	code4.setShowPrintMargin(false);
+    	code4.setOptions({
+    		maxLines: code4.session.getLength()
+    	});
+	</script>
+	<script>
+		var code5 = ace.edit("code5");
+		code5.setTheme("ace/theme/idle_fingers");
+    	code5.getSession().setMode("ace/mode/snippets");
+    	code5.setReadOnly(false);
+    	code5.setShowPrintMargin(false);
+    	code5.setOptions({
+    		maxLines: code5.session.getLength()
+    	});
+	</script>
+	<script>
+		var code6 = ace.edit("code6");
+		code6.setTheme("ace/theme/idle_fingers");
+    	code6.getSession().setMode("ace/mode/snippets");
+    	code6.setReadOnly(false);
+    	code6.setShowPrintMargin(false);
+    	code6.setOptions({
+    		maxLines: code6.session.getLength()
+    	});
+	</script>
+	<script>
+		var code7 = ace.edit("code7");
+		code7.setTheme("ace/theme/idle_fingers");
+    	code7.getSession().setMode("ace/mode/snippets");
+    	code7.setReadOnly(true);
+    	code7.setShowPrintMargin(false);
+    	code7.setOptions({
+    		maxLines: code7.session.getLength()
     	});
 	</script>
 	<script>

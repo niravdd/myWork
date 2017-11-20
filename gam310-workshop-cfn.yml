@@ -633,6 +633,7 @@ Resources:
           #!/bin/bash -xe
           yum install php71.x86_64 httpd24 python-pip gcc postgresql-devel python-devel -y
           pip install pgcli
+          pip install awscli --upgrade --user
           service httpd start
           chkconfig httpd on
           groupadd www
@@ -644,8 +645,10 @@ Resources:
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/kinesis-datagen.tar
           tar -xf /home/ec2-user/kinesis-datagen.tar -C /var/www/html/
           service httpd restart
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-fh-policy.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-fh-policy.json
-          sed -i 's/varBucketName/${AWS::AccountId}/g' /home/ec2-user/iam-fh-policy.json
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/iam-fh-policy.json
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/iam-fh-policy.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/analytics1Input.json
           sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/analytics1Input.json
           sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/analytics1Input.json
@@ -674,7 +677,7 @@ Resources:
   # S3 Bucket
   WorkshopBucket:
     Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
+    DeletionPolicy: Retain
 
   # Redshift cluster
   RedshiftClusterSubnetGroup:
@@ -682,9 +685,9 @@ Resources:
     Properties:
       Description: Cluster subnet group
       SubnetIds:
-      - Ref: PrivateSubnet1
-      - Ref: PrivateSubnet2
-      - Ref: PrivateSubnet3
+      - Ref: PublicSubnet1
+      - Ref: PublicSubnet2
+      - Ref: PublicSubnet3
   WorkshopCluster:
     Type: AWS::Redshift::Cluster
     DependsOn: GatewayToInternet
@@ -716,7 +719,7 @@ Outputs:
     Description: Bastion Public DNS Name
     Value: !Join [ "", [ "http://", !GetAtt EC2Instance.PublicDnsName, "/kinesis-datagen/" ] ]
   BastionPublicDNS:
-    Description: Bastion Gamebot URL
+    Description: Bastion Gamebot DNS
     Value:
       Fn::GetAtt:
       - EC2Instance
@@ -727,7 +730,7 @@ Outputs:
       Ref: EIP
   ClusterEndpoint:
     Description: PGCLI Command for Redshift Endpoint
-    Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb" ] ]
+    Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0@", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb" ] ]
   ClusterName:
     Description: Name of Redshift Cluster
     Value:
