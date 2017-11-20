@@ -1,24 +1,24 @@
 {
     "RedshiftDestinationConfiguration": {
-        "RoleARN": "arn:aws:iam::505314836537:role/firehose_delivery_role",
-        "ClusterJDBCURL": "jdbc:redshift://evalcluster.c7gsydnfkqan.us-west-2.redshift.amazonaws.com:5439/evaldatabase",
+        "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+        "ClusterJDBCURL": "jdbc:redshift://varRedshiftClusterEndpoint:5439/workshopdb",
         "CopyCommand": {
-            "DataTableName": "eval01table",
+            "DataTableName": "analytics1",
             "DataTableColumns": "playerip, handle, email, uuid, playerid, country, useragent, datestamp, walletbalance, playerlevel, status",
             "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
         },
-        "Username": "evaluser",
-        "Password": "evalPassword0",
+        "Username": "wsuser",
+        "Password": "wsPassword0",
         "RetryOptions": {
-            "DurationInSeconds": 3600
+            "DurationInSeconds": 600
         },
         "S3Configuration": {
-            "RoleARN": "arn:aws:iam::505314836537:role/firehose_delivery_role",
-            "BucketARN": "arn:aws:s3:::kinesis-bot-datagen",
-            "Prefix": "eval01table",
+            "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+            "BucketARN": "arn:aws:s3:::varBucketName",
+            "Prefix": "analytics1",
             "BufferingHints": {
                 "SizeInMBs": 5,
-                "IntervalInSeconds": 300
+                "IntervalInSeconds": 180
             },
             "CompressionFormat": "UNCOMPRESSED",
             "EncryptionConfiguration": {
@@ -26,7 +26,7 @@
             },
             "CloudWatchLoggingOptions": {
                 "Enabled": true,
-                "LogGroupName": "/aws/kinesisfirehose/evalAnalyticsFHStream",
+                "LogGroupName": "/aws/kinesisfirehose/workshopAnalyticsFH",
                 "LogStreamName": "S3Delivery"
             }
         },
@@ -36,7 +36,7 @@
         "S3BackupMode": "Disabled",
         "CloudWatchLoggingOptions": {
             "Enabled": true,
-            "LogGroupName": "/aws/kinesisfirehose/evalAnalyticsFHStream",
+            "LogGroupName": "/aws/kinesisfirehose/workshopAnalyticsFH",
             "LogStreamName": "RedshiftDelivery"
         }
     }

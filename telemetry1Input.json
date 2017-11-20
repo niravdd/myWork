@@ -1,0 +1,43 @@
+{
+    "RedshiftDestinationConfiguration": {
+        "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+        "ClusterJDBCURL": "jdbc:redshift://varRedshiftClusterEndpoint:5439/workshopdb",
+        "CopyCommand": {
+            "DataTableName": "telemetry1",
+            "DataTableColumns": "datestamp, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
+            "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
+        },
+        "Username": "wsuser",
+        "Password": "wsPassword0",
+        "RetryOptions": {
+            "DurationInSeconds": 600
+        },
+        "S3Configuration": {
+            "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+            "BucketARN": "arn:aws:s3:::varBucketName",
+            "Prefix": "telemetry1",
+            "BufferingHints": {
+                "SizeInMBs": 5,
+                "IntervalInSeconds": 180
+            },
+            "CompressionFormat": "UNCOMPRESSED",
+            "EncryptionConfiguration": {
+                "NoEncryptionConfig": "NoEncryption"
+            },
+            "CloudWatchLoggingOptions": {
+                "Enabled": true,
+                "LogGroupName": "/aws/kinesisfirehose/workshopTelemetryFH",
+                "LogStreamName": "S3Delivery"
+            }
+        },
+        "ProcessingConfiguration": {
+            "Enabled": false
+        },
+        "S3BackupMode": "Disabled",
+        "CloudWatchLoggingOptions": {
+            "Enabled": true,
+            "LogGroupName": "/aws/kinesisfirehose/workshopTelemetryFH",
+            "LogStreamName": "RedshiftDelivery"
+        }
+    }
+}
