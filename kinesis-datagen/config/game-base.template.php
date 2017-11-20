@@ -1,5 +1,4 @@
 <?php
-
 return array(
     
     'distribution' => array(
@@ -14,7 +13,7 @@ return array(
 
         'datestamp' => array(
             'type' => 'date',
-            'format' => 'Y-m-d H:i:s',
+            'format' => 'Y-m-d H:i:sP',
         ),
 
         'playerid' => array(
