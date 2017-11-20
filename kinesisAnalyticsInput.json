@@ -128,9 +128,6 @@
                         "SqlType": "VARCHAR(8)"
                     }
                 ]
-            },
-            "InputStartingPositionConfiguration": {
-                "InputStartingPosition": "NOW"
             }
         }
     ],
@@ -148,7 +145,7 @@
     ],
     "CloudWatchLoggingOptions": [
         {
-            "LogStreamARN": "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisanalytics/workshopTelemetryKAApp:*",
+            "LogStreamARN": "arn:aws:logs:us-west-2:varAccountID:log-group:/aws/kinesisanalytics/workshopTelemetryKAApp:log-stream:AppDelivery",
             "RoleARN": "arn:aws:iam::varAccountID:role/service-role/kinesisanalytics_delivery_role"
         }
     ],

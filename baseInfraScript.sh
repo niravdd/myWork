@@ -152,6 +152,7 @@ curl https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ec2-policy.json -o 
 aws iam create-role --role-name BastionDataGenRole --assume-role-policy-document file://iam-base-ec2-policy.json
 aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --role-name BastionDataGenRole
 aws iam attach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess --role-name BastionDataGenRole
+
 aws iam create-instance-profile --instance-profile-name BastionProfile
 aws iam add-role-to-instance-profile --role-name BastionDataGenRole --instance-profile-name BastionProfile
 

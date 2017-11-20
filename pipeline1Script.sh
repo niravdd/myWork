@@ -240,6 +240,8 @@ aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDi
 sleep 30
 echo -e "## Setting up Kinesis Analytics App now..."
 aws kinesisanalytics create-application --application-name workshopTelemetryKAApp --cli-input-json file://kinesisAnalyticsInput.json
+sleep 30
+aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id="1",InputStartingPositionConfiguration={InputStartingPosition="NOW"}
 
 echo -e "\n\n## ${On_Green}${BIYellow}There, All Done! We will use all these for Pipelines 1, 2 & 3!${Color_Off}\n\n"
 

@@ -139,7 +139,7 @@ aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemet
 aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
 aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
 IFS=' ' read -ra appCreateTime <<<$(aws kinesisanalytics describe-application --application-name workshopTelemetryKAApp --query 'ApplicationDetail.CreateTimestamp' --output text)
-aws kinesisanalytics delete-application workshopTelemetryKAApp --create-timestamp $appCreateTime
+aws kinesisanalytics delete-application --application-name workshopTelemetryKAApp --create-timestamp $appCreateTime
 aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect
 aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH
 aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH
