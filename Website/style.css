@@ -176,6 +176,10 @@ table {
     border-collapse: collapse;
     border-spacing: 0
 }
+.btn {     
+    background-color:grey;        
+    cursor:pointer;       
+}
 .extended-nav .ui-accordion-header .ui-icon {
     background: url(../images/sprites/sprite.png) no-repeat
 }
