@@ -139,7 +139,7 @@ aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-r
 aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
 aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
 
-aws iam create-role --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json
+aws iam create-role --path /service-role/ --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json
 aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --policy-document file://iam-ka-policy.json
 
 echo -e "## Creating the security groups now..."
@@ -226,7 +226,6 @@ aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTeleme
 ## Create a log group and streams for Kinesis Analytics' App
 aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "FirehoseDelivery"
 
 echo -e "## Analytics' Firehose Stream..."
 sleep 15
@@ -241,7 +240,7 @@ sleep 30
 echo -e "## Setting up Kinesis Analytics App now..."
 aws kinesisanalytics create-application --application-name workshopTelemetryKAApp --cli-input-json file://kinesisAnalyticsInput.json
 sleep 30
-aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id="1",InputStartingPositionConfiguration={InputStartingPosition="NOW"}
+aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id="1.1",InputStartingPositionConfiguration={InputStartingPosition="NOW"}
 
 echo -e "\n\n## ${On_Green}${BIYellow}There, All Done! We will use all these for Pipelines 1, 2 & 3!${Color_Off}\n\n"
 
