@@ -96,7 +96,7 @@ echo -e "   Windows      : ${IBlue}aws-cli/1.11.185 Python/3.6.2${White} Windows
 echo -e "   Linux/Mac OSX: ${IBlue}aws-cli/1.11.187 Python/3.6.2${White} Linux/4.9.51-10.52.amzn1.x86_64 ${IBlue}botocore/1.7.45${Color_Off}\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off} Displaying your version below, please visually compare the version...${IBlue}"
 aws --version
-echo -e "{$Color_Off}\n\n"
+echo -e "${Color_Off}\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
 read -n 1 -p "## Are you good to proceed with the script (any key)? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
 if [ "$userResponse" = 'N' ] || [ "$userResponse" = 'n' ]; then
@@ -107,10 +107,10 @@ echo -e "\n\n## ${Green}All good then.${Color_Off} Setting up your AWS access co
 echo -e "## ${BIWhite}Action Required:${Color_Off} Provide your Access Key, Secret Key & the Region choice below, for the aws-cli to function correctly."
 echo -e "## NOTE: Ensure that you provide '${BIPurple}us-west-2${Color_Off}' as the Region and leave the 'Output Format' empty (default/unchanged)...${IRed}"
 aws configure
-echo -e "${Color_Off}\n\n"
+echo -e "${Color_Off}\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off} Review below if your AWS configuration has been correctly recorded. Hit CTRL+C to abort now... ${IBlue}"
 aws configure list
-echo -e "${Color_Off}\n\n"
+echo -e "${Color_Off}\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
 read -n 1 -s -r -p "Press any key to continue... Hit CTRL+C to abort now..."
 echo -e "\n\n## ${Green}Great!${Color_Off} Setting up necessary infrastructure for the Workshop..."
