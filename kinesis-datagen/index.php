@@ -9,6 +9,8 @@ $start = microtime(true);
 ini_set('max_execution_time', 1800);
 ini_set('memory_limit', '256M');
 
+$webConfig = require __DIR__ . '/config/webapp.php';
+
 require __DIR__ . '/vendor/autoload.php';
 
 class cli { public static $log = null; public static function log($m) { self::$log .= '[' . date('Y-m-d H:i:s') . '] ' . $m . PHP_EOL; } }
@@ -36,7 +38,8 @@ $key = isset($_REQUEST['key']) ? $_REQUEST['key'] : $defaultKey;
 $secret = isset($_REQUEST['secret']) ? $_REQUEST['secret'] : $defaultSecret;
 $region = isset($_REQUEST['region']) ? $_REQUEST['region'] : 'us-east-1';
 $streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'elasticsearch-stream-01';
-$config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/game-base.template.php';
+$configFilename = isset($_REQUEST['configFilename']) ? __DIR__ . '/config/' . $_REQUEST['configFilename'] : __DIR__ . '/config/game-base.template.php';
+$config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require $configFilename;
 $total = isset($_REQUEST['total']) ? $_REQUEST['total'] : 500;
 $batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : 400;
 $interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : 10000;
@@ -84,36 +87,60 @@ catch (\Exception $e) {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <style>
         #container textarea { margin:10px auto; width:90%; background-color:white; font-size:0.7em; text-align:left; }
-        #container input.small { width:100px; margin-right:20px; }
-        #container input.tiny { width:50px; margin-right:20px; }
+        #container .small { width:100px; margin-right:20px; }
+        #container .tiny { width:50px; margin-right:20px; }
 		#container .marginRight { margin-right:40px; }
     </style>
   </head>
   <body id="container">
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
-        <form name="frm" id="frm" action="?" method="post">
-          <div class="form-group">
+         <div class="form-group">
             <label for="exampleFormControlTextarea1">DataGenerator - Configuration</label>
+            <form name="frmConfig" id="frmConfig" action="?" method="get">
+                <select class="small" name="configFilename">
+                <?php
+                foreach ($webConfig['configs'] as $v) {
+                    echo '<option value="' . $v . '"';
+                    if ($v == $configFilename) { 
+                        echo ' selected="selected"';
+                    }
+                    echo '>' . $v . '</option>';
+                }
+                ?> 
+                </select>
+                <button type="submit" class="btn btn-primary">Load config</button>
+            </form>
             <textarea class="form-control form-control-sm" rows="27" name="config"><?php echo json_encode($config, JSON_PRETTY_PRINT); ?></textarea>
           </div>
           <div class="form-group">
-            <small>Region</small>  
-            <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
-            <small>StreamName</small>  
-            <input class="small" type="text" name="streamName" value="<?php echo $streamName; ?>" placeholder="Kinesis streamName"/>
-            <small>Total</small>  
-            <input class="tiny" type="text" name="total" value="<?php echo $total; ?>" placeholder="total"/>
-            <small>BatchSize</small>  
-            <input class="tiny marginRight" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>  
-            <small>Interval (in ms)</small>  
-            <input class="tiny" type="text" name="interval" value="<?php echo $interval; ?>" placeholder="interval (in sec)"/>
-            <small>Sending in loop</small>  
-            <input class="tiny" type="checkbox" id="loop" name="loop" placeholder="loop" value="1" <?php if ($loop) { echo 'checked="checked"'; } ?> />
-            <button type="submit" class="btn btn-primary" id="submitFrm" name="submitFrm">Generate</button>
+            <form name="frm" id="frm" action="?" method="post">
+                <small>Region</small>  
+                <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
+                <small>StreamName</small> 
+                <select class="small" name="streamName">
+                <?php
+                foreach ($webConfig['streams'] as $v) {
+                    echo '<option value="' . $v . '"';
+                    if ($v == $streamName) { 
+                        echo ' selected="selected"';
+                    }
+                    echo '>' . $v . '</option>';
+                }
+                ?> 
+                </select>
+                <small>Total</small>  
+                <input class="tiny" type="text" name="total" value="<?php echo $total; ?>" placeholder="total"/>
+                <small>BatchSize</small>  
+                <input class="tiny marginRight" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>  
+                <small>Interval (in ms)</small>  
+                <input class="tiny" type="text" name="interval" value="<?php echo $interval; ?>" placeholder="interval (in sec)"/>
+                <small>Sending in loop</small>  
+                <input class="tiny" type="checkbox" id="loop" name="loop" placeholder="loop" value="1" <?php if ($loop) { echo 'checked="checked"'; } ?> />
+                <button type="submit" class="btn btn-primary" id="submitFrm" name="submitFrm">Generate</button>
+            </form>
           </div>
-        </form>
-        <?php if($result) { ?>
+       <?php if($result) { ?>
         <h4>Result</h4> 
         <textarea class="form-control form-control-sm" rows="10" id="result"><?php echo cli::$log . PHP_EOL . $result; ?></textarea>
         <?php } ?>
