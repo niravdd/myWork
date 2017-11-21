@@ -112,7 +112,8 @@ class DataSet {
         }
 
         // Get desired distribution if any defined
-        if (isset($config['distribution'])) { 
+        $enableDistribution = !(isset($config['distribution']['disable']) && $config['distribution']['disable']);
+        if (isset($config['distribution']) && $enableDistribution) { 
             foreach ($config['distribution'] as $field => $data) { 
                 $sum = array_sum($data);
                 foreach ($data as $value => $weight) { 

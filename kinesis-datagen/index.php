@@ -36,8 +36,8 @@ $token = isset($json['Token']) ? $json['Token'] : null;
 
 $key = isset($_REQUEST['key']) ? $_REQUEST['key'] : $defaultKey;
 $secret = isset($_REQUEST['secret']) ? $_REQUEST['secret'] : $defaultSecret;
-$configFilename = isset($_REQUEST['configFilename']) ? __DIR__ . '/config/' . $_REQUEST['configFilename'] : __DIR__ . '/config/game-base.template.php';
-$config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require $configFilename;
+$configFilename = isset($_REQUEST['configFilename']) ? $_REQUEST['configFilename'] : 'game-base.template.php';
+$config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/' . $configFilename;
 $region = isset($_REQUEST['region']) ? $_REQUEST['region'] : 'us-west-2';
 $streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'workshopTelemetryStream';
 $total = isset($_REQUEST['total']) ? $_REQUEST['total'] : 500;
@@ -115,6 +115,7 @@ catch (\Exception $e) {
           </div>
           <div class="form-group">
             <form name="frm" id="frm" action="?" method="post">
+                <input type="hidden" name="configFilename" value="<?php echo $configFilename; ?>" />
                 <small>Region</small>  
                 <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
                 <small>StreamName</small> 
