@@ -4,7 +4,7 @@
         "ClusterJDBCURL": "jdbc:redshift://varRedshiftClusterEndpoint:5439/workshopdb",
         "CopyCommand": {
             "DataTableName": "telemetry2",
-            "DataTableColumns": "datestamp, playerid, playerlevel, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, bosspower, bossagility, bosshealth, bossluck, bossspecial, result",
+            "DataTableColumns": "playerid, playerlevel, squadelementmap, gamenumber, squadpower, squadagility, squadhealth, squadluck, squadspecial, squadguard, squaddamage, gameplayseconds, bosspower, bossagility, bosshealth, bossluck, bossspecial, bossguard, bossdamage, result",
             "CopyOptions": "format as json 'auto' dateformat 'YYYY-MM-DD HH:MI:SS+/-TZ'"
         },
         "Username": "wsuser",

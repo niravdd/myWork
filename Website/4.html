@@ -1,0 +1,112 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+	<script src="gam310.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="index.html">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<p class="lower-link">Lab 4 - Big Data Analytics</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">In the first lab, you configured Kinesis Streams and a Redshift instance, then configured Kinesis Firehose to pipe data from the Stream to Redshift. You then explored the data in QuickSight.In Lab 2 you will use Athena to see how a serverless approach can still give you interactive SQL access to your game data.</p>
+					<div class="session">
+						<h3>PIPELINE 4 - BIG DATA ANALYTICS</h3>
+						<p>For this lab we're going to use the web console. Please log into the following URL: <span class="bold">https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2</span></p>
+						<img src="Pipeline2.png" alt="Analytics Pipeline" /><br /><br />
+						<h3 class="overline">PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
+						<p>
+
+						</p>
+
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+							<p id="redshifttables"><div id="code1"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
+pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
+create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
+
+create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+</div>
+							</p>
+						</div>
+
+						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
+						<p>Let's get QuickSight working!</p>
+						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-10-content"><br />
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
+	<script>
+		var code1 = ace.edit("code1");
+		code1.setTheme("ace/theme/idle_fingers");
+    	code1.getSession().setMode("ace/mode/snippets");
+    	code1.setReadOnly(true);
+    	code1.setShowPrintMargin(false);
+    	code1.setOptions({
+    		maxLines: code1.session.getLength()
+    	});
+	</script>
+</body>
+
+</html>

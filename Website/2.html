@@ -1,0 +1,188 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+	<script src="gam310.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="index.html">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<p class="lower-link">Lab 2 - Building a Serverless Analytics Pipeline</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">In the first lab, you configured Kinesis Streams and a Redshift instance, then configured Kinesis Firehose to pipe data from the Stream to Redshift. You then explored the data in QuickSight.In Lab 2 you will use Athena to see how a serverless approach can still give you interactive SQL access to your game data.</p>
+					<div class="session">
+						<h3>PIPELINE 2 - SERVERLESS ANALYTICS PIPELINE</h3>
+						<p>For this lab we're going to use the web console. Please log into the following URL: <span class="bold">https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2</span></p>
+						<img src="Pipeline2.png" alt="Analytics Pipeline" /><br /><br />
+						<h3 class="overline">PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
+						<p>
+CREATE DATABASE IF NOT EXISTS workshoptelemetrydb
+  COMMENT 'Gaming workshop telemetry database'
+  LOCATION 's3://gamingworkshop-workshopbucket-kyaiigy991sc/telemetry12017/workshoptelemetrydb';
+CREATE EXTERNAL TABLE IF NOT EXISTS workshoptelemetrydb.telemetry12017 (
+  datestamp string,
+  playerid bigint,
+  playerlevel string,
+  squadelementmap string,
+  gamenumber int,
+  squadpower int,
+  squadagility int,
+  squadhealth int,
+  squadluck int,
+  squadspecial int,
+  squadguard int,
+  squaddamage int,
+  squadinventoryitemcount int,
+  bosspower int,
+  bossagility int,
+  bosshealth int,
+  bossluck int,
+  bossspecial int,
+  bossguard int,
+  bossdamage int,
+  result string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://gamingworkshop-workshopbucket-kyaiigy991sc/telemetry12017/'
+TBLPROPERTIES ('has_encrypted_data'='false');</p>
+						<p>Now that you've set up your table, let's explore the data! The following query will tell you how many wins your game bot has had in the last 30 minutes:
+select
+  count(*)
+from
+  workshoptelemetrydb.telemetry12017
+where
+  cast(datestamp as timestamp) > current_timestamp - INTERVAL '30' MINUTE and
+  result = 'Won'
+</p>
+						<p>
+							<ol>
+								<li>Close the introductory tutorial window (this will not appear if you've used Athena before).</li>
+								<li>On the left side you will see the "DATABASE" section. Click on "Create Table" dropdown, then "Automatically (AWS Glue Crawler)". This will pop up a notification that you're going to Glue. Click "Continue".</li>
+								<li>Click "Get started".</li>
+								<li>Enter a Crawler name of "workshopcrawler" and "Next"</li>
+								<li>The Data store should already have "S3" selected. Click the folder icon on the right side of the "Include path" and expand your workshop folder. It will be named "gamingworkshop-workshopbucket-XXXXXXXXXXXX". Inside that folder, click on "telemetry12017" and click the "Select" button, then "Next" on the Add a data store page.</li>
+								<li>Click "Next" on the "Add another data store" page ("No" should already be selected).</li>
+								<li>On the "Choose and IAM role" page, select "Create an IAM role" and enter "workshop" as the name, then click "Next".</li>
+								<li>On the "Create a scheduler for this crawler" page, click "Next" ("Run on demand" should already be selected).</li>
+								<li>On the "Configure the crawler's output" page, click the "Add databse" button, then enter "workshoptelemetrydb" and click the "Create" button. Click "Next"</li>
+								<li>Click "Finish". This will create the crawler and return you to the "Crawlers" page.</li>
+								<li>At the top should be a green banner asking if you want to run your crawler. Click "Run it now".</li>
+								<li>
+							</ol>
+						</p>
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+							<p id="redshifttables"><div id="code1"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
+pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
+create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
+
+create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+</div>
+							</p>
+						</div>
+
+						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
+						<p>Let's get QuickSight working!</p>
+						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-10-content"><br />
+							QuickSight requires access to your S3 buckets. This can be done through your account settings, which are only available in N. Virginia. Go to Account Settings, then Account Permissions, and click the "Edit AWS permissions" button.
+							<p>1. Go to <span class="bold">https://quicksight.aws</span>.</p>
+							<p>2. Select "Sign Up For Free" (or "Sign In" if you've used it before and have an account)</p>
+							<p>3. Click on the Region in the top-right, and select "US West (Oregon)"</p>
+							<p>4. Close the Welcome window</p>
+							<p>5. Click the "New analysis" button in the top left</p>
+							<p>6. Click the "New data set" button in the top left</p>
+							<p>7. Click the "Redshift - Auto-discovered" button</p>
+							<p>8. A "New Redshift data source" window will appear. For the "Data source name" enter "GamingWorkshop". For "Instance ID" click the drop-down arrow on the right of the selection box, and select "workshopcluster". The "Database name" should be automatically populated with "workshopdb", but you will need to enter a "Username" of "wsuser" and "Password" of "wsPassword0". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
+							<p>9. Select "analytics1" and click the "Select" button on the bottom right</p>
+							<p>10. Select "Directly query your data" and click the "Visualize" button on the bottom right</p>
+							<p>11. Explore your data!</p>
+						</div>
+
+						<h3 class="overline">PROCEED TO LAB 3</h3>
+						<p>You've now completed Lab 2 - click on the following button to proceed to instructions for the next lab.</p> 
+						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('3')">PROCEED TO LAB 3</a></div></div>
+						<p></p>
+						<p>Note: When a reasonable amount of participants have progressed to Lab 3, we will show a couple of slides to go over:</p>
+						<div class="indent-show">
+							<p>&bull; the best practices for using Spot instances for testing workloads;<br />
+							&bull; to describe the archtecture of and what we're planning to achieve in lab 3; and<br />
+							&bull; to go over points worth highlighting before tackling lab 3.</p>
+						</div>
+						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
+	<script>
+		var code1 = ace.edit("code1");
+		code1.setTheme("ace/theme/idle_fingers");
+    	code1.getSession().setMode("ace/mode/snippets");
+    	code1.setReadOnly(true);
+    	code1.setShowPrintMargin(false);
+    	code1.setOptions({
+    		maxLines: code1.session.getLength()
+    	});
+	</script>
+</body>
+
+</html>

@@ -105,6 +105,7 @@ echo -e "## All good! Deleting everything created from this host now..."
 ## Cleanup...
 aws iam detach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --role-name BastionDataGenRole
 aws iam detach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonKinesisFullAccess --role-name BastionDataGenRole
+aws iam detach-role-policy --policy-arn arn:aws:iam::aws:policy/AmazonKinesisAnalyticsFullAccess --role-name BastionDataGenRole
 aws iam remove-role-from-instance-profile --instance-profile-name BastionProfile --role-name BastionDataGenRole
 aws iam delete-role --role-name BastionDataGenRole
 aws iam delete-instance-profile --instance-profile-name BastionProfile
