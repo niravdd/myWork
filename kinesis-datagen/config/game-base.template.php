@@ -3,9 +3,9 @@ return array(
     
     'distribution' => array(
         'result' => array(
-            'Won' => 51,
-            'Lost' => 42,
-            'DNF' => 7,
+            'Won' => 52,
+            'Lost' => 43,
+            'DNF' => 5,
         ),
     ),
 
@@ -61,7 +61,7 @@ return array(
         'squadpower' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
+                'max' => '4',
                 'min' => '14',
             ),
         ),
@@ -69,7 +69,7 @@ return array(
         'squadagility' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
+                'max' => '6',
                 'min' => '16',
             ),
         ),
@@ -85,8 +85,8 @@ return array(
         'squadluck' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '20',
+                'max' => '0',
+                'min' => '1',
             ),
         ),
 
@@ -114,11 +114,11 @@ return array(
             ),
         ),
 
-        'squadinventoryitemcount' => array(
+        'gameplayseconds' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '15',
+                'max' => '120',
+                'min' => '240',
             ),
         ),
 
@@ -149,8 +149,8 @@ return array(
         'bossluck' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '40',
-                'min' => '50',
+                'max' => '0',
+                'min' => '1',
             ),
         ),
 

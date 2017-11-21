@@ -32,7 +32,7 @@
 
 <header class="site-header">
 	<div class="central-column">
-		<a class="site-branding" href="/">
+		<a class="site-branding" href="index.html">
 			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
 			<span class="offscreen">AWS re:Invent</span>
 		</a>
@@ -49,9 +49,9 @@
 	<header class="page-header"> 
 		<div class="central-column">
 			<div class="text">
-				<h2 class="headline-s1">CMP317</h2>
-				<h3 class="headline-s2">Run your CI/CD and Test Workloads for 90% less with Amazon EC2 Spot</h3>
-				<p class="lower-link">Lab 2 - Deploying Jenkins build slaves on Spot Fleet instances</p>
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<p class="lower-link">Lab 4 - Big Data Analytics</p>
 			</div>
 		</div>
 	</header>
@@ -61,28 +61,31 @@
 				<div class="indent">
 					<p class="intro">In the first lab, you configured Kinesis Streams and a Redshift instance, then configured Kinesis Firehose to pipe data from the Stream to Redshift. You then explored the data in QuickSight.In Lab 2 you will use Athena to see how a serverless approach can still give you interactive SQL access to your game data.</p>
 					<div class="session">
-						<h3>PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
-						<p>This workshop will be broken down into a series of labs that flow on from each other (that is, you must complete each lab in order before proceeding with the next). The four lab exercises that will be covered are:</p>
-						<div class="indent-show">
-							<p>Lab 1: Building an Analytics Pipeline</p>
-							<p>Lab 2: Building a Serverless Analytics Pipeline</p>
-							<p>Lab 3: Performing Analytics on a Stream</p>
-							<p>Lab 4: Building a Big Data Analytics Environment</p>
-						</div>
-						<p>As a reminder, you should have a laptop device (which you likely have if you're reading this) and a clean AWS account, with <span class="bold">AdministratorAccess</span> policy-level access. AWS Credits will be provided to the value of $USD30.</p>
-						<p>If you require assistance in any of the lab exercises, please click on the button at the top-right corner of all of the lab instruction pages to request help. A facilitator will come around to your seat when they are available.
+						<h3>PIPELINE 4 - BIG DATA ANALYTICS</h3>
+						<p>For this lab we're going to use the web console. Please log into the following URL: <span class="bold">https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2</span></p>
+						<img src="Pipeline2.png" alt="Analytics Pipeline" /><br /><br />
+						<h3 class="overline">PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
+						<p>
 
-						<h3 class="overline">PROCEED TO LAB 3</h3>
-						<p>You've now completed Lab 2 - click on the following button to proceed to instructions for the next lab.</p> 
-						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('eifjccfundruucedkichjbtcucitvjgjjlbejhvvjrbd')">PROCEED TO LAB 3</a></div></div>
-						<p></p>
-						<p>Note: When a reasonable amount of participants have progressed to Lab 3, we will show a couple of slides to go over:</p>
-						<div class="indent-show">
-							<p>&bull; the best practices for using Spot instances for testing workloads;<br />
-							&bull; to describe the archtecture of and what we're planning to achieve in lab 3; and<br />
-							&bull; to go over points worth highlighting before tackling lab 3.</p>
+						</p>
+
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+							<p id="redshifttables"><div id="code1"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
+pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
+create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
+
+create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+</div>
+							</p>
 						</div>
-						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
+
+						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
+						<p>Let's get QuickSight working!</p>
+						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-10-content"><br />
+
+						</div>
 
 					</div>
 				</div>

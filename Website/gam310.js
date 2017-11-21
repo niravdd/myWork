@@ -12,13 +12,10 @@ function reveal(button, content) {
 
 function changetext() {
 	document.getElementById("keypair").innerHTML = document.getElementById("keypair").innerHTML.replace(/\%KEYPAIR\%/g,document.getElementById("keypairinput").value);
-	document.getElementById("iam-fh-policy").innerHTML = document.getElementById("iam-fh-policy").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-	document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-	document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
-	document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\%ACCOUNTID\%/g,document.getElementById("accountidinput").value);
+	document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
+	document.getElementById("cleanup").innerHTML = document.getElementById("cleanup").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
 }
 
 function changeredshifttext() {
-	document.getElementById("analyticsInput").innerHTML = document.getElementById("analyticsInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
-	document.getElementById("telemetryInput").innerHTML = document.getElementById("telemetryInput").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
+	document.getElementById("redshifttables").innerHTML = document.getElementById("redshifttables").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
 }

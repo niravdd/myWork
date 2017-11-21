@@ -730,7 +730,7 @@ Outputs:
       Ref: EIP
   ClusterEndpoint:
     Description: PGCLI Command for Redshift Endpoint
-    Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0@", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb" ] ]
+    Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0@", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb --prompt \"GAM310_\\u@\\d> \"" ] ]
   ClusterName:
     Description: Name of Redshift Cluster
     Value:

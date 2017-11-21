@@ -32,7 +32,7 @@
 
 <header class="site-header">
 	<div class="central-column">
-		<a class="site-branding" href="/">
+		<a class="site-branding" href="index.html">
 			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
 			<span class="offscreen">AWS re:Invent</span>
 		</a>
@@ -68,32 +68,9 @@
 
 						<h3 class="overline">PRE-REQUISITES</h3>
 						<p>This workshop has some pre-requisites.</p>
-						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-1-content">
-							<p>1. You must have your own AWS account</p>
-							<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions here: <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html target="_blank">http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html</a></p>
-							<p>3. You must have SSH installed on your computer. It will be pre-installed on Mac or Linux, but Windows users should use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>.</p>
-							<p>4. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
-							<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
-								<pre>
-aws sts get-caller-identity --query "Account" --output text
-								</pre>
-							</p>
-							<p>
-							Account ID: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" />&nbsp;
-							Keypair: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="keypairinput" name="keypairinput" />&nbsp;
-							<button type="button" class="btn" onclick="changetext()">Update script text</button>
-							</p>
-						</div>
-
-						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
-						<p>You must now set up the landing zone for your data pipelines. For this we will use glorious CloudFormation! This template will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you.</p>
-						<p id="keypair">Please enter the following command to create the foundation infrastructure:</p>
-						<div id="code1">
-aws cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=%KEYPAIR% --capabilities CAPABILITY_IAM
-</div><br />
-						<p> Alternatively, you can click <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml" target="_blank">this link to use the Web Console</a></p>
-						<p>If you have troubles with the script, please follow the CLI commands in this section.</p>
+						<p>1. You must have your own AWS account</p>
+						<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions here: <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html target="_blank">http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html</a></p>
+						<p>3. You must have SSH installed on your computer. It will be pre-installed on Mac or Linux, but Windows users should use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>. If you have troubles with the script, please follow the CLI commands in this section.</p>
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
 							<div id="code2">## Create a key pair to use for SSH access into the Bastion Host
@@ -102,11 +79,31 @@ aws ec2 create-key-pair --key-name WorkshopKeyPair --query 'KeyMaterial' --outpu
 ## Grant the file owner (you!) read permission
 chmod 400 WorkshopKeyPair.pem
 </div>
-						</div><br />
+						</div>
+						</p>
+						<p>4. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
+						<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
+						<div id="code8">aws sts get-caller-identity --query "Account" --output text
+						</div>
+						</p>
+						<p>
+						Account ID: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" />&nbsp;
+						Keypair: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="keypairinput" name="keypairinput" />&nbsp;
+						<button type="button" class="btn" onclick="changetext()">Update script text</button>
+						</p>
+
+						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
+						<p>You must now set up the landing zone for your data pipelines. For this we will use glorious CloudFormation! This template will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you.</p>
+						<p id="keypair">Please enter the following command to create the foundation infrastructure:</p>
+						<div id="code1">aws cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=%KEYPAIR% --capabilities CAPABILITY_IAM
+</div><br />
+						<p> Alternatively, you can click <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml" target="_blank">this link to use the Web Console</a></p>
 						<p>This CloudFormation stack will take about 15 minutes to build.</p>
 
 						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
-						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline! Start by logging into the instance. You'll need to grab your KeyPair filename and the BastionPublicDNS from the Outputs of your CloudFormation stack. </p>
+						<p>It's time to start putting together your first analytics pipeline. The pipeline is described in the following diagram:<br />
+							<img src="Pipeline1.png" alt="Analytics Pipeline" /><br /><br />
+							Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline! Start by logging into the instance. You'll need to grab your KeyPair filename and the BastionPublicDNS from the Outputs of your CloudFormation stack. </p>
 						<div id="code3"># This will show all your outputs.
 aws cloudformation describe-stacks --stack-name GamingWorkshopStack
 
@@ -116,7 +113,7 @@ ssh -i &lt;WorkshopKeyPair.pem&gt; ec2-user@&lt;BastionPublicDNS&gt;
 						<p>Now that you're in the instance, configure the AWS CLI to use your account credentials and create your Kinesis streams!
 						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-3-content">
-							<p><div id="code4">##Configure the AWS CLI
+							<p><div id="code4">##Configure the AWS CLI inside the Bastion Host
 aws configure
 # Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
 
@@ -171,7 +168,7 @@ aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH -
 						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups, your game bot and Redshift.</p>
 						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-5-content">
-							<p><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
+							<p id="redshifttables"><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
 pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
 create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
 
@@ -213,7 +210,7 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-15-content">
-							<p><div id="code7">aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+							<p id="cleanup"><div id="code7">aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 aws iam delete-role --role-name redshift_fullaccess_role
 aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
 aws iam delete-role --role-name firehose_delivery_role
@@ -337,6 +334,16 @@ aws ec2 delete-vpc --vpc-id &lt;vpc-id&gt;
     	code7.setShowPrintMargin(false);
     	code7.setOptions({
     		maxLines: code7.session.getLength()
+    	});
+	</script>
+	<script>
+		var code8 = ace.edit("code8");
+		code8.setTheme("ace/theme/idle_fingers");
+    	code8.getSession().setMode("ace/mode/snippets");
+    	code8.setReadOnly(true);
+    	code8.setShowPrintMargin(false);
+    	code8.setOptions({
+    		maxLines: code8.session.getLength()
     	});
 	</script>
 </body>
