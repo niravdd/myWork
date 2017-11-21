@@ -120,7 +120,7 @@ aws redshift create-cluster --cluster-identifier examplecluster --master-usernam
 # Update connect.sh with cluster details
 ./connect.sh
 create table eval01table (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
-create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 
 ## TODO NEED TO UPDATE THE JSON
 aws firehose create-delivery-stream --delivery-stream-name evalAnalyticsFHStream --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/evalAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analyticsInput.json

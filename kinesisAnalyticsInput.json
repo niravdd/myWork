@@ -23,11 +23,6 @@
                 "RecordEncoding": "UTF-8",
                 "RecordColumns": [
                     {
-                        "Name": "datestamp",
-                        "Mapping": "$.datestamp",
-                        "SqlType": "TIMESTAMP"
-                    },
-                    {
                         "Name": "playerid",
                         "Mapping": "$.playerid",
                         "SqlType": "INTEGER"
@@ -83,8 +78,8 @@
                         "SqlType": "INTEGER"
                     },
                     {
-                        "Name": "squadinventoryitemcount",
-                        "Mapping": "$.squadinventoryitemcount",
+                        "Name": "gameplayseconds",
+                        "Mapping": "$.gameplayseconds",
                         "SqlType": "INTEGER"
                     },
                     {
@@ -149,5 +144,5 @@
             "RoleARN": "arn:aws:iam::varAccountID:role/service-role/kinesisanalytics_delivery_role"
         }
     ],
-    "ApplicationCode": "CREATE OR REPLACE STREAM \"WORKSHOP_TELEMETRY2_FH_STREAM\" (\r\n    \"datestamp\" timestamp, \"playerid\" bigint, \"playerlevel\" VARCHAR(8), \"squadelementmap\" VARCHAR(8), \"gamenumber\" integer, \"squadpower\" integer, \"squadagility\" integer, \"squadhealth\" integer, \"squadluck\" integer, \"squadspecial\" integer,\r\n    \"squadguard\" integer, \"squaddamage\" integer, \"squadinventoryitemcount\" integer, \"bosspower\" integer, \"bossagility\" integer, \"bosshealth\" integer, \"bossluck\" integer, \"bossspecial\" integer, \"bossguard\" integer, \"bossdamage\" integer, \"result\" VARCHAR(4));\r\n\r\nCREATE OR REPLACE PUMP \"STREAM_PUMP\" AS INSERT INTO \"WORKSHOP_TELEMETRY2_FH_STREAM\" \r\nSELECT STREAM \"datestamp\", \"playerid\", \"playerlevel\", \"squadelementmap\", \"gamenumber\", \"squadpower\", \"squadagility\", \"squadhealth\", \"squadluck\", \"squadspecial\",\r\n    \"squadguard\", \"squaddamage\", \"squadinventoryitemcount\", \"bosspower\", \"bossagility\", \"bosshealth\", \"bossluck\", \"bossspecial\", \"bossguard\", \"bossdamage\", \"COL_result\"\r\nFROM \"SOURCE_SQL_STREAM_001\" where \"COL_result\"='DNF';\n"
+    "ApplicationCode": "CREATE OR REPLACE STREAM \"WORKSHOP_TELEMETRY2_FH_STREAM\" (\r\n    \"playerid\" bigint, \"playerlevel\" VARCHAR(16), \"squadelementmap\" VARCHAR(8), \"gamenumber\" integer, \"squadpower\" integer, \"squadagility\" integer, \"squadhealth\" integer, \"squadluck\" integer, \"squadspecial\" integer,\r\n    \"squadguard\" integer, \"squaddamage\" integer, \"gameplayseconds\" integer, \"bosspower\" integer, \"bossagility\" integer, \"bosshealth\" integer, \"bossluck\" integer, \"bossspecial\" integer, \"bossguard\" integer, \"bossdamage\" integer, \"result\" VARCHAR(8));\r\n\r\nCREATE OR REPLACE PUMP \"STREAM_PUMP\" AS INSERT INTO \"WORKSHOP_TELEMETRY2_FH_STREAM\" \r\nSELECT STREAM \"playerid\", \"playerlevel\", \"squadelementmap\", \"gamenumber\", \"squadpower\", \"squadagility\", \"squadhealth\", \"squadluck\", \"squadspecial\",\r\n    \"squadguard\", \"squaddamage\", \"gameplayseconds\", \"bosspower\", \"bossagility\", \"bosshealth\", \"bossluck\", \"bossspecial\", \"bossguard\", \"bossdamage\", \"COL_result\"\r\nFROM \"SOURCE_SQL_STREAM_001\" where \"COL_result\"='DNF';\n"
 }

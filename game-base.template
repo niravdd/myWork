@@ -26,13 +26,13 @@
     )}},
     "squadpower": {{random.number(
         {
-            "min":10,
+            "min":4,
             "max":14
         }
     )}},
     "squadagility": {{random.number(
         {
-            "min":10,
+            "min":6,
             "max":16
         }
     )}},
@@ -44,8 +44,8 @@
     )}},
     "squadluck": {{random.number(
         {
-            "min":10,
-            "max":20
+            "min":0,
+            "max":1
         }
     )}},
     "squadspecial": {{random.number(
@@ -66,10 +66,10 @@
             "max":15
         }
     )}},
-    "squadinventoryitemcount": {{random.number(
+    "gameplayseconds": {{random.number(
         {
-            "min":10,
-            "max":15
+            "min":4,
+            "max":6
         }
     )}},
     "bosspower": {{random.number(
@@ -92,8 +92,8 @@
     )}},
     "bossluck": {{random.number(
         {
-            "min":40,
-            "max":50
+            "min":0,
+            "max":1
         }
     )}},
     "bossspecial": {{random.number(
@@ -116,7 +116,7 @@
     )}},
     "result": "{{random.weightedArrayElement(
         {
-            "weights": [ 0.51, 0.42, 0.07 ],
+            "weights": [ 0.52, 0.43, 0.05 ],
             "data": [ "Won","Lost","DNF" ]
         }
     )}}"
@@ -124,7 +124,7 @@
 
 
 ============= Redshift Queries
-create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+create table eval02table (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 select * from eval02table limit 500;
 select count(*) from eval02table;
 select count(distinct playerid) from eval02table;
@@ -152,7 +152,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS evaldatabase.eval02table (
   `squadspecial` int,
   `squadguard` int,
   `squaddamage` int,
-  `squadinventoryitemcount` int,
+  `gameplayseconds` int,
   `bosspower` int,
   `bossagility` int,
   `bosshealth` int,
@@ -174,20 +174,20 @@ select count(playerid), playerid, result from eval02table group by playerid, res
 
 === Kinesis Analytics App Code ===
 CREATE OR REPLACE STREAM "DESTINATION_SQL_STREAM" (
-    "datestamp" timestamp, "playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
-    "squadguard" integer, "squaddamage" integer, "squadinventoryitemcount" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
+    "playerid" bigint, "playerlevel" VARCHAR(16), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
+    "squadguard" integer, "squaddamage" integer, "gameplayseconds" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(8));
 
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "DESTINATION_SQL_STREAM" 
-SELECT STREAM "datestamp", "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
-    "squadguard", "squaddamage", "squadinventoryitemcount", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
+SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
+    "squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
 FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
 -------------------------------------------------------------------
 CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FIREHOSE_STREAM" (
-    "datestamp" timestamp, "playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
-    "squadguard" integer, "squaddamage" integer, "squadinventoryitemcount" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
+    "playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
+    "squadguard" integer, "squaddamage" integer, "gameplayseconds" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
 
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FIREHOSE_STREAM" 
-SELECT STREAM "datestamp", "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
-    "squadguard", "squaddamage", "squadinventoryitemcount", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
+SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
+    "squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
 FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
 -------------------------------------------------------------------

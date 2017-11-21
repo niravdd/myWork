@@ -157,7 +157,7 @@ aws redshift create-cluster --cluster-identifier workshopcluster --master-userna
 echo -e "## Waiting for the Redshift Cluster to be created & be ready for use..."
 echo -ne "## ${Blue}Checking${Color_Off} ="
 ## Can also use http://docs.aws.amazon.com/cli/latest/reference/redshift/wait/cluster-available.html here - but prefer to use own, so -
-testCondition="creating"
+IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
 nCounter=0
 while [ "$testCondition" != "available" ];
 do
@@ -189,9 +189,9 @@ echo -e "## Please run each of the following commands at the pgcli prompt one at
 echo -e "\n${BIRed}First run:${BICyan}"
 echo -e "create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));"
 echo -e "${BIRed}\n... then run:${BICyan}"
-echo -e "create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));"
+echo -e "create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));"
 echo -e "${BIRed}\n... then, finally run:${BICyan}"
-echo -e "create table telemetry2 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));"
+echo -e "create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));"
 echo -e "${BIRed}\n... to quit, issue the command ${BICyan}quit${BIRed} whenever you are done.${Color_Off}\n\n"
 echo -e "## Launching the pgcli (Redshift Client) now... ${Yellow}\n"
 sh ./connectRedshift.sh

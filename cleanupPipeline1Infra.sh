@@ -93,6 +93,7 @@ echo -e "${On_Blue}${BIRed}      #.  C L E A N - U P    I N F R A S T R U C T U 
 echo 
 echo 
 echo -e "## ${BIWhite}Action Required:${BIRed}"
+echo -e "## Do note, its *should not* be a problem if you run this script multiple times, just make sure you run it only when you are ready to clean-up."
 read -n 1 -p "## Are you good to proceed with the clean-up (any key)? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
 echo -e "${Color_Off}"
 if [ "$userResponse" = 'N' ] || [ "$userResponse" = 'n' ]; then
@@ -105,9 +106,9 @@ echo -e "## All good! Deleting everything created from this host now..."
 ## Cleanup...
 aws redshift delete-cluster --cluster-identifier workshopcluster --skip-final-cluster-snapshot
 echo -e "## Waiting for the Redshift Cluster to be deleted before proceeding..."
-echo -ne "## Checking ="
+echo -ne "## ${Blue}Checking${Color_Off} ="
 ## Can also use http://docs.aws.amazon.com/cli/latest/reference/redshift/wait/cluster-available.html here - but prefer to use own, so -
-testCondition="deleting"
+IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
 nCounter=0
 while [ "$testCondition" = "deleting" ];
 do
@@ -122,7 +123,7 @@ do
 	nCounter=$[$nCounter+5]
 	sleep 5
 done
-echo -ne " [Available now!]"
+echo -ne " ${Red}[Deleted!]${Color_Off}"
 echo 
 
 aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
