@@ -1,0 +1,109 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+	<script src="gam310.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="/">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">CMP317</h2>
+				<h3 class="headline-s2">Run your CI/CD and Test Workloads for 90% less with Amazon EC2 Spot</h3>
+				<p class="lower-link">Lab 2 - Deploying Jenkins build slaves on Spot Fleet instances</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">In the first lab, you configured Kinesis Streams and a Redshift instance, then configured Kinesis Firehose to pipe data from the Stream to Redshift. You then explored the data in QuickSight.In Lab 2 you will use Athena to see how a serverless approach can still give you interactive SQL access to your game data.</p>
+					<div class="session">
+						<h3>PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
+						<p>This workshop will be broken down into a series of labs that flow on from each other (that is, you must complete each lab in order before proceeding with the next). The four lab exercises that will be covered are:</p>
+						<div class="indent-show">
+							<p>Lab 1: Building an Analytics Pipeline</p>
+							<p>Lab 2: Building a Serverless Analytics Pipeline</p>
+							<p>Lab 3: Performing Analytics on a Stream</p>
+							<p>Lab 4: Building a Big Data Analytics Environment</p>
+						</div>
+						<p>As a reminder, you should have a laptop device (which you likely have if you're reading this) and a clean AWS account, with <span class="bold">AdministratorAccess</span> policy-level access. AWS Credits will be provided to the value of $USD30.</p>
+						<p>If you require assistance in any of the lab exercises, please click on the button at the top-right corner of all of the lab instruction pages to request help. A facilitator will come around to your seat when they are available.
+
+						<h3 class="overline">PROCEED TO LAB 3</h3>
+						<p>You've now completed Lab 2 - click on the following button to proceed to instructions for the next lab.</p> 
+						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('eifjccfundruucedkichjbtcucitvjgjjlbejhvvjrbd')">PROCEED TO LAB 3</a></div></div>
+						<p></p>
+						<p>Note: When a reasonable amount of participants have progressed to Lab 3, we will show a couple of slides to go over:</p>
+						<div class="indent-show">
+							<p>&bull; the best practices for using Spot instances for testing workloads;<br />
+							&bull; to describe the archtecture of and what we're planning to achieve in lab 3; and<br />
+							&bull; to go over points worth highlighting before tackling lab 3.</p>
+						</div>
+						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
+
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
+	<script>
+		var code1 = ace.edit("code1");
+		code1.setTheme("ace/theme/idle_fingers");
+    	code1.getSession().setMode("ace/mode/snippets");
+    	code1.setReadOnly(true);
+    	code1.setShowPrintMargin(false);
+    	code1.setOptions({
+    		maxLines: code1.session.getLength()
+    	});
+	</script>
+</body>
+
+</html>
