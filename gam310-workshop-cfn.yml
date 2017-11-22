@@ -58,24 +58,24 @@ Parameters:
     MinLength: '10'
     MaxLength: '18'
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
-  PrivateSubnetCidrBlock1:
-    Type: String
-    Default: 10.0.4.0/24
-    MinLength: '10'
-    MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
-  PrivateSubnetCidrBlock2:
-    Type: String
-    Default: 10.0.5.0/24
-    MinLength: '10'
-    MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
-  PrivateSubnetCidrBlock3:
-    Type: String
-    Default: 10.0.6.0/24
-    MinLength: '10'
-    MaxLength: '18'
-    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+  # PrivateSubnetCidrBlock1:
+  #   Type: String
+  #   Default: 10.0.4.0/24
+  #   MinLength: '10'
+  #   MaxLength: '18'
+  #   AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+  # PrivateSubnetCidrBlock2:
+  #   Type: String
+  #   Default: 10.0.5.0/24
+  #   MinLength: '10'
+  #   MaxLength: '18'
+  #   AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+  # PrivateSubnetCidrBlock3:
+  #   Type: String
+  #   Default: 10.0.6.0/24
+  #   MinLength: '10'
+  #   MaxLength: '18'
+  #   AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
 
   # Remote Access Network
   RemoteCidrForPublicAcl:
@@ -103,15 +103,15 @@ Parameters:
   AllowReturnTrafficToPublicRuleNumber:
     Type: Number
     Default: '900'
-  AllowAllInboundPrivateRuleNumber:
-    Type: Number
-    Default: '150'
+  # AllowAllInboundPrivateRuleNumber:
+  #   Type: Number
+  #   Default: '150'
   AllowAllOutboundPublicRuleNumber:
     Type: Number
     Default: '100'
-  AllowAllOutboundPrivateRuleNumber:
-    Type: Number
-    Default: '100'
+  # AllowAllOutboundPrivateRuleNumber:
+  #   Type: Number
+  #   Default: '100'
 
     # Bastion details
   AllowSshToBastionRuleNumber:
@@ -239,73 +239,73 @@ Resources:
     Properties:
       SubnetId: !Ref PublicSubnet3
       RouteTableId: !Ref PublicRouteTable
-  PrivateSubnet1:
-    Type: AWS::EC2::Subnet
-    DependsOn: VPC
-    Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone1 ] ]
-      CidrBlock: !Ref PrivateSubnetCidrBlock1
-      Tags:
-      - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az1" ] ]
-  PrivateSubnet2:
-    Type: AWS::EC2::Subnet
-    DependsOn: VPC
-    Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone2 ] ]
-      CidrBlock: !Ref PrivateSubnetCidrBlock2
-      Tags:
-      - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az2" ] ]
-  PrivateSubnet3:
-    Type: AWS::EC2::Subnet
-    DependsOn: VPC
-    Properties:
-      VpcId: !Ref VPC
-      AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone3 ] ]
-      CidrBlock: !Ref PrivateSubnetCidrBlock3
-      Tags:
-      - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az3" ] ]
-  PrivateRouteTable:
-    Type: AWS::EC2::RouteTable
-    DependsOn: VPC
-    Properties:
-      VpcId: !Ref VPC
-      Tags:
-      - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private" ] ]
-  PrivateSubnetRouteTableAssociation1:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    DependsOn:
-    - PrivateSubnet1
-    - PrivateRouteTable
-    Properties:
-      SubnetId: !Ref PrivateSubnet1
-      RouteTableId: !Ref PrivateRouteTable
-  PrivateSubnetRouteTableAssociation2:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    DependsOn:
-    - PrivateSubnet2
-    - PrivateRouteTable
-    Properties:
-      SubnetId: !Ref PrivateSubnet2
-      RouteTableId: !Ref PrivateRouteTable
-  PrivateSubnetRouteTableAssociation3:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    DependsOn:
-    - PrivateSubnet3
-    - PrivateRouteTable
-    Properties:
-      SubnetId: !Ref PrivateSubnet3
-      RouteTableId: !Ref PrivateRouteTable
+  # PrivateSubnet1:
+  #   Type: AWS::EC2::Subnet
+  #   DependsOn: VPC
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone1 ] ]
+  #     CidrBlock: !Ref PrivateSubnetCidrBlock1
+  #     Tags:
+  #     - Key: Name
+  #       Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az1" ] ]
+  # PrivateSubnet2:
+  #   Type: AWS::EC2::Subnet
+  #   DependsOn: VPC
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone2 ] ]
+  #     CidrBlock: !Ref PrivateSubnetCidrBlock2
+  #     Tags:
+  #     - Key: Name
+  #       Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az2" ] ]
+  # PrivateSubnet3:
+  #   Type: AWS::EC2::Subnet
+  #   DependsOn: VPC
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     AvailabilityZone: !Join [ "", [ !Ref "AWS::Region", !Ref AvailabilityZone3 ] ]
+  #     CidrBlock: !Ref PrivateSubnetCidrBlock3
+  #     Tags:
+  #     - Key: Name
+  #       Value: !Join [ "", [ !Ref "AWS::StackName", "-private-az3" ] ]
+  # PrivateRouteTable:
+  #   Type: AWS::EC2::RouteTable
+  #   DependsOn: VPC
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     Tags:
+  #     - Key: Name
+  #       Value: !Join [ "", [ !Ref "AWS::StackName", "-private" ] ]
+  # PrivateSubnetRouteTableAssociation1:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   DependsOn:
+  #   - PrivateSubnet1
+  #   - PrivateRouteTable
+  #   Properties:
+  #     SubnetId: !Ref PrivateSubnet1
+  #     RouteTableId: !Ref PrivateRouteTable
+  # PrivateSubnetRouteTableAssociation2:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   DependsOn:
+  #   - PrivateSubnet2
+  #   - PrivateRouteTable
+  #   Properties:
+  #     SubnetId: !Ref PrivateSubnet2
+  #     RouteTableId: !Ref PrivateRouteTable
+  # PrivateSubnetRouteTableAssociation3:
+  #   Type: AWS::EC2::SubnetRouteTableAssociation
+  #   DependsOn:
+  #   - PrivateSubnet3
+  #   - PrivateRouteTable
+  #   Properties:
+  #     SubnetId: !Ref PrivateSubnet3
+  #     RouteTableId: !Ref PrivateRouteTable
   S3VpcEndpoint:
     Type: AWS::EC2::VPCEndpoint
     DependsOn:
     - VPC
-    - PrivateRouteTable
+    # - PrivateRouteTable
     - PublicRouteTable
     Properties:
       PolicyDocument:
@@ -315,7 +315,7 @@ Resources:
           Resource: "*"
           Principal: "*"
       RouteTableIds:
-      - !Ref PrivateRouteTable
+      # - !Ref PrivateRouteTable
       - !Ref PublicRouteTable
       ServiceName: !Join [ "", [ com.amazonaws., !Ref "AWS::Region", .s3 ] ]
       VpcId: !Ref VPC
@@ -437,70 +437,70 @@ Resources:
       NetworkAclId: !Ref PublicNetworkAcl
 
   # Private Network ACL
-  PrivateNetworkAcl:
-    Type: AWS::EC2::NetworkAcl
-    DependsOn: VPC
-    Properties:
-      VpcId: !Ref VPC
-      Tags:
-      - Key: Name
-        Value: !Join [ "", [ !Ref "AWS::StackName", "-private-acl" ] ]
+  # PrivateNetworkAcl:
+  #   Type: AWS::EC2::NetworkAcl
+  #   DependsOn: VPC
+  #   Properties:
+  #     VpcId: !Ref VPC
+  #     Tags:
+  #     - Key: Name
+  #       Value: !Join [ "", [ !Ref "AWS::StackName", "-private-acl" ] ]
 
-  # Private Network ACL Rules
-  InboundEphemeralPrivateNetworkAclAllowAll:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PrivateNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PrivateNetworkAcl
-      RuleNumber: !Ref AllowAllInboundPrivateRuleNumber
-      Protocol: "-1"
-      RuleAction: allow
-      Egress: 'false'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '0'
-        To: '65535'
-  OutboundPrivateNetworkAclAllowAll:
-    Type: AWS::EC2::NetworkAclEntry
-    DependsOn: PrivateNetworkAcl
-    Properties:
-      NetworkAclId: !Ref PrivateNetworkAcl
-      RuleNumber: !Ref AllowAllOutboundPrivateRuleNumber
-      Protocol: "-1"
-      RuleAction: allow
-      Egress: 'true'
-      CidrBlock: 0.0.0.0/0
-      PortRange:
-        From: '0'
-        To: '65535'
+  # # Private Network ACL Rules
+  # InboundEphemeralPrivateNetworkAclAllowAll:
+  #   Type: AWS::EC2::NetworkAclEntry
+  #   DependsOn: PrivateNetworkAcl
+  #   Properties:
+  #     NetworkAclId: !Ref PrivateNetworkAcl
+  #     RuleNumber: !Ref AllowAllInboundPrivateRuleNumber
+  #     Protocol: "-1"
+  #     RuleAction: allow
+  #     Egress: 'false'
+  #     CidrBlock: 0.0.0.0/0
+  #     PortRange:
+  #       From: '0'
+  #       To: '65535'
+  # OutboundPrivateNetworkAclAllowAll:
+  #   Type: AWS::EC2::NetworkAclEntry
+  #   DependsOn: PrivateNetworkAcl
+  #   Properties:
+  #     NetworkAclId: !Ref PrivateNetworkAcl
+  #     RuleNumber: !Ref AllowAllOutboundPrivateRuleNumber
+  #     Protocol: "-1"
+  #     RuleAction: allow
+  #     Egress: 'true'
+  #     CidrBlock: 0.0.0.0/0
+  #     PortRange:
+  #       From: '0'
+  #       To: '65535'
 
   # Private Subnet Associations
-  PrivateSubnetNetworkAclAssociation1:
-    Type: AWS::EC2::SubnetNetworkAclAssociation
-    DependsOn:
-    - PrivateSubnet1
-    - PrivateNetworkAcl
-    Properties:
-      SubnetId:
-        !Ref PrivateSubnet1
-      NetworkAclId:
-        !Ref PrivateNetworkAcl
-  PrivateSubnetNetworkAclAssociation2:
-    Type: AWS::EC2::SubnetNetworkAclAssociation
-    DependsOn:
-    - PrivateSubnet2
-    - PrivateNetworkAcl
-    Properties:
-      SubnetId: !Ref PrivateSubnet2
-      NetworkAclId: !Ref PrivateNetworkAcl
-  PrivateSubnetNetworkAclAssociation3:
-    Type: AWS::EC2::SubnetNetworkAclAssociation
-    DependsOn:
-    - PrivateSubnet3
-    - PrivateNetworkAcl
-    Properties:
-      SubnetId: !Ref PrivateSubnet3
-      NetworkAclId: !Ref PrivateNetworkAcl
+  # PrivateSubnetNetworkAclAssociation1:
+  #   Type: AWS::EC2::SubnetNetworkAclAssociation
+  #   DependsOn:
+  #   - PrivateSubnet1
+  #   - PrivateNetworkAcl
+  #   Properties:
+  #     SubnetId:
+  #       !Ref PrivateSubnet1
+  #     NetworkAclId:
+  #       !Ref PrivateNetworkAcl
+  # PrivateSubnetNetworkAclAssociation2:
+  #   Type: AWS::EC2::SubnetNetworkAclAssociation
+  #   DependsOn:
+  #   - PrivateSubnet2
+  #   - PrivateNetworkAcl
+  #   Properties:
+  #     SubnetId: !Ref PrivateSubnet2
+  #     NetworkAclId: !Ref PrivateNetworkAcl
+  # PrivateSubnetNetworkAclAssociation3:
+  #   Type: AWS::EC2::SubnetNetworkAclAssociation
+  #   DependsOn:
+  #   - PrivateSubnet3
+  #   - PrivateNetworkAcl
+  #   Properties:
+  #     SubnetId: !Ref PrivateSubnet3
+  #     NetworkAclId: !Ref PrivateNetworkAcl
 
   # Security Groups
   BastionSecurityGroup:
@@ -657,6 +657,9 @@ Resources:
           sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/telemetry1Input.json
           sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/telemetry1Input.json
           sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/telemetry1Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry2Input.json
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/telemetry2Input.json
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/telemetry2Input.json
   EIP:
     Type: AWS::EC2::EIP
     Properties:
@@ -728,7 +731,7 @@ Outputs:
     Description: Bastion External IP Address
     Value:
       Ref: EIP
-  ClusterEndpoint:
+  ClusterEndpointConnectCmd:
     Description: PGCLI Command for Redshift Endpoint
     Value: !Join [ "", [ "pgcli postgres://wsuser:wsPassword0@", !GetAtt WorkshopCluster.Endpoint.Address, ":", !GetAtt WorkshopCluster.Endpoint.Port, "/workshopdb --prompt \"GAM310_\\u@\\d> \"" ] ]
   ClusterName:
@@ -785,15 +788,15 @@ Outputs:
   PublicRouteTable:
     Description: Public Route Table Created for VPC
     Value: !Ref PublicRouteTable
-  PrivateRouteTable:
-    Description: Private Route Table Created for VPC
-    Value: !Ref PrivateRouteTable
+  # PrivateRouteTable:
+  #   Description: Private Route Table Created for VPC
+  #   Value: !Ref PrivateRouteTable
   PublicNetworkAcl:
     Description: Public Network ACL Created for VPC
     Value: !Ref PublicNetworkAcl
-  PrivateNetworkAcl:
-    Description: Private Netowrk ACL Created for VPC
-    Value: !Ref PrivateNetworkAcl
+  # PrivateNetworkAcl:
+  #   Description: Private Netowrk ACL Created for VPC
+  #   Value: !Ref PrivateNetworkAcl
   PublicSubnet1:
     Description: Public Subnet 1 Created for VPC
     Value: !Ref PublicSubnet1
@@ -803,42 +806,42 @@ Outputs:
   PublicSubnet3:
     Description: Public Subnet 3 Created for VPC
     Value: !Ref PublicSubnet3
-  PrivateSubnet1:
-    Description: Private Subnet 1 Created for VPC
-    Value: !Ref PrivateSubnet1
-  PrivateSubnet2:
-    Description: Private Subnet 1 Created for VPC
-    Value: !Ref PrivateSubnet2
-  PrivateSubnet3:
-    Description: Private Subnet 1 Created for VPC
-    Value: !Ref PrivateSubnet3
+  # PrivateSubnet1:
+  #   Description: Private Subnet 1 Created for VPC
+  #   Value: !Ref PrivateSubnet1
+  # PrivateSubnet2:
+  #   Description: Private Subnet 1 Created for VPC
+  #   Value: !Ref PrivateSubnet2
+  # PrivateSubnet3:
+  #   Description: Private Subnet 1 Created for VPC
+  #   Value: !Ref PrivateSubnet3
   AvailabilityZone1:
-    Description: Private Subnet IDs Created for VPC
+    Description: Public Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet1.AvailabilityZone
   AvailabilityZone2:
-    Description: Private Subnet IDs Created for VPC
+    Description: Public Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet2.AvailabilityZone
   AvailabilityZone3:
-    Description: Private Subnet IDs Created for VPC
+    Description: Public Subnet IDs Created for VPC
     Value: !GetAtt PublicSubnet3.AvailabilityZone
   PublicSubnetCidr1:
-    Description: Public Subnet IDs Created for VPC
+    Description: Public Subnet CIDR Created for VPC
     Value: !Ref PublicSubnetCidrBlock1
   PublicSubnetCidr2:
-    Description: Public Subnet IDs Created for VPC
+    Description: Public Subnet CIDR Created for VPC
     Value: !Ref PublicSubnetCidrBlock2
   PublicSubnetCidr3:
-    Description: Public Subnet IDs Created for VPC
+    Description: Public Subnet CIDR Created for VPC
     Value: !Ref PublicSubnetCidrBlock3
-  PrivateSubnetCidr1:
-    Description: Private Subnet IDs Created for VPC
-    Value: !Ref PrivateSubnetCidrBlock1
-  PrivateSubnetCidr2:
-    Description: Private Subnet IDs Created for VPC
-    Value: !Ref PrivateSubnetCidrBlock2
-  PrivateSubnetCidr3:
-    Description: Private Subnet IDs Created for VPC
-    Value: !Ref PrivateSubnetCidrBlock3
+  # PrivateSubnetCidr1:
+  #   Description: Private Subnet IDs Created for VPC
+  #   Value: !Ref PrivateSubnetCidrBlock1
+  # PrivateSubnetCidr2:
+  #   Description: Private Subnet IDs Created for VPC
+  #   Value: !Ref PrivateSubnetCidrBlock2
+  # PrivateSubnetCidr3:
+  #   Description: Private Subnet IDs Created for VPC
+  #   Value: !Ref PrivateSubnetCidrBlock3
   InternetGateway:
     Description: Internet Gateway Created for VPC
     Value: !Ref InternetGateway
@@ -864,9 +867,9 @@ Outputs:
         - ") Outbound ("
         - !Ref AllowAllOutboundPublicRuleNumber
         - ")"
-  PrivateNetworkACLRuleNumbers:
-    Description: Private Network ACL Rules Numbers Created
-    Value: !Join [ "", [ "Inbound (", !Ref AllowAllInboundPrivateRuleNumber, ") Outbound (", !Ref AllowAllOutboundPrivateRuleNumber, ")" ] ]
+  # PrivateNetworkACLRuleNumbers:
+  #   Description: Private Network ACL Rules Numbers Created
+  #   Value: !Join [ "", [ "Inbound (", !Ref AllowAllInboundPrivateRuleNumber, ") Outbound (", !Ref AllowAllOutboundPrivateRuleNumber, ")" ] ]
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -887,9 +890,9 @@ Metadata:
       - PublicSubnetCidrBlock1
       - PublicSubnetCidrBlock2
       - PublicSubnetCidrBlock3
-      - PrivateSubnetCidrBlock1
-      - PrivateSubnetCidrBlock2
-      - PrivateSubnetCidrBlock3
+      # - PrivateSubnetCidrBlock1
+      # - PrivateSubnetCidrBlock2
+      # - PrivateSubnetCidrBlock3
       - AvailabilityZone1
       - AvailabilityZone2
       - AvailabilityZone3
@@ -904,11 +907,11 @@ Metadata:
       - AllowAllOutboundPublicRuleNumber
       - AllowIcmpToBastionRuleNumber
       - AllowSshToBastionRuleNumber
-    - Label:
-        default: Private ACL Rule Numbers
-      Parameters:
-      - AllowAllInboundPrivateRuleNumber
-      - AllowAllOutboundPrivateRuleNumber
+    # - Label:
+    #     default: Private ACL Rule Numbers
+    #   Parameters:
+    #   - AllowAllInboundPrivateRuleNumber
+    #   - AllowAllOutboundPrivateRuleNumber
     ParameterLabels:
       RemoteCidrForPublicAcl:
         default: Network CIDR for ACL
@@ -920,12 +923,12 @@ Metadata:
         default: Public Subnet 2
       PublicSubnetCidrBlock3:
         default: Public Subnet 3
-      PrivateSubnetCidrBlock1:
-        default: Private Subnet 1
-      PrivateSubnetCidrBlock2:
-        default: Private Subnet 2
-      PrivateSubnetCidrBlock3:
-        default: Private Subnet 3
+      # PrivateSubnetCidrBlock1:
+      #   default: Private Subnet 1
+      # PrivateSubnetCidrBlock2:
+      #   default: Private Subnet 2
+      # PrivateSubnetCidrBlock3:
+      #   default: Private Subnet 3
       AvailabilityZone1:
         default: Availability Zone 1
       AvailabilityZone2:
@@ -944,7 +947,7 @@ Metadata:
         default: Allow Return Traffic
       AllowAllOutboundPublicRuleNumber:
         default: Public Outbound
-      AllowAllInboundPrivateRuleNumber:
-        default: Private Inbound
-      AllowAllOutboundPrivateRuleNumber:
-        default: Private Outbound
+      # AllowAllInboundPrivateRuleNumber:
+      #   default: Private Inbound
+      # AllowAllOutboundPrivateRuleNumber:
+      #   default: Private Outbound

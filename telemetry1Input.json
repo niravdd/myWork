@@ -10,7 +10,7 @@
         "Username": "wsuser",
         "Password": "wsPassword0",
         "RetryOptions": {
-            "DurationInSeconds": 600
+            "DurationInSeconds": 300
         },
         "S3Configuration": {
             "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",

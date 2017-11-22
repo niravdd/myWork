@@ -81,8 +81,8 @@ chmod 400 WorkshopKeyPair.pem
 </div>
 						</div>
 						</p>
-						<p>4. You must have the AWS CLI installed on your computer, and set your AWS CLI Default Region to us-west-2 using <span class="bold">aws configure</span></p>
-						<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
+						<p>4. You must have the AWS CLI installed on your computer, and ensure that it is configured with a user that has AdminAccess using <span class="bold">aws configure</span></p>
+						<!--<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
 						<div id="code8">aws sts get-caller-identity --query "Account" --output text
 						</div>
 						</p>
@@ -90,13 +90,13 @@ chmod 400 WorkshopKeyPair.pem
 						Account ID: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" />&nbsp;
 						Keypair: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="keypairinput" name="keypairinput" />&nbsp;
 						<button type="button" class="btn" onclick="changetext()">Update script text</button>
-						</p>
+						</p>-->
 
 						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
 						<p>You must now set up the landing zone for your data pipelines. For this we will use glorious CloudFormation! This template will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you. We've also included Redshift at this early part of the lab as it takes a few minutes to provision.</p>
 						<p id="keypair">Please enter the following command to create the foundation infrastructure:</p>
 						<div id="code1">#Change ${keypair} to the name of a keypair you have access to.
-aws cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=${keypair} --capabilities CAPABILITY_IAM
+aws --region us-west-2 cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=MyWorkshopKeyPair --capabilities CAPABILITY_IAM
 </div><br />
 						<p> Alternatively, you can click <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml" target="_blank">this link to use the Web Console</a></p>
 						<p>This CloudFormation stack will take about 15 minutes to build.</p>
@@ -157,13 +157,13 @@ aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelem
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery"
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "FirehoseDelivery"
 
-# Create a Kinesis Firehose Delivery Stream for analytics
+# Create a Kinesis Firehose Delivery Stream for analytics. Replace ${accountid} with the Output from your CloudFormation template.
 aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
 
-# Create a Kinesis Firehose Delivery Stream for telemetry
+# Create a Kinesis Firehose Delivery Stream for telemetry. Replace ${accountid} with the Output from your CloudFormation template.
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
 
-# Create a Kinesis Firehose Delivery Stream for analytics on the stream
+# Create a Kinesis Firehose Delivery Stream for analytics on the stream.
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json
 </div></p>
 						</div>
@@ -173,7 +173,7 @@ aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDi
 						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups, your game bot and Redshift. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "ClusterEndpoint" Output of this Stack.</p>
 						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-5-content">
-							<p id="redshifttables"><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the ${redshiftClusterEndpoint} placeholder here.
+							<p id="redshifttables"><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. To do this, copy the "ConnectCmd" from your CloudFormation stack Output into your SSH terminal. It should look like this:
 pgcli postgres://wsuser:wsPassword0@workshopcluster.${redshiftClusterEndpoint}.us-west-2.redshift.amazonaws.com:5439/workshopdb
 create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
 
@@ -184,17 +184,13 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 
 						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
 						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis.</p>
-						<div class="indent-show" id="1-9-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-9-button', '1-9-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-9-content"><br />
-							<p>1. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "GameBotURLPublicDns" Output of this Stack.</p>
-							<p>2. Hit the "Generate" button.</p>
-							<p>3. Check the Kinesis console monitoring window to see your data propagating.</p>
-							<p></p>
-							</pre>
-						</div>
+							<p>1. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a> if you don't already have your CloudFormation Output parameters open. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "GameBotURLPublicDns" Output of this Stack. This will open a website hosted on your EC2 instance where the GameBot resides.</p>
+							<p>2. Click on the "Generate" button. This will start a script that posts data to your "workShopTelemetryStream" Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of..."</p>
+							<p>2. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
+							<p>3. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a>monitoring window to see your data propagating.</p>
 
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
-						<p>Let's get QuickSight working!</p>
+						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>
 						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-10-content"><br />
 							<p>1. Go to <a href="https://quicksight.aws" target="_blank">https://quicksight.aws.amazon.com/sn/console/signup</a> or select "QuickSight" in the Console.</p>
