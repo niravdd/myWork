@@ -2,6 +2,11 @@
 /**
  * Web page to generate dataset and push it to a Kinesis stream
  */
+// Show errors 
+if (isset($_REQUEST['showErrors']) && $_REQUEST['showErrors'] == 'true') { 
+    ini_set('display_errors', 1);
+}
+
 // Starting timer
 $start = microtime(true); 
 
