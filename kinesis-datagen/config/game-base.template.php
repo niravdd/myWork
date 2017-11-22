@@ -5,10 +5,12 @@ return array(
         // If you want to disable the distribution, set disable to true
         'disable' => true,
 
-        'result' => array(
-            'Won' => 52,
-            'Lost' => 43,
-            'DNF' => 5,
+        'fields' => array(
+            'result' => array(
+                'Won' => 52,
+                'Lost' => 43,
+                'DNF' => 5,
+            ),
         ),
     ),
 

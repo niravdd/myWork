@@ -6,7 +6,7 @@
 $start = microtime(true); 
 
 // Increasing execution time and memory
-ini_set('max_execution_time', 1800);
+ini_set('max_execution_time', 3600);
 ini_set('memory_limit', '256M');
 
 $webConfig = require __DIR__ . '/config/webapp.php';
@@ -36,13 +36,25 @@ $token = isset($json['Token']) ? $json['Token'] : null;
 
 $key = isset($_REQUEST['key']) ? $_REQUEST['key'] : $defaultKey;
 $secret = isset($_REQUEST['secret']) ? $_REQUEST['secret'] : $defaultSecret;
-$configFilename = isset($_REQUEST['configFilename']) ? $_REQUEST['configFilename'] : 'game-base.template.php';
+$configProfile = isset($_REQUEST['configProfile']) ? $_REQUEST['configProfile'] : 'game';
+
+$configSettings = $webConfig['configProfiles'][$configProfile];
+$configFilename = $configSettings['filename'];
+
+$comment = isset($configSettings['comment']) ? $configSettings['comment'] : null;
+$defaultStreamName = isset($configSettings['streamName']) ? $configSettings['streamName'] : '';
+$defaultTotal = isset($configSettings['total']) ? $configSettings['total'] : 10000;
+$defaultBatchSize = isset($configSettings['batchSize']) ? $configSettings['batchSize'] : 500;
+$defaultInterval = isset($configSettings['interval']) ? $configSettings['interval'] : 10;
+$defaultRegion = isset($configSettings['region']) ? $configSettings['region'] : 'us-west-2';
+
 $config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/' . $configFilename;
-$region = isset($_REQUEST['region']) ? $_REQUEST['region'] : 'us-west-2';
-$streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : 'workshopTelemetryStream';
-$total = isset($_REQUEST['total']) ? $_REQUEST['total'] : 500;
-$batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : 400;
-$interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : 10000;
+$region = isset($_REQUEST['region']) ? $_REQUEST['region'] : $defaultRegion;
+$streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : $defaultStreamName;
+
+$total = isset($_REQUEST['total']) ? $_REQUEST['total'] : $defaultTotal;
+$batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : $defaultBatchSize;
+$interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : $defaultInterval;
 $loop = isset($_REQUEST['loop']) ? $_REQUEST['loop'] : false;
 
 try {
@@ -89,58 +101,51 @@ catch (\Exception $e) {
         #container textarea { margin:10px auto; width:90%; background-color:white; font-size:0.7em; text-align:left; }
         #container .small { width:100px; margin-right:20px; }
         #container .tiny { width:50px; margin-right:20px; }
-		#container .marginRight { margin-right:40px; }
+        #container .marginRight { margin-right:40px; }
+        #container .thick { height:35px; }
     </style>
   </head>
   <body id="container">
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
          <div class="form-group">
-            <label for="exampleFormControlTextarea1">DataGenerator - Configuration</label>
+         <label for="exampleFormControlTextarea1">DataGenerator <?php echo isset($comment) ? ' - ' . $comment : null; ?></label>
             <form name="frmConfig" id="frmConfig" action="?" method="get">
-                <select class="small" name="configFilename">
+                <select class="small thick" name="configProfile">
                 <?php
-                foreach ($webConfig['configs'] as $v) {
+                foreach ($webConfig['configProfiles'] as $v => $data) {
                     echo '<option value="' . $v . '"';
-                    if ($v == $configFilename) { 
+                    if ($v == $configProfile) { 
                         echo ' selected="selected"';
                     }
                     echo '>' . $v . '</option>';
                 }
                 ?> 
                 </select>
-                <button type="submit" class="btn btn-primary">Load config</button>
+                <button type="submit" class="btn btn-primary">Load configuration profile</button>
             </form>
+         </div>
+         <form name="frm" id="frm" action="?" method="post">
+         <div class="form-group">
             <textarea class="form-control form-control-sm" rows="27" name="config"><?php echo json_encode($config, JSON_PRETTY_PRINT); ?></textarea>
+         </div>
+         <div class="form-group">
+            <input type="hidden" name="configFilename" value="<?php echo $configFilename; ?>" />
+            <small>Region</small>  
+            <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
+            <small>StreamName</small> 
+            <input class="small" type="text" name="streamName" value="<?php echo $streamName; ?>" placeholder="aws streamName"/>
+            <small>Total</small>  
+            <input class="tiny" type="text" name="total" value="<?php echo $total; ?>" placeholder="total"/>
+            <small>BatchSize</small>  
+            <input class="tiny marginRight" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>  
+            <small>Interval (in ms)</small>  
+            <input class="tiny" type="text" name="interval" value="<?php echo $interval; ?>" placeholder="interval (in sec)"/>
+            <small>Sending in loop</small>  
+            <input class="tiny" type="checkbox" id="loop" name="loop" placeholder="loop" value="1" <?php if ($loop) { echo 'checked="checked"'; } ?> />
+            <button type="submit" class="btn btn-primary" id="submitFrm" name="submitFrm">Generate</button>
           </div>
-          <div class="form-group">
-            <form name="frm" id="frm" action="?" method="post">
-                <input type="hidden" name="configFilename" value="<?php echo $configFilename; ?>" />
-                <small>Region</small>  
-                <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>
-                <small>StreamName</small> 
-                <select class="small" name="streamName">
-                <?php
-                foreach ($webConfig['streams'] as $v) {
-                    echo '<option value="' . $v . '"';
-                    if ($v == $streamName) { 
-                        echo ' selected="selected"';
-                    }
-                    echo '>' . $v . '</option>';
-                }
-                ?> 
-                </select>
-                <small>Total</small>  
-                <input class="tiny" type="text" name="total" value="<?php echo $total; ?>" placeholder="total"/>
-                <small>BatchSize</small>  
-                <input class="tiny marginRight" type="text" name="batchSize" value="<?php echo $batchSize; ?>" placeholder="batchSize"/>  
-                <small>Interval (in ms)</small>  
-                <input class="tiny" type="text" name="interval" value="<?php echo $interval; ?>" placeholder="interval (in sec)"/>
-                <small>Sending in loop</small>  
-                <input class="tiny" type="checkbox" id="loop" name="loop" placeholder="loop" value="1" <?php if ($loop) { echo 'checked="checked"'; } ?> />
-                <button type="submit" class="btn btn-primary" id="submitFrm" name="submitFrm">Generate</button>
-            </form>
-          </div>
+       </form>
        <?php if($result) { ?>
         <h4>Result</h4> 
         <textarea class="form-control form-control-sm" rows="10" id="result"><?php echo cli::$log . PHP_EOL . $result; ?></textarea>
