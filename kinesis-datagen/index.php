@@ -36,7 +36,7 @@ $token = isset($json['Token']) ? $json['Token'] : null;
 
 $key = isset($_REQUEST['key']) ? $_REQUEST['key'] : $defaultKey;
 $secret = isset($_REQUEST['secret']) ? $_REQUEST['secret'] : $defaultSecret;
-$configProfile = isset($_REQUEST['configProfile']) ? $_REQUEST['configProfile'] : 'game';
+$configProfile = isset($_REQUEST['configProfile']) ? $_REQUEST['configProfile'] : 'telemetry';
 
 $configSettings = $webConfig['configProfiles'][$configProfile];
 $configFilename = $configSettings['filename'];
