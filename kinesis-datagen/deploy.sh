@@ -7,5 +7,5 @@ cd $BASEDIR"/../"
 tar -cvf /tmp/kinesis-datagen.tar kinesis-datagen/
 
 cd kinesis-datagen/
-aws s3 cp $BASEDIR"/kinesis-datagen-cfn.json" "s3://"$BUCKETNAME"/kinesis-datagen-cfn.json"
-aws s3 cp /tmp/kinesis-datagen.tar "s3://"$BUCKETNAME"/kinesis-datagen.tar"
+#aws s3 cp $BASEDIR"/kinesis-datagen-cfn.json" "s3://"$BUCKETNAME"/kinesis-datagen-cfn.json"
+aws s3 cp /tmp/kinesis-datagen.tar "s3://"$BUCKETNAME"/kinesis-datagen.tar" --acl public-read
