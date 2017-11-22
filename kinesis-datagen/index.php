@@ -163,7 +163,7 @@ catch (\Exception $e) {
 <script>
 var interval = null;
 $(document).ready(function() {
-<?php if ($loop) { ?>
+<?php if ($loop && isset($_REQUEST['submitFrm'])) { ?>
 	interval = setInterval(function() { refreshPage(); }, <?php echo $interval; ?>);
     $('#loop').change(function() {
         if(!this.checked) {
