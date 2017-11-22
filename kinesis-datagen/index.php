@@ -47,6 +47,7 @@ $defaultTotal = isset($configSettings['total']) ? $configSettings['total'] : 100
 $defaultBatchSize = isset($configSettings['batchSize']) ? $configSettings['batchSize'] : 500;
 $defaultInterval = isset($configSettings['interval']) ? $configSettings['interval'] : 10;
 $defaultRegion = isset($configSettings['region']) ? $configSettings['region'] : 'us-west-2';
+$defaultLoop = isset($configSettings['loop']) ? $configSettings['loop'] : false;
 
 $config = isset($_REQUEST['config']) ? json_decode($_REQUEST['config'], true) : require __DIR__ . '/config/' . $configFilename;
 $region = isset($_REQUEST['region']) ? $_REQUEST['region'] : $defaultRegion;
@@ -55,7 +56,7 @@ $streamName = isset($_REQUEST['streamName']) ? $_REQUEST['streamName'] : $defaul
 $total = isset($_REQUEST['total']) ? $_REQUEST['total'] : $defaultTotal;
 $batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : $defaultBatchSize;
 $interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : $defaultInterval;
-$loop = isset($_REQUEST['loop']) ? $_REQUEST['loop'] : false;
+$loop = isset($_REQUEST['loop']) ? $_REQUEST['loop'] : $defaultLoop;
 
 try {
     $kinesis = Aws\Kinesis\KinesisClient::factory(array(
