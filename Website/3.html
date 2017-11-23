@@ -80,6 +80,7 @@
 								8. Copy both the following SQL statements into the query editor and click the "Save and run SQL" button on the middle-right side of the window:<br />
 							</p>							
 						</div>
+						<br />
 						<div id="code1">CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FH_STREAM" (
 	"playerid" bigint, "playerlevel" VARCHAR(16), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
 	"squadguard" integer, "squaddamage" integer, "gameplayseconds" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(8));
@@ -87,7 +88,7 @@
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
 SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
 	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
+FROM "GAME_BOT_001" where "gamenumber"=1;
 </div><br />
 							<p> 9. You should see the data appear in the "Real-time analytics" tab. This is real-time data. Let's see what happens when you change the query. Please change the query to the following SQL statements and click the "Save and run SQL" button on the middle-right side of the window:</p>
 						<div id="code2">CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FH_STREAM" (
@@ -97,7 +98,7 @@ FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
 SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
 	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
+FROM "GAME_BOT_001" where "COL_result"='DNF';
 </div><br />
 							<p> 10. Once you see the real-time data showing up and can see that it only shows DNF in the "result" column, click the "Destination" tab in the middle-left of the window<br />
 								11. Click the "Connect to a destination" button<br />

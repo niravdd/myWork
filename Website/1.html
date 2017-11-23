@@ -154,7 +154,7 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 							<p>3. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
 							<p>4. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
 							<p>It will take a few minutes for Firehose to push the data to Redshift.<br />
-								(Optional) You can check the data is being pushed in by running a query like SELECT * FROM telemetry1 LIMIT 10; in your PGCLI terminal, or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page for your <span class="bold">workshopTelemetryFH</span> Delivery Stream.
+								(Optional) You can check the data is being pushed in by running a query like SELECT * FROM telemetry1 LIMIT 10; in your PGCLI terminal, or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> for your <span class="bold">workshopTelemetryFH</span> Delivery Stream.
 
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
 						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>
@@ -176,7 +176,7 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 						</div>
 
 						<h3 class="overline">PROCEED TO LAB 2</h3>
-						<p>You've now completed Lab 2!</p>
+						<p>You've now completed Lab 1!</p>
 						<p>Note: When a reasonable amount of participants have progressed to this point, we will pause and present some slides explaining the next lab:</p>
 						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the button below and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
 						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('2','2')">PROCEED TO LAB 2</a></div></div>
