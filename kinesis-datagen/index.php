@@ -63,8 +63,21 @@ $batchSize = isset($_REQUEST['batchSize']) ? $_REQUEST['batchSize'] : $defaultBa
 $interval = isset($_REQUEST['interval']) ? $_REQUEST['interval'] : $defaultInterval;
 $loop = isset($_REQUEST['loop']) ? $_REQUEST['loop'] : $defaultLoop;
 
+$implementation = isset($configSettings['implementation']) ? $configSettings['implementation'] : 'kinesis';
+
 try {
+    
     $kinesis = Aws\Kinesis\KinesisClient::factory(array(
+        'credentials' => array(
+            'key'    => $key,
+            'secret' => $secret,
+            'token' => $token,
+        ),
+        'region' => $region,
+        'version' => 'latest',
+    ));
+
+    $kinesisFirehose = Aws\Firehose\FirehoseClient::factory(array(
         'credentials' => array(
             'key'    => $key,
             'secret' => $secret,
@@ -76,8 +89,8 @@ try {
 
     $result = null;
     if (isset($_REQUEST['submitFrm'])) { 
-        $gen = new AwsBootcamp\Generator\DataSet($kinesis, $streamName);
-        $dataSet = $gen->execute($config, $total, $batchSize);
+        $gen = new AwsBootcamp\Generator\DataSet($kinesis, $kinesisFirehose, $streamName);
+        $dataSet = $gen->execute($config, $total, $batchSize, $implementation);
 
         $result = PHP_EOL . 'Stats' . PHP_EOL;
         $result .= '---------' . PHP_EOL;
@@ -129,7 +142,7 @@ catch (\Exception $e) {
                 ?> 
                 </select>
                 <button type="submit" class="btn btn-primary">Load configuration profile</button><br />
-                <label for="exampleFormControlTextarea1">DataGenerator <?php echo isset($comment) ? ' - ' . $comment : null; ?></label>
+                <label for="exampleFormControlTextarea1">DataGenerator <?php echo isset($comment) ? ' - ' . $comment . ' (to ' . $implementation . ')' : null; ?></label>
             </form>
          </div>
          <form name="frm" id="frm" action="?" method="post">
@@ -137,6 +150,8 @@ catch (\Exception $e) {
             <textarea class="form-control form-control-sm" rows="27" name="config"><?php echo json_encode($config, JSON_PRETTY_PRINT); ?></textarea>
          </div>
          <div class="form-group">
+            <input type="hidden" name="configProfile" value="<?php echo $configProfile; ?>" />
+            <input type="hidden" name="implementation" value="<?php echo $implementation; ?>" />
             <input type="hidden" name="configFilename" value="<?php echo $configFilename; ?>" />
             <small>Region</small>  
             <input class="small" type="text" name="region" value="<?php echo $region; ?>" placeholder="aws region"/>

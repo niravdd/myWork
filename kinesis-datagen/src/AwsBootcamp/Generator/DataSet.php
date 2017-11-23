@@ -73,6 +73,12 @@ class DataSet {
     protected $_kinesis = null;
 
     /**
+     * Kinesis Firehose client
+     * @var \Aws\Kinesis\KinesisFirehoseClient
+     */
+    protected $_kinesisFirehose = null;
+
+    /**
      * Kinesis stream name
      * @var string
      */
@@ -82,13 +88,15 @@ class DataSet {
      * Class constructor
      *
      * @param Aws\Kinesis\KinesisClient $kinesis Kinesis Client
+     * @param Aws\Kinesis\KinesisFirehoseClient $kinesisFirehose Firehose client
      * @param string $kinesisStreamName Name of the kinesis stream
      * @return void
      */
-    public function __construct(\Aws\Kinesis\KinesisClient $kinesis, $kinesisStreamName) { 
+    public function __construct(\Aws\Kinesis\KinesisClient $kinesis, $kinesisFirehose, $kinesisStreamName) { 
         $this->_faker = \Faker\Factory::create();
         $this->_evalMath = new \Webit\Util\EvalMath\EvalMath();
         $this->_kinesis = $kinesis;
+        $this->_kinesisFirehose = $kinesisFirehose;
         $this->_kinesisStreamName = $kinesisStreamName;
     }
 
@@ -98,10 +106,10 @@ class DataSet {
      * @param array $config Configuration of the data set to generate
      * @param int $total Total size of the data set to generate
      * @param int $batchSize Total size of the batch to send to Kinesis
-     *
+     * @param string $implementation Implementation to use (kinesis or firehose)
      * @return array The whole generated dataset
      */
-    public function execute(array $config, $total, $batchSize) { 
+    public function execute(array $config, $total, $batchSize, $implementation = 'kinesis') { 
         $this->_dataSet = array();
         $this->_patternFields = array();
         $this->_kinesisBatch = array();
@@ -148,7 +156,7 @@ class DataSet {
 
                 // Push batch to kinesis 
                 if (sizeof($this->_kinesisBatch) == $batchSize) { 
-                    $this->_pushToKinesis();
+                    $this->_push($implementation);
                     $this->_kinesisBatch = array();
                 }
             }
@@ -159,7 +167,7 @@ class DataSet {
 
         // If anything left, push it to Kinesis
         if (sizeof($this->_kinesisBatch) > 0) { 
-            $this->_pushToKinesis();
+            $this->_push($implementation);
         }
 
         \cli::log('Example of a data entry that got generated:');
@@ -331,15 +339,31 @@ class DataSet {
     /**
      * Push current batch to kinesis
      * 
+     * @param string $implementation Implementation to use 
      * @return array Result
      */
-    protected function _pushToKinesis() { 
-        foreach ($this->_kinesisBatch as $record) { 
-            $records[] = array('Data' => json_encode($record), 'PartitionKey' => uniqid(),);
-        }
-        $result = $this->_kinesis->putRecords(array('Records' => $records, 'StreamName' => $this->_kinesisStreamName));
-        \cli::log('Pushing to kinesis a batch of ' . sizeof($records) . ' records to ' . $this->_kinesisStreamName);
+    protected function _push($implementation) { 
+        switch ($implementation) { 
+            case 'kinesis':
+                foreach ($this->_kinesisBatch as $record) { 
+                    $records[] = array('Data' => json_encode($record), 'PartitionKey' => uniqid(),);
+                }
+                $result = $this->_kinesis->putRecords(array('Records' => $records, 'StreamName' => $this->_kinesisStreamName));
+            break;
 
+            case 'firehose': 
+                foreach ($this->_kinesisBatch as $record) { 
+                    $records[] = array('Data' => json_encode($record),);
+                }
+                $result = $this->_kinesisFirehose->putRecordBatch(array('Records' => $records, 'DeliveryStreamName' => $this->_kinesisStreamName));
+            break;
+
+            default:
+                throw new \Exception('Invalid implementation provided : ' . $implementation);
+            break;
+        }
+
+        \cli::log('Pushing a batch of ' . sizeof($records) . ' records to (' . $implementation . ') -> ' . $this->_kinesisStreamName);
         return $result;
     }
 }

@@ -24,6 +24,9 @@ return array(
 
             // Region
             'region' => 'us-west-2',
+
+            // Implementation to use 
+            'implementation' => 'kinesis',
         ),
         'player' => array(
             // Short comment displayed at the top
@@ -46,6 +49,9 @@ return array(
 
             // Region
             'region' => 'us-west-2',
+
+            // Implementation to use 
+            'implementation' => 'firehose',
         ),
     ),
 );
