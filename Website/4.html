@@ -36,6 +36,12 @@
 			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
 			<span class="offscreen">AWS re:Invent</span>
 		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
 	</div>
 </header>
 
@@ -67,14 +73,28 @@
 							2. For the "Cluster name" enter "workshopemrcluster", select your WorkshopKeyPair and click the "Create cluster" button in the bottom right of the window
 						</p>
 
-						<h3 class="overline">PIPELINE 4 - SET UP QUICKSIGHT</h3>
-							<p>
+						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
+						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
+						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-15-content">
+							<p id="cleanup">Please change ${accountid} below to your AWS Account ID. This can be found in your CloudFormation Stack Outputs.</p>
+							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets
+aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+aws iam delete-role --role-name redshift_fullaccess_role
+aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
+aws iam delete-role --role-name firehose_delivery_role
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/TelemetryFHStream"
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/AnalyticsFHStream"
+aws firehose delete-delivery-stream --delivery-stream-name TelemetryFHStream
+aws firehose delete-delivery-stream --delivery-stream-name AnalyticsFHStream
+aws kinesis delete-stream --stream-name TelemetryStream
+aws kinesis delete-stream --stream-name AnalyticsStream
+accountid="$(aws sts get-caller-identity --query "Account" --output text)"
+aws s3api delete-bucket --bucket "${WorkshopBucket}"
+aws s3api delete-bucket --bucket "${WorkshopBucket}"
+</div>
 							</p>
-						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-10-content"><br />
-
 						</div>
-
 					</div>
 				</div>
 			</div>

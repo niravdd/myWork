@@ -36,6 +36,12 @@
 			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
 			<span class="offscreen">AWS re:Invent</span>
 		</a>
+		<nav>
+			<ul>
+				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
+				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
+			</ul>
+		</nav>
 	</div>
 </header>
 
@@ -56,11 +62,11 @@
 					<p class="intro">Now that you've got a feel for a standard analytics pipeline, as well as how you can take a serverless approach, let's look at how you can analyse data as it is passing through a stream.</p>
 					<div class="session">
 						<h3>PIPELINE 3 - ANALYTICS ON THE STREAM</h3>
-						To achieve this we're going to use Kinesis Analytics. The following diagram shows the architecture of this data pipeline:
+						<p>To achieve this we're going to use Kinesis Analytics. The following diagram shows the architecture of this data pipeline:</p>
 						<img src="Pipeline3.png" alt="Analytics Pipeline" /><br /><br />
 
 						<h3 class="overline">PIPELINE 3 - CONFIGURE KINESIS ANALYTICS</h3>
-						<p>For this lab we're going to use Kinesis Analytics in the web console. Please visit <a href="https://us-west-2.console.aws.amazon.com/kinesisanalytics/home?region=us-west-2#/gettingstarted" target="_blank">this link</a> and create an application that connects to the Kinesis Stream <span class="bold">workshopTelemetryStream</span> as the source, the Redshift table "telemetry2" as the destination, and uses the SQL statements below as the Kinesis Analytics Application. If you get stuck, step-by-step instructions are below:
+						<p>For this lab we're going to use Kinesis Analytics in the web console. Please visit <a href="https://us-west-2.console.aws.amazon.com/kinesisanalytics/home?region=us-west-2#/gettingstarted" target="_blank">this link</a> and create an application that uses your <span class="bold">workshopTelemetryStream</span> Kinesis Stream as the source, the Redshift table "telemetry2" as the destination, and uses the SQL statements below as the Kinesis Analytics Application. If you get stuck, step-by-step instructions are below:
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content">
 							<p>
@@ -120,12 +126,10 @@ FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
 						</div>
 
 						<h3 class="overline">PROCEED TO LAB 4</h3>
-						<p>You've now completed Lab 3 - click on the following button to proceed to instructions for the next lab.</p> 
-						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('4')">PROCEED TO LAB 4</a></div></div>
-						<p></p>
-						<p>Note: When a reasonable amount of participants have progressed to Lab 4, we will show a couple of slides to go over:</p>
-						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
-
+						<p>You've now completed Lab 3!</p>
+						<p>Note: When a reasonable amount of participants have progressed to this point, we will pause and present some slides explaining the next lab:</p>
+						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the button below and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
+						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('4','4')">PROCEED TO LAB 4</a></div></div>
 					</div>
 				</div>
 			</div>

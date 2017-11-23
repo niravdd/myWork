@@ -67,175 +67,28 @@
 						<p>If you require assistance in any of the lab exercises, please click on the button at the top-right corner of all of the lab instruction pages to request help. A facilitator will come around to your seat when they are available.
 
 						<h3 class="overline">PRE-REQUISITES</h3>
-						<p>This workshop has some pre-requisites.</p>
+						<p>This workshop has the following pre-requisites:</p>
 						<p>1. You must have your own AWS account</p>
-						<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions here: <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html target="_blank">http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html</a></p>
-						<p>3. You must have SSH installed on your computer. It will be pre-installed on Mac or Linux, but Windows users should use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>. You will also need an EC2 keypair. If you do not have one and need to create a new one, please follow the CLI commands in this section.</p>
+						<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions are available at <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html" target="_blank">this link</a>.</p>
+						<p>3. You must have the AWS CLI installed on your computer, and ensure that it is configured with a user that has AdminAccess using <span class="bold">aws configure</span>.</p>
+						<p>4. You must have SSH installed on your computer. It will be pre-installed on Mac or Linux, but Windows users should use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>. You will also need an EC2 keypair. If you do not have one and need to create a new one, please follow the CLI commands in this section.</p>
 						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-2-content">
-							<div id="code2">## Create a key pair to use for SSH access into the Bastion Host
-aws ec2 create-key-pair --key-name WorkshopKeyPair --query 'KeyMaterial' --output text &gt; WorkshopKeyPair.pem
+							<div id="code1">## Create a key pair to use for SSH access into the Bastion Host
+aws ec2 create-key-pair --region us-west-2 --key-name WorkshopKeyPair --query 'KeyMaterial' --output text &gt; WorkshopKeyPair.pem
 
 ## Grant the file owner (you!) read permission
 chmod 400 WorkshopKeyPair.pem
 </div>
 						</div>
 						</p>
-						<p>4. You must have the AWS CLI installed on your computer, and ensure that it is configured with a user that has AdminAccess using <span class="bold">aws configure</span></p>
-						<!--<p>5. You must enter your Account ID in the following form to ensure the instructions on this page are personalised. This data is not sent to us, it remains in your browser. If you are unsure what your Account ID is, enter:
-						<div id="code8">aws sts get-caller-identity --query "Account" --output text
-						</div>
-						</p>
-						<p>
-						Account ID: &nbsp;&nbsp;&nbsp;<input type="text" value="" id="accountidinput" name="accountidinput" />&nbsp;
-						Keypair: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" value="" id="keypairinput" name="keypairinput" />&nbsp;
-						<button type="button" class="btn" onclick="changetext()">Update script text</button>
-						</p>-->
 
-						<h3 class="overline">DEPLOYING A LANDING ZONE</h3>
-						<p>You must now set up the landing zone for your data pipelines. For this we will use glorious CloudFormation! This template will create a new VPC, subnets, routes, security groups, create a bastion host, and log in for you. We've also included Redshift at this early part of the lab as it takes a few minutes to provision.</p>
-						<p id="keypair">Please enter the following command to create the foundation infrastructure:</p>
-						<div id="code1">#Change ${keypair} to the name of a keypair you have access to.
-aws --region us-west-2 cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=MyWorkshopKeyPair --capabilities CAPABILITY_IAM
-</div><br />
-						<p> Alternatively, you can click <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml" target="_blank">this link to use the Web Console</a></p>
-						<p>This CloudFormation stack will take about 15 minutes to build.</p>
-
-						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
-						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline! The pipeline is described in the following diagram:<br />
-							<img src="Pipeline1.png" alt="Analytics Pipeline" /><br /><br />
-							Start by logging into the instance. You'll need to grab your KeyPair filename, as well as the BastionPublicDNS from the Outputs of your CloudFormation stack. This can be found at this link.
-						</p>
-						<div id="code3"># This will show all the Outputs from the CloudFormation stack you created.
-aws cloudformation describe-stacks --stack-name GamingWorkshopStack
-
-# Look for the BastionPublicDNS Output value, then replace ${WorkshopKeyPair.pem} with your keypair .pem file, and ${BastionPublicDNS} with the Output from your CloudFormation template.
-ssh -i ${WorkshopKeyPair.pem}; ec2-user@${BastionPublicDNS}
-</div><br />
-						<p>Now that you're in the instance, configure the AWS CLI to use your account credentials and create your Kinesis streams!
-						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-3-content">
-							<p><div id="code4">##Configure the AWS CLI inside the Bastion Host
-aws configure
-# Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
-
-## Create your Kinesis stream for analytics
-aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10
-## Create your Kinesis stream for telemetry
-aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10
-</div>
-							</p>
-						</div>
-
-						<h3 class="overline">PIPELINE 1 - CREATE YOUR FIREHOSE DELIVERY STREAMS</h3>
-						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
-						<div class="indent-show" id="1-4-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-4-button', '1-4-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-4-content">
-							<div id="code5"># Create a Role for Firehose from the Policy document provided
-aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
-
-# Apply a Firehose policy to the Firehose Role
-aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
-
-## Create a log group and streams for analytics
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "RedshiftDelivery"
-
-## Create a log group and streams for telemetry
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "RedshiftDelivery"
-
-## Create a log group and streams for telemetry - direct stream
-aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "S3Delivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "RedshiftDelivery"
-
-## Create a log group and streams for Kinesis Analytics' App
-aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"
-aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery"
-aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "FirehoseDelivery"
-
-# Create a Kinesis Firehose Delivery Stream for analytics. Replace ${accountid} with the Output from your CloudFormation template.
-aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
-
-# Create a Kinesis Firehose Delivery Stream for telemetry. Replace ${accountid} with the Output from your CloudFormation template.
-aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
-
-# Create a Kinesis Firehose Delivery Stream for analytics on the stream.
-aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json
-</div></p>
+						<h3 class="overline">PLEASE ENTER YOUR SEAT NUMBER</h3>
+						<p>Let's start the first lab! Please enter your seat number below.</p>
+						<div class="indent-show"><div class="expand"><input type="text" id="seat">&nbsp;<a class="border" href="javascript:void();" onClick="validateSeat();">SUBMIT</a>&nbsp;<span id="message">&nbsp;</span></div></div>
 						</div>
 
 
-						<h3 class="overline">PIPELINE 1 - CREATE REDSHIFT TABLES</h3>
-						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups, your game bot and Redshift. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "ClusterEndpoint" Output of this Stack.</p>
-						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-5-content">
-							<p id="redshifttables"><div id="code6"># Connect to the Redshift DB and create the tables in Redshift. To do this, copy the "ConnectCmd" from your CloudFormation stack Output into your SSH terminal. It should look like this:
-pgcli postgres://wsuser:wsPassword0@workshopcluster.${redshiftClusterEndpoint}.us-west-2.redshift.amazonaws.com:5439/workshopdb
-create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
-
-create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
-</div>
-							</p>
-						</div>
-
-						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
-						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis.</p>
-							<p>1. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a> if you don't already have your CloudFormation Output parameters open. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "GameBotURLPublicDns" Output of this Stack. This will open a website hosted on your EC2 instance where the GameBot resides.</p>
-							<p>2. Click on the "Generate" button. This will start a script that posts data to your "workShopTelemetryStream" Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of..."</p>
-							<p>2. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
-							<p>3. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a>monitoring window to see your data propagating.</p>
-
-						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
-						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>
-						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-10-content"><br />
-							<p>1. Go to <a href="https://quicksight.aws" target="_blank">https://quicksight.aws.amazon.com/sn/console/signup</a> or select "QuickSight" in the Console.</p>
-							<p>2. Select "Sign Up For Free" (or "Sign In" if you've used it before and have an account)</p>
-							<p>3. Select "Continue" to select the Standard edition</p>
-							<p>4. Click the "Go to Amazon QuickSight" button.</p>
-							<p>5. Enter your name and email address, and for the "QuickSight capacity region" select "US West (Oregon)" and click "Create".</p>
-							<p>6. Click the "New analysis" button in the top left</p>
-							<p>7. Click the "New data set" button in the top left</p>
-							<p>8. Click the "Redshift - Auto-discovered" button</p>
-							<p>9. A "New Redshift data source" window will appear. For the "Data source name" enter "GamingWorkshopRedshift". For "Instance ID" click the drop-down arrow on the right of the selection box, and select "workshopcluster". The "Database name" should be automatically populated with "workshopdb", but you will need to enter a "Username" of "wsuser" and "Password" of "wsPassword0". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
-							<p>10. Select "telemetry1" and click the "Select" button on the bottom right</p>
-							<p>11. Select "Directly query your data" and click the "Visualize" button on the bottom right</p>
-							<p>12. Explore your data!</p>
-							</pre>
-						</div>
-
-						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
-						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
-						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-15-content">
-							<p id="cleanup"><div id="code7">aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
-aws iam delete-role --role-name redshift_fullaccess_role
-aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
-aws iam delete-role --role-name firehose_delivery_role
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/TelemetryFHStream"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/AnalyticsFHStream"
-aws firehose delete-delivery-stream --delivery-stream-name TelemetryFHStream
-aws firehose delete-delivery-stream --delivery-stream-name AnalyticsFHStream
-aws kinesis delete-stream --stream-name TelemetryStream
-aws kinesis delete-stream --stream-name AnalyticsStream
-accountid="$(aws sts get-caller-identity --query "Account" --output text)"
-aws s3api delete-bucket --bucket "workshop-data-${accountid}"
-aws s3api delete-bucket --bucket "workshop-bot-${accountid}"
-# Delete QuickSight
-</div>
-							</p>
-						</div>
-
-						<h3 class="overline">PROCEED TO LAB 2</h3>
-						<p>You've now completed Lab 1 - click on the following button to proceed to instructions for the next lab.</p> 
-						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('2')">PROCEED TO LAB 2</a></div></div>
-						<p></p>
-						</div>
-						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the above button and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
 					</div>
 				</div>
 			</div>
@@ -247,6 +100,46 @@ aws s3api delete-bucket --bucket "workshop-bot-${accountid}"
 	</div>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
 	<script>
+		function validateSeat() {
+			var seat = document.getElementById("seat").value ;
+			if (isNaN(seat) || seat < 1 || seat > 120) {
+				// Not valid - show error
+				document.getElementById("message").innerHTML = 'Please enter a seat number between 1 & 120';
+				setTimeout(function() {
+					document.getElementById("message").innerHTML = '&nbsp;';
+				}, 5000);
+			} else {
+				// Initialize the Amazon Cognito credentials provider
+				AWS.config.region = 'us-west-2'; // Region
+				AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+					IdentityPoolId: 'us-west-2:b41e82e7-43db-4d15-9509-de05d39f00ff',
+				});
+
+				var input = {
+					seat: document.getElementById("seat").value,
+					lab: '1'
+				}
+
+				var lambda = new AWS.Lambda();
+				lambda.invoke({
+					FunctionName: 'gam310WorkshopUpdate',
+					Payload: JSON.stringify(input)
+				}, function (err, data) {
+					if (err) {
+						console.log(err, err.stack);
+						document.getElementById("message").innerHTML = 'There was a problem registering your seat in the backend database';
+						setTimeout(function() {
+							document.getElementById("message").innerHTML = '&nbsp;';
+						}, 5000);
+					} else {
+						window.location.href = '/1.html?seat=' + document.getElementById("seat").value;
+					}
+				})
+
+			}
+		}
+	</script>
+	<script>
 		var code1 = ace.edit("code1");
 		code1.setTheme("ace/theme/idle_fingers");
     	code1.getSession().setMode("ace/mode/snippets");
@@ -257,76 +150,7 @@ aws s3api delete-bucket --bucket "workshop-bot-${accountid}"
     		maxLines: code1.session.getLength()
     	});
 	</script>
-	<script>
-		var code2 = ace.edit("code2");
-		code2.setTheme("ace/theme/idle_fingers");
-    	code2.getSession().setMode("ace/mode/snippets");
-    	code2.setReadOnly(true);
-    	code2.setShowPrintMargin(false);
-    	code2.setOptions({
-    		maxLines: code2.session.getLength()
-    	});
-	</script>
-	<script>
-		var code3 = ace.edit("code3");
-		code3.setTheme("ace/theme/idle_fingers");
-    	code3.getSession().setMode("ace/mode/snippets");
-    	code3.setReadOnly(true);
-    	code3.setShowPrintMargin(false);
-    	code3.setOptions({
-    		maxLines: code3.session.getLength()
-    	});
-	</script>
-	<script>
-		var code4 = ace.edit("code4");
-		code4.setTheme("ace/theme/idle_fingers");
-    	code4.getSession().setMode("ace/mode/snippets");
-    	code4.setReadOnly(true);
-    	code4.setShowPrintMargin(false);
-    	code4.setOptions({
-    		maxLines: code4.session.getLength()
-    	});
-	</script>
-	<script>
-		var code5 = ace.edit("code5");
-		code5.setTheme("ace/theme/idle_fingers");
-    	code5.getSession().setMode("ace/mode/snippets");
-    	code5.setReadOnly(false);
-    	code5.setShowPrintMargin(false);
-    	code5.setOptions({
-    		maxLines: code5.session.getLength()
-    	});
-	</script>
-	<script>
-		var code6 = ace.edit("code6");
-		code6.setTheme("ace/theme/idle_fingers");
-    	code6.getSession().setMode("ace/mode/snippets");
-    	code6.setReadOnly(false);
-    	code6.setShowPrintMargin(false);
-    	code6.setOptions({
-    		maxLines: code6.session.getLength()
-    	});
-	</script>
-	<script>
-		var code7 = ace.edit("code7");
-		code7.setTheme("ace/theme/idle_fingers");
-    	code7.getSession().setMode("ace/mode/snippets");
-    	code7.setReadOnly(true);
-    	code7.setShowPrintMargin(false);
-    	code7.setOptions({
-    		maxLines: code7.session.getLength()
-    	});
-	</script>
-	<script>
-		var code8 = ace.edit("code8");
-		code8.setTheme("ace/theme/idle_fingers");
-    	code8.getSession().setMode("ace/mode/snippets");
-    	code8.setReadOnly(true);
-    	code8.setShowPrintMargin(false);
-    	code8.setOptions({
-    		maxLines: code8.session.getLength()
-    	});
-	</script>
+
 </body>
 
 </html>
