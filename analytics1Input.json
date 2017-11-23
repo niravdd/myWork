@@ -1,6 +1,6 @@
 {
     "RedshiftDestinationConfiguration": {
-        "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+        "RoleARN": "arn:aws:iam::varAccountID:role/wsfirehose_delivery_role",
         "ClusterJDBCURL": "jdbc:redshift://varRedshiftClusterEndpoint:5439/workshopdb",
         "CopyCommand": {
             "DataTableName": "analytics1",
@@ -13,7 +13,7 @@
             "DurationInSeconds": 300
         },
         "S3Configuration": {
-            "RoleARN": "arn:aws:iam::varAccountID:role/firehose_delivery_role",
+            "RoleARN": "arn:aws:iam::varAccountID:role/wsfirehose_delivery_role",
             "BucketARN": "arn:aws:s3:::varBucketName",
             "Prefix": "analytics1",
             "BufferingHints": {

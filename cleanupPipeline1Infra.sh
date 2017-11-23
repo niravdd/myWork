@@ -131,8 +131,8 @@ aws ec2 delete-security-group --group-id varRedshiftsgid
 aws s3 rb s3://varBucketName --force
 aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 aws iam delete-role --role-name redshift_fullaccess_role
-aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
-aws iam delete-role --role-name firehose_delivery_role
+aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy
+aws iam delete-role --role-name wsfirehose_delivery_role
 aws iam delete-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy
 aws iam delete-role --role-name kinesisanalytics_delivery_role
 aws logs delete-log-group --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"

@@ -137,8 +137,8 @@ echo -e "## Creating the roles now..."
 aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
 aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy --policy-document file://iam-redshift-policy.json
 
-aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
-aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+aws iam create-role --role-name wsfirehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
+aws iam put-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
 
 aws iam create-role --path /service-role/ --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json
 aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --policy-document file://iam-ka-policy.json
@@ -230,10 +230,10 @@ aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelem
 
 echo -e "## Analytics' Firehose Stream..."
 sleep 15
-aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
+aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/wsfirehose_delivery_role" --cli-input-json file://analytics1Input.json
 echo -e "## Telemetry(1) Firehose Stream..."
 sleep 15
-aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
+aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/wsfirehose_delivery_role" --cli-input-json file://telemetry1Input.json
 echo -e "## Telemetry(2) Firehose Stream..."
 sleep 15
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json

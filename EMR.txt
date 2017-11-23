@@ -1,0 +1,62 @@
+EMR:
+1. Update Master instance security group to include VPC/subnet & your local IP for port 22 & 8890
+2. ssh to master instance
+3. sudo su - hadoop
+4. hive
+5. Create DB, Create Table -- just like Athena
+CREATE DATABASE workshopDB;
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopDB.telemetry1 (
+  `datestamp` string,
+  `playerid` bigint,
+  `playerlevel` string,
+  `squadelementmap` string,
+  `gamenumber` int,
+  `squadpower` int,
+  `squadagility` int,
+  `squadhealth` int,
+  `squadluck` int,
+  `squadspecial` int,
+  `squadguard` int,
+  `squaddamage` int,
+  `gameplayseconds` int,
+  `bosspower` int,
+  `bossagility` int,
+  `bosshealth` int,
+  `bossluck` int,
+  `bossspecial` int,
+  `bossguard` int,
+  `bossdamage` int,
+  `result` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://workshop-data-505314836537/telemetry12017/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+
+6. Run SQL Queries:
+- select count(*) from workshopdb.telemetry1;
+- select * from workshopdb.telemetry1 where result='DNF' limit 100;
+- quit;
+7. ps aux | grep zeppelin - Verify that the service is running
+8. sudo ./usr/lib/zeppelin/bin/zeppelin-daemon.sh status (or start/restart/stop)
+9. For Zeppelin troubleshooting - check: /etc/spark/conf/spark-defaults.conf on the master node
+
+10. ssh -i <pemfile> -L8890:<target>:8890 hadoop@<targetIP>
+
+------------
+import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.types.{IntegerType, StringType}
+
+val schema = (new StructType).add("datestamp", StringType).add("playerid", IntegerType).add("playerlevel", StringType).add("squadelementmap", StringType).add("gamenumber", IntegerType).add("squadpower", IntegerType).add("squadagility", IntegerType).add("squadhealth", IntegerType).add("squadluck", StringType).add("squadspecial", StringType).add("squadguard", StringType).add("squaddamage", StringType).add("gameplayseconds", StringType).add("bosspower", StringType).add("bossagility", IntegerType).add("bosshealth", IntegerType).add("bossluck", IntegerType).add("bossspecial", IntegerType).add("bossguard", IntegerType).add("bossdamage", IntegerType).add("result", StringType)
+
+val df = sqlContext.read.schema(schema).json("s3://kinesis-bot-datagen/oneBigFile.json")
+
+df.registerTempTable("myWorkshop")
+------------
+%sql
+select squadelementmap, count(squadelementmap) FROM myWorkshop group by squadelementmap order by squadelementmap
+------------
+%sql
+select playerlevel, count(playerlevel) from myWorkshop group by playerlevel order by playerlevel
+------------
