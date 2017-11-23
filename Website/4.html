@@ -62,8 +62,7 @@
 					<p class="intro">You've now configured 3 different data pipelines. Now we will use Elastic Map Reduce to build your last pipeline for this workshop, which is the most appropriate solution for processing Big Data sets.</p>
 					<div class="session">
 						<h3>PIPELINE 4 - BIG DATA ANALYTICS</h3>
-						<p></p>
-						The data pipeline architecture for this lab is shown in the following diagram:
+						<p>The data pipeline architecture for this lab is shown in the following diagram:</p>
 						<img src="Pipeline4.png" alt="Analytics Pipeline" /><br /><br />
 						
 						<h3 class="overline">PIPELINE 4 - CONFIGURE ELASTIC MAP REDUCE (EMR)</h3>
@@ -77,7 +76,7 @@
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-15-content">
-							<p id="cleanup">Please change ${accountid} below to your AWS Account ID. This can be found in your CloudFormation Stack Outputs.</p>
+							<p id="cleanup">Please replace ${WorkshopBucket} below with your "WorkshopBucket" Output from your CloudFormation Stack.</p>
 							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets
 aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 aws iam delete-role --role-name redshift_fullaccess_role

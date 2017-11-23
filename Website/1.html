@@ -83,30 +83,23 @@ aws --region us-west-2 cloudformation describe-stack-resources --stack-name Gami
 ssh -i ${WorkshopKeyPair.pem}; ec2-user@${BastionPublicDNS}
 </div><br />
 						<p>Now that you're in the instance, configure the AWS CLI to use your account credentials and create your Kinesis streams!
-						<p><div id="code3">##Configure the AWS CLI inside the Bastion Host
-aws configure
-# Use your existing AWS Access Key ID, AWS Secret Access Key, Default region name=us-west-2 and leave the Default output format empty (just hit Enter)
-
-# Upgrade your AWS CLI to the latest version
-sudo pip install awscli --upgrade --user
-
-## Create your Kinesis stream for analytics
+						<p><div id="code3"># Create your Kinesis stream for analytics
 aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10
-## Create your Kinesis stream for telemetry
+# Create your Kinesis stream for telemetry
 aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10
 </div>
 							</p>
 						</div>
 
 						<h3 class="overline">PIPELINE 1 - CREATE YOUR FIREHOSE DELIVERY STREAMS</h3>
-						<p>Your Firehose policy is ready to go! Let's apply it, then set up your log groups and Redshift.</p>
+						<p>Now you need to set up your role and policies, log groups and Firehose Streams.</p>
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content">
 							<div id="code4"># Create a Role for Firehose from the Policy document provided
-aws iam create-role --role-name firehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
+aws iam create-role --role-name wsfirehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
 
 # Apply a Firehose policy to the Firehose Role
-aws iam put-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
+aws iam put-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
 
 ## Create a log group and streams for analytics
 aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
@@ -129,10 +122,10 @@ aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelem
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "FirehoseDelivery"
 
 # Create a Kinesis Firehose Delivery Stream for analytics. Replace ${accountid} with the Output from your CloudFormation template.
-aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://analytics1Input.json
+aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:263991896715:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::263991896715:role/wsfirehose_delivery_role" --cli-input-json file://analytics1Input.json
 
 # Create a Kinesis Firehose Delivery Stream for telemetry. Replace ${accountid} with the Output from your CloudFormation template.
-aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:${accountid}:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::${accountid}:role/firehose_delivery_role" --cli-input-json file://telemetry1Input.json
+aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:263991896715:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::263991896715:role/wsfirehose_delivery_role" --cli-input-json file://telemetry1Input.json
 
 # Create a Kinesis Firehose Delivery Stream for analytics on the stream.
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json
@@ -148,6 +141,8 @@ pgcli postgres://wsuser:wsPassword0@workshopcluster.${redshiftClusterEndpoint}.u
 create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
 
 create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
+
+create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 </div>
 							</p>
 						</div>
@@ -157,7 +152,9 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 							<p>1. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a> if you don't already have your CloudFormation Output parameters open. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "GameBotURLPublicDns" Output of this Stack. This will open a website hosted on your EC2 instance where the GameBot resides.</p>
 							<p>2. Click on the "Generate" button. This will start a script that posts data to your "workShopTelemetryStream" Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of..."</p>
 							<p>3. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
-							<p>4. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p>
+							<p>4. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
+							<p>It will take a few minutes for Firehose to push the data to Redshift.<br />
+								(Optional) You can check the data is being pushed in by running a query like SELECT * FROM telemetry1 LIMIT 10; in your PGCLI terminal, or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page for your <span class="bold">workshopTelemetryFH</span> Delivery Stream.
 
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
 						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>

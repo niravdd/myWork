@@ -439,6 +439,7 @@ Resources:
           - logs:*
           - sns:*
           - kinesis:*
+          - firehose:*
           - redshift:*
           Resource: "*"
       Roles:
@@ -477,7 +478,7 @@ Resources:
           #!/bin/bash -xe
           yum install php71.x86_64 httpd24 python-pip gcc postgresql-devel python-devel -y
           pip install pgcli
-          pip install awscli --upgrade --user
+          pip install awscli --upgrade
           service httpd start
           chkconfig httpd on
           groupadd www
