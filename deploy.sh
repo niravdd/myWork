@@ -15,6 +15,7 @@ aws s3 cp telemetry1Input.json "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp telemetry2Input.json "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp kinesisAnalyticsInput.json "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/index.html "s3://"$BUCKETNAME"/" --acl public-read
+aws s3 cp Website/1.html "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/2.html "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/3.html "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/4.html "s3://"$BUCKETNAME"/" --acl public-read
@@ -22,5 +23,7 @@ aws s3 cp Website/Pipeline1.png "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/Pipeline2.png "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/Pipeline3.png "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/Pipeline4.png "s3://"$BUCKETNAME"/" --acl public-read
-aws s3 cp Website/gam310.js "s3://"$BUCKETNAME"/" --acl public-read
 aws s3 cp Website/style.css "s3://"$BUCKETNAME"/" --acl public-read
+aws s3 cp Website/gam310.js "s3://"$BUCKETNAME"/" --acl public-read
+aws s3 cp Website/gam310WorkshopHelp.js "s3://"$BUCKETNAME"/" --acl public-read
+aws s3 cp Website/gam310WorkshopUpdate.js "s3://"$BUCKETNAME"/" --acl public-read
