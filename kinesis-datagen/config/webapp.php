@@ -3,18 +3,18 @@
 return array(
     // List of config profiles available 
     'configProfiles' => array(
-        'game' => array(
+        'telemetry' => array(
             // Short comment displayed at the top
-            'comment' => 'This template will generate some youpi ...',
+            'comment' => 'This template will simulate a game being run numerous times',
 
             // Filename must be spelled the same as the filename in the config/ folder
-            'filename' => 'game-base.template.php',
+            'filename' => 'telemetry.php',
 
             // Name of an existing Kiensis stream
-            'streamName' => 'elasticsearch-stream-01',
+            'streamName' => 'workshopTelemetryStream',
 
             // Total number of entries generated
-            'total' => 500,
+            'total' => 5000,
 
             // Size of the batch to send to Kinesis
             'batchSize' => 400,
@@ -27,19 +27,19 @@ return array(
         ),
         'player' => array(
             // Short comment displayed at the top
-            'comment' => 'This template will generate some blah blah ...',
+            'comment' => 'This template will generate some player profile data',
 
             // Filename must be spelled the same as the filename in the config/ folder
             'filename' => 'sample.template.php',
 
             // Name of an existing Kiensis stream
-            'streamName' => 'stream01',
+            'streamName' => 'workshopAnalyticsStream',
 
             // Total number of entries generated
             'total' => 1000,
 
             // Size of the batch to send to Kinesis
-            'batchSize' => 800,
+            'batchSize' => 500,
 
             // Interval for loop in ms
             'interval' => 20000,

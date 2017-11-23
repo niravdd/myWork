@@ -91,7 +91,8 @@ On_IWhite='\033[0;107m'   # White
 echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
 echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E            ${Color_Off}\n\n"
 echo -e "## ${BIWhite}Action Required:${Color_Off}"
-echo -e "## Please ensure you have run the ${BIBlue}baseInfraScript.sh${Color_Off} prior to starting this - else this script will encounter failures.\n\n"
+echo -e "## Please ensure you have run the ${BIBlue}baseInfraScript.sh${Color_Off} OR the ${BIBlue}gam310-workshop-cfn${ColorOff} CloudFormation template"
+echo -e "   prior to starting this - or else this script will encounter failures.\n\n"
 read -n 1 -p "## Are you good to proceed with this script (any key)? Respond with 'N' if you want to abort and update. [Y/N]: " userResponse
 if [ "$userResponse" = 'N' ] || [ "$userResponse" = 'n' ]; then
 	echo -e "\n\n## ${BIRed}ABORTED${Color_Off}: Please update and restart the script.\n\n"

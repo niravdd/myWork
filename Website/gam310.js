@@ -11,11 +11,11 @@ function reveal(button, content) {
 }
 
 function changetext() {
-	document.getElementById("keypair").innerHTML = document.getElementById("keypair").innerHTML.replace(/\%KEYPAIR\%/g,document.getElementById("keypairinput").value);
+	document.getElementById("cfn").innerHTML = document.getElementById("cfn").innerHTML.replace(/\${keypair}/g,document.getElementById("keypairinput").value);
 	document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
 	document.getElementById("cleanup").innerHTML = document.getElementById("cleanup").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
 }
 
 function changeredshifttext() {
-	document.getElementById("redshifttables").innerHTML = document.getElementById("redshifttables").innerHTML.replace(/\%REDSHIFTCLUSTER\%/g,document.getElementById("redshiftinput").value);
+	document.getElementById("code6").innerHTML = document.getElementById("code6").innerHTML.replace(/\redshiftClusterEndpoint/g,document.getElementById("redshiftinput").value);
 }

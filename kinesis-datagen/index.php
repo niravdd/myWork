@@ -114,8 +114,8 @@ catch (\Exception $e) {
   <body id="container">
     <div class="site-wrapper">
       <div class="site-wrapper-inner">
+        <img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" /><h1>GAM310 GameBot!</h1><br /><br />
          <div class="form-group">
-         <label for="exampleFormControlTextarea1">DataGenerator <?php echo isset($comment) ? ' - ' . $comment : null; ?></label>
             <form name="frmConfig" id="frmConfig" action="?" method="get">
                 <select class="small thick" name="configProfile">
                 <?php
@@ -128,7 +128,8 @@ catch (\Exception $e) {
                 }
                 ?> 
                 </select>
-                <button type="submit" class="btn btn-primary">Load configuration profile</button>
+                <button type="submit" class="btn btn-primary">Load configuration profile</button><br />
+                <label for="exampleFormControlTextarea1">DataGenerator <?php echo isset($comment) ? ' - ' . $comment : null; ?></label>
             </form>
          </div>
          <form name="frm" id="frm" action="?" method="post">

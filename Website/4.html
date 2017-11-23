@@ -36,12 +36,6 @@
 			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
 			<span class="offscreen">AWS re:Invent</span>
 		</a>
-		<nav>
-			<ul>
-				<li id="help_message"><a href="javascript:void();">&nbsp;</a></li>
-				<li class="border"><a href="javascript:void();" onClick="help()" class="trkAnchor">CLICK TO REQUEST HELP</a></li>
-			</ul>
-		</nav>
 	</div>
 </header>
 
@@ -59,29 +53,23 @@
 		<section id="section-sessions" class="page-section dark">
 			<div class="central-column">
 				<div class="indent">
-					<p class="intro">In the first lab, you configured Kinesis Streams and a Redshift instance, then configured Kinesis Firehose to pipe data from the Stream to Redshift. You then explored the data in QuickSight.In Lab 2 you will use Athena to see how a serverless approach can still give you interactive SQL access to your game data.</p>
+					<p class="intro">You've now configured 3 different data pipelines. Now we will use Elastic Map Reduce to build your last pipeline for this workshop, which is the most appropriate solution for processing Big Data sets.</p>
 					<div class="session">
 						<h3>PIPELINE 4 - BIG DATA ANALYTICS</h3>
-						<p>For this lab we're going to use the web console. Please log into the following URL: <span class="bold">https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2</span></p>
-						<img src="Pipeline2.png" alt="Analytics Pipeline" /><br /><br />
-						<h3 class="overline">PIPELINE 2 - CONFIGURE AMAZON ATHENA</h3>
+						<p></p>
+						The data pipeline architecture for this lab is shown in the following diagram:
+						<img src="Pipeline4.png" alt="Analytics Pipeline" /><br /><br />
+						
+						<h3 class="overline">PIPELINE 4 - CONFIGURE ELASTIC MAP REDUCE (EMR)</h3>
 						<p>
-
+							For this lab we're going to use the web console to use Elastic Map Reduce. Visit the Elastic Map Reduce page at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>. Please follow these instructions:<br />
+							1. Click the "Create cluster" button on the top left
+							2. For the "Cluster name" enter "workshopemrcluster", select your WorkshopKeyPair and click the "Create cluster" button in the bottom right of the window
 						</p>
 
-						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-5-content">
-							<p id="redshifttables"><div id="code1"># Connect to the Redshift DB and create the tables in Redshift. Copy the Cluster ID from your CloudFormation stack output into the %REDSHIFTCLUSTER% placeholder here.
-pgcli postgres://wsuser:wsPassword0@workshopcluster.%REDSHIFTCLUSTER%.us-west-2.redshift.amazonaws.com:5439/workshopdb
-create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamp, walletbalance real, playerlevel varchar(16), status varchar(16));
-
-create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, squadinventoryitemcount int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
-</div>
+						<h3 class="overline">PIPELINE 4 - SET UP QUICKSIGHT</h3>
+							<p>
 							</p>
-						</div>
-
-						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
-						<p>Let's get QuickSight working!</p>
 						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-10-content"><br />
 
