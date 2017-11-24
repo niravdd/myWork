@@ -82,12 +82,13 @@ aws --region us-west-2 cloudformation describe-stack-resources --stack-name Gami
 # Look for the BastionPublicDNS Output value, then replace ${WorkshopKeyPair.pem} with your keypair .pem file, and ${BastionPublicDNS} with the Output from your CloudFormation template.
 ssh -i ${WorkshopKeyPair.pem} ec2-user@${BastionPublicDNS}
 </div><br />
-						<p>Now that you're in the instance, you are going to create your Kinesis Streams! We've created a script that will set up your security and create the Kinesis Streams and Kinesis Firehose Streams for you. To run the script, execute the following command from your Bastion Host.
+						<p>Now that you're in the instance, you are going to create your Kinesis Streams! We've created a script that will set up your security and create the Kinesis Streams and Kinesis Firehose Streams for you. To run the script, execute the following command from your Bastion Host.</p>
 						<p><div id="code3">./pipeline1Script.sh
 </div>
-							</p>
-						</div>
-						<p>
+						</p>
+						<p>If you have problems creating the SQL commands, they are available here:</p>
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-1-content"><p>
 							<div id="code5"># Connect to the Redshift DB and create the tables in Redshift. To do this, copy the "ClusterEndpointConnectCmd" from your CloudFormation stack Output into your SSH terminal. It should look like this:
 pgcli postgres://wsuser:wsPassword0@${redshiftClusterEndpoint}:5439/workshopdb --prompt "GAM310_\u@\d> "
 create table analytics1 (playerip varchar(16), handle varchar(40), email varchar(128), uuid varchar(64), playerid bigint, country varchar(64), useragent varchar(128), datestamp timestamptz, walletbalance real, playerlevel varchar(16), status varchar(16));
@@ -132,7 +133,6 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 						<p>Note: When a reasonable amount of participants have progressed to this point, we will pause and present some slides explaining the next lab:</p>
 						<p>If you're keen, it's perfectly fine to proceed - but it's recommended that you hit the button below and then take a break for a moment until a reasonable number of participants are ready to proceed.</p>
 						<div class="indent-show" id="next-lab-button"><div class="expand"><a class="border" href="javascript:void();" onClick="nextLab('2','2')">PROCEED TO LAB 2</a></div></div>
-						</div>
 					</div>
 				</div>
 			</div>
