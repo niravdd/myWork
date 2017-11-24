@@ -35,9 +35,9 @@ WITH SERDEPROPERTIES (
 TBLPROPERTIES ('has_encrypted_data'='false');
 
 6. Run SQL Queries:
-- select count(*) from workshopdb.telemetry1;
-- select * from workshopdb.telemetry1 where result='DNF' limit 100;
-- quit;
+select count(*) from workshopdb.telemetry1;
+select * from workshopdb.telemetry1 where result='DNF' limit 100;
+quit;
 7. ps aux | grep zeppelin - Verify that the service is running
 8. sudo ./usr/lib/zeppelin/bin/zeppelin-daemon.sh status (or start/restart/stop)
 9. For Zeppelin troubleshooting - check: /etc/spark/conf/spark-defaults.conf on the master node
@@ -48,9 +48,9 @@ TBLPROPERTIES ('has_encrypted_data'='false');
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.types.{IntegerType, StringType}
 
-val schema = (new StructType).add("datestamp", StringType).add("playerid", IntegerType).add("playerlevel", StringType).add("squadelementmap", StringType).add("gamenumber", IntegerType).add("squadpower", IntegerType).add("squadagility", IntegerType).add("squadhealth", IntegerType).add("squadluck", StringType).add("squadspecial", StringType).add("squadguard", StringType).add("squaddamage", StringType).add("gameplayseconds", StringType).add("bosspower", StringType).add("bossagility", IntegerType).add("bosshealth", IntegerType).add("bossluck", IntegerType).add("bossspecial", IntegerType).add("bossguard", IntegerType).add("bossdamage", IntegerType).add("result", StringType)
+val newSchema = (new StructType).add("datestamp", StringType).add("playerid", IntegerType).add("playerlevel", StringType).add("squadelementmap", StringType).add("gamenumber", IntegerType).add("squadpower", IntegerType).add("squadagility", IntegerType).add("squadhealth", IntegerType).add("squadluck", StringType).add("squadspecial", StringType).add("squadguard", StringType).add("squaddamage", StringType).add("gameplayseconds", StringType).add("bosspower", StringType).add("bossagility", IntegerType).add("bosshealth", IntegerType).add("bossluck", IntegerType).add("bossspecial", IntegerType).add("bossguard", IntegerType).add("bossdamage", IntegerType).add("result", StringType)
 
-val df = sqlContext.read.schema(schema).json("s3://kinesis-bot-datagen/oneBigFile.json")
+val df = sqlContext.read.schema(newSchema).json("s3://gam310-2017/oneBigFile.json")
 
 df.registerTempTable("myWorkshop")
 ------------

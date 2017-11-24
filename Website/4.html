@@ -67,24 +67,130 @@
 						
 						<h3 class="overline">PIPELINE 4 - Big Data Analytics with Amazon EMR</h3>
 						<p>
-							For this lab we're going to use the web console to use Amazon Elastic MapReduce (EMR). Visit the Amazon EMR page at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>. Please follow these instructions:<br />
-							1. From the "Clusters" on the left, click the "Create Cluster" button
-							2. Click the "Go to Advanced Options" link there, next to the page title
-							3. Choose "Release": "emr-5.10.0" in the Software Configuration
-							4. Enable "Hadoop 2.7.3", "Presto 0.187", "Pig 0.17.0", "Hue 4.0.1", "Zeppelin 0.7.3", "Hive 2.3.1", "Spark 2.2.0". You can choose to enable others there, however we will use these primarily for the guided section of the workshop.
-							5. Enable all the "AWS Glue Data Catalog settings" - "Use for Hive table metadata", "Use for Presto table metadata" and "Use for Spark table metadata"
-							6. Click on the Next button to proceed to the Hardware configuration
-							7. Choose the VPC you have been using for the workshop from the "Network" dropdown. Choose any one subnet for the EC2 Subnet dropdown.
-							8. Review and verify the configuration - It should have an Instance count of 1 for Master Node type, Instance count of 2 for Core Node types and Instance count of 0 for Task Node types. Change the Instance count for Task Node types to 1.
-							9. Click the Next button to proceed to the General Cluster Settings.
-							10. Provide the "Cluster Name" as "workshopEMRCluster"
-							11. 
+							For this lab we're going to use the web console to use Amazon Elastic MapReduce (EMR). Visit the Amazon EMR page at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>. Please follow these instructions:<br /><br />
+							1. From the "Clusters" on the left, click the "Create Cluster" button<br />
+							<br /><img src="Step1.png" alt="Step 1" /><br /><br /><br />
+							2. Click the "Go to Advanced Options" link there, next to the page title<br />
+							<br /><img src="Step2.png" alt="Step 2" /><br /><br /><br />
+							3. Choose "Release": "emr-5.10.0" in the Software Configuration<br />
+							4. Enable "Hadoop 2.7.3", "Presto 0.187", "Pig 0.17.0", "Hue 4.0.1", "Zeppelin 0.7.3", "Hive 2.3.1", "Spark 2.2.0". You can choose to enable others there, however we will use these primarily for the guided section of the workshop.<br />
+							5. Enable all the "AWS Glue Data Catalog settings" - "Use for Hive table metadata", "Use for Presto table metadata" and "Use for Spark table metadata"<br />
+							6. Click on the Next button to proceed to the Hardware configuration<br />
+							<br /><img src="Steps3-4-5-6.png" alt="Step 3, 4, 5, 6" /><br /><br /><br />
+							7. Choose the VPC you have been using for the workshop from the "Network" dropdown. Choose any one subnet for the EC2 Subnet dropdown.<br />
+							8. Review and verify the configuration - It should have an Instance count of 1 for Master Node type, Instance count of 2 for Core Node types and Instance count of 0 for Task Node types. Change the Instance count for Task Node types to 1.<br />
+							9. Click the Next button to proceed to the General Cluster Settings<br />
+							<br /><img src="Steps7-8-9.png" alt="Steps 7, 8, 9" /><br /><br /><br />
+							10. Provide the "Cluster Name" as "workshopEMRCluster"<br />
+							11. Ensure you have a logging bucket configured. If no other bucket is available, use the workshop-bucket with a new prefix - like "emrlogs" or similar. Keep a note of the bucket name &amp; the prefix - so you can refer to it and view the logs, if necessary.<br />
+							12. Click the Next button to proceed to the Security configuration<br />
+							<br /><img src="Steps10-11-12.png" alt="Step 10, 11, 12" /><br /><br /><br />
+							13. Choose the "myWorkshopKeyPair" from the "EC2 Key Pair" dropdown<br />
+							14. Open the "EC2 security groups" section. We need to select the Additional security groups for the Master and the Core &amp; Task node types. Edit the "Additional security groups" and select the same security groups as the one used for the Bastion Host - it should be named "BastionSecurityGroup". Make the change for both the Node types there.<br />
+							15. Click the "Create cluster" button to start the cluster creation. The cluster should be built for you, and should take at least 11 minutes to complete the creation.<br />
+							<br /><img src="Steps13-14-15.png" alt="Step 13, 14, 15" /><br /><br /><br />
+							16. From the Cluster Summary screen, click on the "Clusters" on the review the progress from the Clusters dashboard. The Cluster will be ready after the "Status" for the cluster changes to "Waiting - Cluster ready"...<br />
+							<br /><img src="Step16-1.png" alt="Step 16 - Starting 1..." /><br /><br />
+							<br /><img src="Step16-2.png" alt="Step 16 - Starting 2..." /><br /><br />
+							<br /><img src="Step16-3.png" alt="Step 16 - Waiting, cluster ready..." /><br /><br /><br />
+							17. After the cluster is in the "Waiting - Cluster ready" like below, click on the cluster name - "workshopCluster" to go to the Cluster Details screen - and click on the "Hardware" tab.<br />
+							<br /><img src="Step17.png" alt="Step 17" /><br /><br /><br />
+							18. Click the Instance Group ID of the Master Node Type, to reveal the EC2 Instance ID of the master node. Click on the Instance ID to be taken to the EC2 Dashboard<br />
+							<br /><img src="Step18.png" alt="Step 18" /><br /><br /><br />
+							19. In the EC2 Dashboard, note the public IP of the Master Node instance<br />
+							<br /><img src="Step19.png" alt="Step 19" /><br /><br /><br />
+							20. ssh in to the master node instance with the command as below. Note carefully, the user-name is "hadoop".<br />
+							<div id="code2">ssh -o "ServerAliveInterval 60" -i ~/myWorkshopKeyPair.pem hadoop@&lt;MasterNodeIPAddress&gt;<br /></div>
+							<img src="Step20.png" alt="Step 20" />
+							21. After logging in to the Master Node instance, issue the command as below.<br /><br />
+							<div id="code3">hive<br />
+							</div>
+							<img src="Step21.png" alt="Step 21" />
+							22. Issue the following commands at the hive prompt, one command at a time and review its output.<br /><br />
+							<div id="code4">hive&gt; show databases;<br />
+hive&gt; use workshopdb;<br />
+hive&gt; show tables;<br />
+hive&gt; describe telemetry1;<br />
+hive&gt; 
+</div>
+							<img src="Step22.png" alt="Step 22" />
+							23. Similarly, you can issue SQL commands to hive &amp; query your data lying in the S3. Try a few queries and note that its querying your S3 bucket - the metadata for which has been prepared for AWS Glue.<br /><br />
+<div id="code5">hive&gt; select count(*) from workshopdb.telemetry1;<br /><br />
+hive&gt; select count(*) from workshopdb.telemetry2;<br />
+hive&gt; select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
+hive&gt; select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
+hive&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br />
+hive&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
+hive&gt; quit;<br />
+$ 
+</div><br /><br />
+							24. Launch spark-sql by issuing the command as below.<br /><br />
+							<div id="code6">spark-sql
+							</div>
+							<img src="Step24-1.png" alt="Step 24" />
+							<img src="Step24-2.png" alt="Step 24" />
+							25. Issue &amp; try the following SQL commands again, one-at-a-time - this time in Spark SQL:<br /><br />
+							<div id="code7">spark-sql&gt; show databases;<br />
+spark-sql&gt; use workshopdb;<br />
+spark-sql&gt; show tables;<br />
+spark-sql&gt; describe telemetry1;<br />
+spark-sql&gt; select count(*) from workshopdb.telemetry2;<br />
+spark-sql&gt; select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
+spark-sql&gt; select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
+spark-sql&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br />
+spark-sql&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
+spark-sql&gt; quit;<br />
+$</div><br /><br />
+							26. Run the following command and confirm that Zeppelin is running on the Master Node. As you would see, AWS EMR has setup, pre-configured &amp; run the applications we chose to install while setting up the cluster.<br /><br />
+							<div id="code8">ps aux | grep zeppelin<br />
+							</div>
+							<img src="Step26.png" alt="Step 26" />
+							27. Launch Zeppelin in your web-browser by visiting below. Note it runs on TCP port 8890, so launch it appropriately.<br /><br />
+							<div id="code9">http://&lt;MasterNodeIP&gt;:8890/<br />
+							</div><br />
+							Note: If you experience any issues connecting to port 8890, follow instructions as below to create a ssh tunnel.<br /><br />
+							<div id="code10"><br />
+Step 1: Login to your Workshop Bastion host, or switch to the window<br />
+Step 2: cat ~/myWorkshopKeyPair.pem<br />
+Step 3: Copy its output and write a new file in your home (~) directory with the name ~/myWorkshopKeyPair.pem (exact!).<br />
+Step 4: chmod 400 ~/myWorkshopKeyPair.pem<br />
+Step 5: Finally - issue the ssh command as below to create the tunnel<br />
+Step 6: ssh -i ~/myWorkshopKeyPair.pem -L8890:&lt;MasterNodeIP&gt;:8890 hadoop@&lt;MasterNodeIP&gt;<br />
+Step 7: Now, launch your browser and visit http://localhost:8890 - to launch Zeppelin!<br />
+<br /></div><br /><br />
+							28. Click on the "Create new note" in the Zeppelin welcome page. Give it a name as "Workshop Note" &amp; leave the default interpreter as "spark".<br /><br />
+							<img src="Step27-28.png" alt="Step 27, 28" /><br /><br />
+							29. In the new note, copy the code below and hit the "&gt;" RUN button (next to READY)<br /><br />
+							<div id="code11">import org.apache.spark.sql.types.StructType<br />
+import org.apache.spark.sql.types.{IntegerType, StringType}<br />
+<br />
+val newSchema = (new StructType).add("datestamp", StringType).add("playerid", IntegerType).add("playerlevel", StringType).add("squadelementmap", StringType).add("gamenumber", IntegerType).add("squadpower", IntegerType).add("squadagility", IntegerType).add("squadhealth", IntegerType).add("squadluck", StringType).add("squadspecial", StringType).add("squadguard", StringType).add("squaddamage", StringType).add("gameplayseconds", StringType).add("bosspower", StringType).add("bossagility", IntegerType).add("bosshealth", IntegerType).add("bossluck", IntegerType).add("bossspecial", IntegerType).add("bossguard", IntegerType).add("bossdamage", IntegerType).add("result", StringType)<br />
+<br />
+val df = sqlContext.read.schema(newSchema).json("s3://gam310-2017/oneBigFile.json")<br />
+<br />
+df.registerTempTable("myWorkshop")<br />
+<br /></div><br /><br />
+						30. It will take some time to run (1~2 mins), please wait for it to finish &amp; display the "FINISHED" status. After it has FINISHED, you can issue SQL commands like below, at the next prompt below.
+						<div id="code12"><br />
+%sql<br />
+select squadelementmap, count(squadelementmap) FROM myWorkshop group by squadelementmap order by squadelementmap<br />
+<br />
+Run the above script and review the results, the piechart, the graphs.<br />
+Another sample query as below:<br />
+<br />
+%sql<br />
+select playerlevel, count(playerlevel) from myWorkshop group by playerlevel order by playerlevel<br />
+<br />
+						</div><br />
+						<img src="Step30-1.png" alt="Step 30" /><br /><br />
+						<img src="Step30-2.png" alt="Step 30" /><br /><br />
+						<img src="Step30-3.png" alt="Step 30" /><br /><br />
 						</p>
 
 						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-15-content">
+				 		<div class="indent-hide" id="1-15-content">
 							<p id="cleanup">Please replace ${WorkshopBucket} below with your "WorkshopBucket" Output from your CloudFormation Stack.</p>
 							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets
 aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy
@@ -123,6 +229,116 @@ aws cloudformation delete-stack --stack-name GamingWorkshopStack --region=us-wes
     	code1.setShowPrintMargin(false);
     	code1.setOptions({
     		maxLines: code1.session.getLength()
+    	});
+	</script>
+	<script>
+		var code2 = ace.edit("code2");
+		code2.setTheme("ace/theme/idle_fingers");
+    	code2.getSession().setMode("ace/mode/snippets");
+    	code2.setReadOnly(true);
+    	code2.setShowPrintMargin(false);
+    	code2.setOptions({
+    		maxLines: code2.session.getLength()
+    	});
+	</script>
+	<script>
+		var code3 = ace.edit("code3");
+		code3.setTheme("ace/theme/idle_fingers");
+    	code3.getSession().setMode("ace/mode/snippets");
+    	code3.setReadOnly(true);
+    	code3.setShowPrintMargin(false);
+    	code3.setOptions({
+    		maxLines: code3.session.getLength()
+    	});
+	</script>
+	<script>
+		var code4 = ace.edit("code4");
+		code4.setTheme("ace/theme/idle_fingers");
+    	code4.getSession().setMode("ace/mode/snippets");
+    	code4.setReadOnly(true);
+    	code4.setShowPrintMargin(false);
+    	code4.setOptions({
+    		maxLines: code4.session.getLength()
+    	});
+	</script>
+	<script>
+		var code5 = ace.edit("code5");
+		code5.setTheme("ace/theme/idle_fingers");
+    	code5.getSession().setMode("ace/mode/snippets");
+    	code5.setReadOnly(true);
+    	code5.setShowPrintMargin(false);
+    	code5.setOptions({
+    		maxLines: code5.session.getLength()
+    	});
+	</script>
+	<script>
+		var code6 = ace.edit("code6");
+		code6.setTheme("ace/theme/idle_fingers");
+    	code6.getSession().setMode("ace/mode/snippets");
+    	code6.setReadOnly(true);
+    	code6.setShowPrintMargin(false);
+    	code6.setOptions({
+    		maxLines: code6.session.getLength()
+    	});
+	</script>
+	<script>
+		var code7 = ace.edit("code7");
+		code7.setTheme("ace/theme/idle_fingers");
+    	code7.getSession().setMode("ace/mode/snippets");
+    	code7.setReadOnly(true);
+    	code7.setShowPrintMargin(false);
+    	code7.setOptions({
+    		maxLines: code7.session.getLength()
+    	});
+	</script>
+	<script>
+		var code8 = ace.edit("code8");
+		code8.setTheme("ace/theme/idle_fingers");
+    	code8.getSession().setMode("ace/mode/snippets");
+    	code8.setReadOnly(true);
+    	code8.setShowPrintMargin(false);
+    	code8.setOptions({
+    		maxLines: code8.session.getLength()
+    	});
+	</script>
+	<script>
+		var code9 = ace.edit("code9");
+		code9.setTheme("ace/theme/idle_fingers");
+    	code9.getSession().setMode("ace/mode/snippets");
+    	code9.setReadOnly(true);
+    	code9.setShowPrintMargin(false);
+    	code9.setOptions({
+    		maxLines: code9.session.getLength()
+    	});
+	</script>
+	<script>
+		var code10 = ace.edit("code10");
+		code10.setTheme("ace/theme/idle_fingers");
+    	code10.getSession().setMode("ace/mode/snippets");
+    	code10.setReadOnly(true);
+    	code10.setShowPrintMargin(false);
+    	code10.setOptions({
+    		maxLines: code10.session.getLength()
+    	});
+	</script>
+	<script>
+		var code11 = ace.edit("code11");
+		code11.setTheme("ace/theme/idle_fingers");
+    	code11.getSession().setMode("ace/mode/snippets");
+    	code11.setReadOnly(true);
+    	code11.setShowPrintMargin(false);
+    	code11.setOptions({
+    		maxLines: code11.session.getLength()
+    	});
+	</script>
+	<script>
+		var code12 = ace.edit("code12");
+		code12.setTheme("ace/theme/idle_fingers");
+    	code12.getSession().setMode("ace/mode/snippets");
+    	code12.setReadOnly(true);
+    	code12.setShowPrintMargin(false);
+    	code12.setOptions({
+    		maxLines: code12.session.getLength()
     	});
 	</script>
 </body>
