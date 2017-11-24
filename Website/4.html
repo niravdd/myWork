@@ -86,21 +86,11 @@
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-15-content">
 							<p id="cleanup">Please replace ${WorkshopBucket} below with your "WorkshopBucket" Output from your CloudFormation Stack.</p>
-							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets
-aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy
-aws iam delete-role --role-name wsfirehose_delivery_role
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
-aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH
-aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH
-aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect
-aws kinesis delete-stream --stream-name workshopTelemetryStream
-aws kinesis delete-stream --stream-name workshopAnalyticsStream
-aws s3 rb s3://${WorkshopBucket} --force
+							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets, then run the following cleanup commands from your Bastion Host:
+cleanupPipeline1Infra.sh
 exit
 
-# And run the following command from your local machine
+# And then run the following command from your local machine
 aws cloudformation delete-stack --stack-name GamingWorkshopStack --region=us-west-2
 </div>
 							</p>

@@ -441,6 +441,7 @@ Resources:
           - sns:*
           - sqs:*
           - kinesis:*
+          - kinesisanalytics:*
           - firehose:*
           - redshift:*
           - elasticmapreduce:*
@@ -497,21 +498,25 @@ Resources:
           echo "[default]" >> /home/ec2-user/.aws/config
           echo "region = us-west-2" >> /home/ec2-user/.aws/config
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-fh-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ka-policy.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-fh-policy.json
-          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/iam-fh-policy.json
-          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/iam-fh-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-ka-policy.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/analytics1Input.json
-          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/analytics1Input.json
-          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/analytics1Input.json
-          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/analytics1Input.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry1Input.json
-          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/telemetry1Input.json
-          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/telemetry1Input.json
-          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/telemetry1Input.json
           wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry2Input.json
-          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/telemetry2Input.json
-          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/telemetry2Input.json
-          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/telemetry2Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/kinesisAnalyticsInput.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/pipeline1Script.sh
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/cleanupPipeline1Infra.sh
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/connectRedshift.sh
+          chmod 777 /home/ec2-user/pipeline1Script.sh
+          chmod 777 /home/ec2-user/cleanupPipeline1Infra.sh
+          chmod 777 /home/ec2-user/connectRedshift.sh
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/*.json
+          sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/*.sh
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/*.json
+          sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/*.sh
+          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/*.json
+          sed -i 's/varRedshiftClusterEndpoint/${WorkshopCluster.Endpoint.Address}/g' /home/ec2-user/*.sh
   EIP:
     Type: AWS::EC2::EIP
     Properties:

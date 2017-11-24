@@ -104,46 +104,46 @@ fi
 echo 
 echo -e "## All good! Deleting everything created from this host now..."
 ## Cleanup...
-aws redshift delete-cluster --cluster-identifier workshopcluster --skip-final-cluster-snapshot
-echo -e "## Waiting for the Redshift Cluster to be deleted before proceeding..."
-echo -ne "## ${Blue}Checking${Color_Off} ="
-## Can also use http://docs.aws.amazon.com/cli/latest/reference/redshift/wait/cluster-available.html here - but prefer to use own, so -
-IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
-nCounter=0
-while [ "$testCondition" = "deleting" ];
-do
-	if [ "$nCounter" -lt "60" ]; then
-		echo -ne "="
-	else
-		echo -ne "o"
-		nCounter=0
-		IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
-		continue
-	fi
-	nCounter=$[$nCounter+5]
-	sleep 5
-done
-echo -ne " ${Red}[Deleted!]${Color_Off}"
-echo 
+# aws redshift delete-cluster --cluster-identifier workshopcluster --skip-final-cluster-snapshot
+# echo -e "## Waiting for the Redshift Cluster to be deleted before proceeding..."
+# echo -ne "## ${Blue}Checking${Color_Off} ="
+# ## Can also use http://docs.aws.amazon.com/cli/latest/reference/redshift/wait/cluster-available.html here - but prefer to use own, so -
+# IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
+# nCounter=0
+# while [ "$testCondition" = "deleting" ];
+# do
+# 	if [ "$nCounter" -lt "60" ]; then
+# 		echo -ne "="
+# 	else
+# 		echo -ne "o"
+# 		nCounter=0
+# 		IFS=' ' read -ra testCondition <<<$(aws redshift describe-clusters --cluster-identifier workshopcluster --query 'Clusters[*].ClusterStatus' --output text)
+# 		continue
+# 	fi
+# 	nCounter=$[$nCounter+5]
+# 	sleep 5
+# done
+# echo -ne " ${Red}[Deleted!]${Color_Off}"
+# echo 
 
-aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
-aws ec2 delete-security-group --group-id varRedshiftsgid
+# aws redshift delete-cluster-subnet-group --cluster-subnet-group-name workshopsubnetgroup
+# aws ec2 delete-security-group --group-id varRedshiftsgid
 aws s3 rb s3://varBucketName --force
-aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
-aws iam delete-role --role-name redshift_fullaccess_role
-aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy
-aws iam delete-role --role-name wsfirehose_delivery_role
-aws iam delete-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy
-aws iam delete-role --role-name kinesisanalytics_delivery_role
-aws logs delete-log-group --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
+# aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
+# aws iam delete-role --role-name redshift_fullaccess_role
+aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --region us-west-2
+aws iam delete-role --role-name wsfirehose_delivery_role --region us-west-2
+aws iam delete-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --region us-west-2
+aws iam delete-role --role-name kinesisanalytics_delivery_role --region us-west-2
+aws logs delete-log-group --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --region us-west-2
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --region us-west-2
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --region us-west-2
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --region us-west-2
 IFS=' ' read -ra appCreateTime <<<$(aws kinesisanalytics describe-application --application-name workshopTelemetryKAApp --query 'ApplicationDetail.CreateTimestamp' --output text)
-aws kinesisanalytics delete-application --application-name workshopTelemetryKAApp --create-timestamp $appCreateTime
-aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect
-aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH
-aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH
-aws kinesis delete-stream --stream-name workshopTelemetryStream
-aws kinesis delete-stream --stream-name workshopAnalyticsStream
+aws kinesisanalytics delete-application --application-name workshopTelemetryKAApp --create-timestamp $appCreateTime --region us-west-2
+aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --region us-west-2
+aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH --region us-west-2
+aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH --region us-west-2
+aws kinesis delete-stream --stream-name workshopTelemetryStream --region us-west-2
+aws kinesis delete-stream --stream-name workshopAnalyticsStream --region us-west-2
 ## ... End }
