@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
-	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<title>Telemetry &amp; Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
@@ -50,7 +50,7 @@
 		<div class="central-column">
 			<div class="text">
 				<h2 class="headline-s1">GAM310</h2>
-				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<h3 class="headline-s2">Telemetry &amp; Analytics’ Pipelines for Game Balancing</h3>
 				<p class="lower-link">Lab 4 - Big Data Analytics</p>
 			</div>
 		</div>
@@ -59,17 +59,26 @@
 		<section id="section-sessions" class="page-section dark">
 			<div class="central-column">
 				<div class="indent">
-					<p class="intro">You've now configured 3 different data pipelines. Now we will use Elastic Map Reduce to build your last pipeline for this workshop, which is the most appropriate solution for processing Big Data sets.</p>
+					<p class="intro">You've now configured 3 different data pipelines. Now we will build your last pipeline using Amazon Elastic MapReduce (EMR) for this workshop, which is the most appropriate solution for processing Big Data sets.</p>
 					<div class="session">
 						<h3>PIPELINE 4 - BIG DATA ANALYTICS</h3>
 						<p>The data pipeline architecture for this lab is shown in the following diagram:</p>
-						<img src="Pipeline4.png" alt="Analytics Pipeline" /><br /><br />
+						<img src="Pipeline4.png" alt="Big Data Analytics Pipeline" /><br /><br />
 						
-						<h3 class="overline">PIPELINE 4 - CONFIGURE ELASTIC MAP REDUCE (EMR)</h3>
+						<h3 class="overline">PIPELINE 4 - Big Data Analytics with Amazon EMR</h3>
 						<p>
-							For this lab we're going to use the web console to use Elastic Map Reduce. Visit the Elastic Map Reduce page at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>. Please follow these instructions:<br />
-							1. Click the "Create cluster" button on the top left
-							2. For the "Cluster name" enter "workshopemrcluster", select your WorkshopKeyPair and click the "Create cluster" button in the bottom right of the window
+							For this lab we're going to use the web console to use Amazon Elastic MapReduce (EMR). Visit the Amazon EMR page at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>. Please follow these instructions:<br />
+							1. From the "Clusters" on the left, click the "Create Cluster" button
+							2. Click the "Go to Advanced Options" link there, next to the page title
+							3. Choose "Release": "emr-5.10.0" in the Software Configuration
+							4. Enable "Hadoop 2.7.3", "Presto 0.187", "Pig 0.17.0", "Hue 4.0.1", "Zeppelin 0.7.3", "Hive 2.3.1", "Spark 2.2.0". You can choose to enable others there, however we will use these primarily for the guided section of the workshop.
+							5. Enable all the "AWS Glue Data Catalog settings" - "Use for Hive table metadata", "Use for Presto table metadata" and "Use for Spark table metadata"
+							6. Click on the Next button to proceed to the Hardware configuration
+							7. Choose the VPC you have been using for the workshop from the "Network" dropdown. Choose any one subnet for the EC2 Subnet dropdown.
+							8. Review and verify the configuration - It should have an Instance count of 1 for Master Node type, Instance count of 2 for Core Node types and Instance count of 0 for Task Node types. Change the Instance count for Task Node types to 1.
+							9. Click the Next button to proceed to the General Cluster Settings.
+							10. Provide the "Cluster Name" as "workshopEMRCluster"
+							11. 
 						</p>
 
 						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
@@ -78,19 +87,21 @@
 						<div class="indent-hide" id="1-15-content">
 							<p id="cleanup">Please replace ${WorkshopBucket} below with your "WorkshopBucket" Output from your CloudFormation Stack.</p>
 							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets
-aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
-aws iam delete-role --role-name redshift_fullaccess_role
-aws iam delete-role-policy --role-name firehose_delivery_role --policy-name iam-fh-policy
-aws iam delete-role --role-name firehose_delivery_role
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/TelemetryFHStream"
-aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/AnalyticsFHStream"
-aws firehose delete-delivery-stream --delivery-stream-name TelemetryFHStream
-aws firehose delete-delivery-stream --delivery-stream-name AnalyticsFHStream
-aws kinesis delete-stream --stream-name TelemetryStream
-aws kinesis delete-stream --stream-name AnalyticsStream
-accountid="$(aws sts get-caller-identity --query "Account" --output text)"
-aws s3api delete-bucket --bucket "${WorkshopBucket}"
-aws s3api delete-bucket --bucket "${WorkshopBucket}"
+aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy
+aws iam delete-role --role-name wsfirehose_delivery_role
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH"
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH"
+aws logs delete-log-group --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect"
+aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFH
+aws firehose delete-delivery-stream --delivery-stream-name workshopAnalyticsFH
+aws firehose delete-delivery-stream --delivery-stream-name workshopTelemetryFHDirect
+aws kinesis delete-stream --stream-name workshopTelemetryStream
+aws kinesis delete-stream --stream-name workshopAnalyticsStream
+aws s3 rb s3://${WorkshopBucket} --force
+exit
+
+# And run the following command from your local machine
+aws cloudformation delete-stack --stack-name GamingWorkshopStack --region=us-west-2
 </div>
 							</p>
 						</div>
