@@ -83,7 +83,7 @@ function reveal(button, content) {
 }
 }
 
-function changetext()
+function changetext() {
 	document.getElementById("cfn").innerHTML = document.getElementById("cfn").innerHTML.replace(/\${keypair}/g,document.getElementById("keypairinput").value);
 	document.getElementById("fh-streams").innerHTML = document.getElementById("fh-streams").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
 	document.getElementById("cleanup").innerHTML = document.getElementById("cleanup").innerHTML.replace(/\${accountid}/g,document.getElementById("accountidinput").value);
@@ -92,16 +92,3 @@ function changetext()
 function changeredshifttext() {
 	document.getElementById("code6").innerHTML = document.getElementById("code6").innerHTML.replace(/\redshiftClusterEndpoint/g,document.getElementById("redshiftinput").value);
 }
-
-function CopyToClipboard(containerid) {
-    if (document.selection) {
-        var range = document.body.createTextRange();
-        range.moveToElementText(document.getElementById(containerid));
-        range.select().createTextRange();
-        document.execCommand("copy");
-    } else if (window.getSelection) {
-        var range = document.createRange();
-        range.selectNode(document.getElementById(containerid));
-        window.getSelection().addRange(range);
-        document.execCommand("copy");
-}}

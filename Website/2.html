@@ -73,32 +73,35 @@
 								<li>Create a database in Athena and use a script to create your table based on prior knowledge of the data structures</li>
 							</ul>
 						</p>
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">OPTION 1: GLUE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-1-content">
 						<p>AWS Glue is a service that can be used to manage your complex data ETL requirements. To do this, you create a Database, and then set up a "Crawler" that processes the data in your S3 buckets and adds the metadata to the Database. If you want to use Glue, use the following instructions as an alternative. The fastest way to create the Hive database will be to skip Glue and move on to the instructions for using the scripts.</p>
-						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">CLICK TO TOGGLE OPTIONAL GLUE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-5-content">
 						<p>
 							1. Close the introductory tutorial window (this will not appear if you've used Athena before).<br />
 							2. On the left side you will see the "DATABASE" section. Click on "Create Table" dropdown, then "Automatically (AWS Glue Crawler)". This will pop up a notification that you're going to Glue. Click "Continue".<br />
 							3. Click "Get started".<br />
-							4. Enter a Crawler name of "workshopcrawler" and "Next"<br />
-							5. The Data store should already have "S3" selected. Click the folder icon on the right side of the "Include path" and expand your workshop folder. It will be named "gamingworkshop-workshopbucket-XXXXXXXXXXXX". Inside that folder, click on "telemetry12017" and click the "Select" button, then "Next" on the Add a data store page.<br />
-							6. Click "Next" on the "Add another data store" page ("No" should already be selected).<br />
-							7. On the "Choose and IAM role" page, select "Create an IAM role" and enter "workshop" as the name, then click "Next".<br />
-							8. On the "Create a scheduler for this crawler" page, click "Next" ("Run on demand" should already be selected).<br />
-							9. On the "Configure the crawler's output" page, click the "Add databse" button, then enter "workshoptelemetrydb" and click the "Create" button. Click "Next"<br />
-							10. Click "Finish". This will create the crawler and return you to the "Crawlers" page.<br />
-							11. At the top should be a green banner asking if you want to run your crawler. Click "Run it now".<br />
+							4. Click on "Crawlers", then "Add crawler"<br />
+							5. Enter a Crawler name of "workshopcrawler" and "Next"<br />
+							6. The Data store should already have "S3" selected. Click the folder icon on the right side of the "Include path" and expand your workshop folder. It will be named "gamingworkshop-workshopbucket-XXXXXXXXXXXX". Inside that folder, click on "telemetry12017" and click the "Select" button, then "Next" on the Add a data store page.<br />
+							7. Click "Next" on the "Add another data store" page ("No" should already be selected).<br />
+							8. On the "Choose and IAM role" page, select "Create an IAM role" and enter "workshop" as the name, then click "Next".<br />
+							9. On the "Create a scheduler for this crawler" page, click "Next" ("Run on demand" should already be selected).<br />
+							10. On the "Configure the crawler's output" page, click the "Add database" button, then enter "workshoptelemetrydb" and click the "Create" button. Click "Next"<br />
+							11. Click "Finish". This will create the crawler and return you to the "Crawlers" page.<br />
+							12. At the top should be a green banner asking if you want to run your crawler. Click "Run it now".<br />
 						</p>
 						</div><br />
-						<p>If you want to do things the fast way go to the Athena console page (available at <a href="https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2" target="_blank">this link</a>). You'll need to use your S3 bucket name, which is the "WorkshopBucket" Output from your CloudFormation stack. If you've closed the window, the Outputs can be found at <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Update the bucket name in the following script, then copy and paste it into the query editor:</p>
+						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">OPTION 2: ATHENA SCRIPT INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-5-content">
+						<p>If you want to do things the fast way (and have not done this in Glue go to the Athena console page (available at <a href="https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2" target="_blank">this link</a>). You'll need to use your S3 bucket name, which is the "WorkshopBucket" Output from your CloudFormation stack. If you've closed the window, the Outputs can be found at <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Update the bucket name in the following script, then copy and paste it into the query editor:</p>
 						<div id="code2"># Replace ${WorkshopBucket} the "WorkshopBucket" field from your CloudFormation Outputs
 CREATE DATABASE IF NOT EXISTS workshoptelemetrydb
 	COMMENT 'Gaming workshop telemetry database'
 	LOCATION 's3://${WorkshopBucket}/workshoptelemetrydb';
+</div>
 </div><br />
-						<p>You've just created a Hive database. Now you need to create a table. This table describes the way in which you want to read the data from your S3 bucket. Update the bucket name in the following script, then copy and paste it into the query editor, replacing the previous script.</p>
-						<div id="code3"># Replace ${WorkshopBucket} the "WorkshopBucket" field from your CloudFormation Outputs
-CREATE EXTERNAL TABLE IF NOT EXISTS workshoptelemetrydb.telemetry12017 (
+						<p>You've just created a Hive database. Now you need to create a table. This table describes the way in which you want to read the data from your S3 bucket. Update the bucket name in the following script, then copy and paste it into the query editor, replacing the previous script. Replace ${WorkshopBucket} the "WorkshopBucket" field from your CloudFormation Outputs</p>
+						<div id="code3">CREATE EXTERNAL TABLE IF NOT EXISTS workshoptelemetrydb.telemetry12017 (
 	datestamp string,
 	playerid bigint,
 	playerlevel string,
@@ -127,7 +130,7 @@ WITH SERDEPROPERTIES (
 ) LOCATION 's3://${WorkshopBucket}/telemetry12017/'
 TBLPROPERTIES ('has_encrypted_data'='false');
 </div><br />
-						<p>Now that you've set up your table, let's explore the data! The following query will tell you how many wins your game bot has had in the last 30 minutes:</p>
+						<p>Click "Run Query". Now that you've set up your table, let's explore the data! The following query will tell you how many wins your game bot has had in the last 30 minutes:</p>
 						<div id="code4">select
 	count(*)
 from
@@ -141,7 +144,7 @@ where
 						<p>Let's get QuickSight working with Athena as a Data Source!</p>
 						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-10-content"><br />
-							<p>1. Go to <span class="bold">https://quicksight.aws</span>.</p>
+							<p>1. Click on <a href="https://quicksight.aws.amazon.com/sn/console/signup" target="_blank">this link</a> to visit the QuickSight website or select "QuickSight" in the Console.</p>
 							<p>2. QuickSight requires access to your S3 buckets. This can be done through your account settings, which are only available in N. Virginia. Select "US East (N.Virginia)" from the top-right corner</p>
 							<p>3. Click on your name on the top-right corner, and select "Manage QuickSight". Click on "Account Settings", then under Account Permissions click the "Edit AWS permissions" button. Ensure "Enable autodiscovery...", "Amazon Athena" and "Amazon S3" are checked, and within S3 that your Workshop bucket is checked. Click the "Apply" button in the lower right of the window.</p>
 							<p>4. Change back to the US-West-2 (Oregon) region.</p>
@@ -149,7 +152,7 @@ where
 							<p>6. Click the "New data set" button in the top left</p>
 							<p>7. Click the "Athena" button</p>
 							<p>8. A "New Athena data source" window will appear. For the "Data source name" enter "GamingWorkshopAthena". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
-							<p>9. Select "telemetry1" and click the "Select" button on the bottom right</p>
+							<p>9. Select "workshoptelemetrydb" and then select "telemetry12017" and click the "Select" button on the bottom right</p>
 							<p>10. Select "Directly query your data" and click the "Visualize" button on the bottom right</p>
 							<p>11. Explore your data!</p>
 						</div>

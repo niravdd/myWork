@@ -4,3 +4,4 @@ kinesis-datagen/src/.DS_Store
 kinesis-datagen/vendor/.DS_Store
 kinesis-datagen/vendor/aws/.DS_Store
 kinesis-datagen/vendor/aws/aws-sdk-php/.DS_Store
+*.pem

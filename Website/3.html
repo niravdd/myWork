@@ -77,7 +77,7 @@
 								5. After about 30 seconds the data should appear. Check that it looks sensible and click "Save and continue"<br />
 								6. Under the "Real time analytics" section click the "Go to SQL editor" button<br />
 								7. A window will appear asking "Would you like to start running telemetry2app?". Click "Yes, start application"<br />
-								8. Copy both the following SQL statements into the query editor and click the "Save and run SQL" button on the middle-right side of the window:<br />
+								8. Copy both the following SQL statements into the query editor, wait for the application to finish creation, and click the "Save and run SQL" button on the middle-right side of the window:<br />
 							</p>							
 						</div>
 						<br />
@@ -88,7 +88,7 @@
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
 SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
 	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "GAME_BOT_001" where "gamenumber"=1;
+FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
 </div><br />
 							<p> 9. You should see the data appear in the "Real-time analytics" tab. This is real-time data. Let's see what happens when you change the query. Please change the query to the following SQL statements and click the "Save and run SQL" button on the middle-right side of the window:</p>
 						<div id="code2">CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FH_STREAM" (
@@ -98,7 +98,7 @@ FROM "GAME_BOT_001" where "gamenumber"=1;
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
 SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
 	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "GAME_BOT_001" where "COL_result"='DNF';
+FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
 </div><br />
 							<p> 10. Once you see the real-time data showing up and can see that it only shows DNF in the "result" column, click the "Destination" tab in the middle-left of the window<br />
 								11. Click the "Connect to a destination" button<br />
@@ -114,8 +114,7 @@ FROM "GAME_BOT_001" where "COL_result"='DNF';
 						<p>If you want to, you can configure QuickSight to view the data you're processing with Kinesis Analytics and pushing to Redshift.</p>
 						<div class="indent-show" id="1-10-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-10-button', '1-10-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-10-content"><br />
-							<p>QuickSight requires access to your S3 buckets. This can be done through your account settings, which are only available in N. Virginia. Go to Account Settings, then Account Permissions, and click the "Edit AWS permissions" button.</p>
-							<p>1. Go to <span class="bold">https://quicksight.aws</span>.</p>
+							<p>1. Click on <a href="https://quicksight.aws.amazon.com/sn/console/signup" target="_blank">this link</a> to visit the QuickSight website or select "QuickSight" in the Console.</p>
 							<p>2. Click the "New analysis" button in the top left</p>
 							<p>3. Click the "New data set" button in the top left</p>
 							<p>4. Click the "Redshift - Auto-discovered" button</p>

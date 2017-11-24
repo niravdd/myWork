@@ -432,15 +432,18 @@ Resources:
           Action:
           - iam:*
           - s3:*
-          - ec2:Describe*
+          - sdb:*
+          - ec2:*
           - elasticloadbalancing:Describe*
           - autoscaling:Describe*
           - cloudwatch:*
           - logs:*
           - sns:*
+          - sqs:*
           - kinesis:*
           - firehose:*
           - redshift:*
+          - elasticmapreduce:*
           Resource: "*"
       Roles:
       - Ref: IamRole

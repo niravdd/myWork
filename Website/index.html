@@ -72,8 +72,8 @@
 						<p>2. You must have administrative privileges associated with an IAM User and have a working <span class="bold">Access Key</span> and <span class="bold">Secret Key</span>. Instructions are available at <a href="http://docs.aws.amazon.com/general/latest/gr/managing-aws-access-keys.html" target="_blank">this link</a>.</p>
 						<p>3. You must have the AWS CLI installed on your computer, and ensure that it is configured with a user that has AdminAccess using <span class="bold">aws configure</span>.</p>
 						<p>4. You must have SSH installed on your computer. It will be pre-installed on Mac or Linux, but Windows users should use <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank">PuTTY</a>. You will also need an EC2 keypair. If you do not have one and need to create a new one, please follow the CLI commands in this section.</p>
-						<div class="indent-show" id="1-2-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-2-button', '1-2-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-2-content">
+						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
+						<div class="indent-hide" id="1-1-content">
 							<div id="code1">## Create a key pair to use for SSH access into the Bastion Host
 aws ec2 create-key-pair --region us-west-2 --key-name WorkshopKeyPair --query 'KeyMaterial' --output text &gt; WorkshopKeyPair.pem
 
@@ -87,7 +87,6 @@ chmod 400 WorkshopKeyPair.pem
 						<p>Let's start the first lab! Please enter your seat number below.</p>
 						<div class="indent-show"><div class="expand"><input type="text" id="seat">&nbsp;<a class="border" href="javascript:void();" onClick="validateSeat();">SUBMIT</a>&nbsp;<span id="message">&nbsp;</span></div></div>
 						</div>
-
 
 					</div>
 				</div>
