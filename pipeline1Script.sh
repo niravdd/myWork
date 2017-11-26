@@ -89,7 +89,7 @@ On_IWhite='\033[0;107m'   # White
 
 ## { Start...
 echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
-echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E            ${Color_Off}\n\n"
+echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E           ${Color_Off}\n\n"
 # echo -e "## ${BIWhite}Action Required:${Color_Off}"
 # echo -e "## Please ensure you have run the ${BIBlue}baseInfraScript.sh${Color_Off} OR the ${BIBlue}gam310-workshop-cfn${ColorOff} CloudFormation template"
 # echo -e "   prior to starting this - or else this script will encounter failures.\n\n"
@@ -136,14 +136,14 @@ echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E  
 echo -e "## Creating the roles now..."
 # aws iam create-role --role-name redshift_fullaccess_role --assume-role-policy-document file://iam-base-redshift-policy.json
 # aws iam put-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy --policy-document file://iam-redshift-policy.json
-echo -e "aws iam create-role --role-name wsfirehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json"
+echo -e "${Blue}aws iam create-role --role-name wsfirehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json${Color_Off}"
 aws iam create-role --role-name wsfirehose_delivery_role --assume-role-policy-document file://iam-base-fh-policy.json
-echo -e "aws iam put-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json"
+echo -e "${Blue}aws iam put-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json${Color_Off}"
 aws iam put-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --policy-document file://iam-fh-policy.json
 
-echo -e "aws iam create-role --path /service-role/ --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json"
+echo -e "${Blue}aws iam create-role --path /service-role/ --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json${Color_Off}"
 aws iam create-role --path /service-role/ --role-name kinesisanalytics_delivery_role --assume-role-policy-document file://iam-base-ka-policy.json
-echo -e "aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --policy-document file://iam-ka-policy.json"
+echo -e "${Blue}aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --policy-document file://iam-ka-policy.json${Color_Off}"
 aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name iam-ka-policy --policy-document file://iam-ka-policy.json
 
 # echo -e "## Creating the security groups now..."
@@ -191,66 +191,66 @@ aws iam put-role-policy --role-name kinesisanalytics_delivery_role --policy-name
 echo -e "## Creating the Kinesis Streams now..."
 echo -e "## Analytics' Stream..."
 ## Create your Kinesis stream for analytics
-echo -e "aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10 --region us-west-2"
+echo -e "${Blue}aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10 --region us-west-2${Color_Off}"
 aws kinesis create-stream --stream-name workshopAnalyticsStream --shard-count 10 --region us-west-2
 sleep 15
 
 echo -e "## Telemetry Stream..."
 ## Create your Kinesis stream for telemetry
-echo -e "aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10 --region us-west-2"
+echo -e "${Blue}aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10 --region us-west-2${Color_Off}"
 aws kinesis create-stream --stream-name workshopTelemetryStream --shard-count 10 --region us-west-2
 sleep 15
 
 echo -e "## Creating the Kinesis Firehose Streams now..."
 ## Create a log group and streams for analytics
-echo -e "aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --region us-west-2"
+echo -e "${Blue}aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --region us-west-2${Color_Off}"
 aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --log-stream-name "S3Delivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --log-stream-name "S3Delivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "S3Delivery" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --log-stream-name "RedshiftDelivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopAnalyticsFH"" --log-stream-name "RedshiftDelivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopAnalyticsFH" --log-stream-name "RedshiftDelivery" --region us-west-2
 
 ## Create a log group and streams for telemetry
-echo -e "aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --region us-west-2"
+echo -e "${Blue}aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --region us-west-2${Color_Off}"
 aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --log-stream-name "S3Delivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --log-stream-name "S3Delivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "S3Delivery" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --log-stream-name "RedshiftDelivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFH"" --log-stream-name "RedshiftDelivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFH" --log-stream-name "RedshiftDelivery" --region us-west-2
 
 ## Create a log group and streams for telemetry - direct stream
-echo -e "aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --region us-west-2"
+echo -e "${Blue}aws logs create-log-group  --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --region us-west-2${Color_Off}"
 aws logs create-log-group  --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --log-stream-name "S3Delivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --log-stream-name "S3Delivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "S3Delivery" --region us-west-2
-echo -e "aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --log-stream-name "RedshiftDelivery" --region us-west-2"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisfirehose/workshopTelemetryFHDirect"" --log-stream-name "RedshiftDelivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTelemetryFHDirect" --log-stream-name "RedshiftDelivery" --region us-west-2
 
 ## Create a log group and streams for Kinesis Analytics' App
-echo -e "aws logs create-log-group  --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --region us-west-2"
+echo -e "${Blue}aws logs create-log-group  --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --region us-west-2${Color_Off}"
 aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --region us-west-2
-echo "aws logs create-log-stream --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --log-stream-name "AppDelivery" --region us-west-2"
+echo "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --log-stream-name "AppDelivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery" --region us-west-2
 
 echo -e "## Analytics' Firehose Stream..."
 sleep 15
-echo -e "aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration ""KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role"" --cli-input-json file://analytics1Input.json --region us-west-2"
+echo -e "${Blue}aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration ""KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role"" --cli-input-json file://analytics1Input.json --region us-west-2${Color_Off}"
 aws firehose create-delivery-stream --delivery-stream-name workshopAnalyticsFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopAnalyticsStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role" --cli-input-json file://analytics1Input.json --region us-west-2
 echo -e "## Telemetry(1) Firehose Stream..."
 sleep 15
-echo -e "aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration ""KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role"" --cli-input-json file://telemetry1Input.json --region us-west-2"
+echo -e "${Blue}aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration ""KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role"" --cli-input-json file://telemetry1Input.json --region us-west-2${Color_Off}"
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFH --delivery-stream-type KinesisStreamAsSource --kinesis-stream-source-configuration "KinesisStreamARN=arn:aws:kinesis:us-west-2:varAccountID:stream/workshopTelemetryStream,RoleARN=arn:aws:iam::varAccountID:role/wsfirehose_delivery_role" --cli-input-json file://telemetry1Input.json --region us-west-2
 echo -e "## Telemetry(2) Firehose Stream..."
 sleep 15
-echo -e "aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json --region us-west-2"
+echo -e "${Blue}aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json --region us-west-2${Color_Off}"
 aws firehose create-delivery-stream --delivery-stream-name workshopTelemetryFHDirect --delivery-stream-type DirectPut --cli-input-json file://telemetry2Input.json --region us-west-2
 
 sleep 30
 echo -e "## Setting up Kinesis Analytics App now..."
-echo -e "aws kinesisanalytics create-application --application-name workshopTelemetryKAApp --cli-input-json file://kinesisAnalyticsInput.json --region us-west-2"
+echo -e "${Blue}aws kinesisanalytics create-application --application-name workshopTelemetryKAApp --cli-input-json file://kinesisAnalyticsInput.json --region us-west-2${Color_Off}"
 aws kinesisanalytics create-application --application-name workshopTelemetryKAApp --cli-input-json file://kinesisAnalyticsInput.json --region us-west-2
 sleep 30
-echo -e "aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id=""1.1"",InputStartingPositionConfiguration={InputStartingPosition=""NOW""} --region us-west-2"
+echo -e "${Blue}aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id=""1.1"",InputStartingPositionConfiguration={InputStartingPosition=""NOW""} --region us-west-2${Color_Off}"
 aws kinesisanalytics start-application --application-name workshopTelemetryKAApp --input-configuration Id="1.1",InputStartingPositionConfiguration={InputStartingPosition="NOW"} --region us-west-2
 
 

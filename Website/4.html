@@ -253,12 +253,14 @@ select playerlevel, count(playerlevel) from myWorkshop group by playerlevel orde
 						<p>You've created a lot of things in your account! Let's clean them up so you don't keep paying for them.</p>
 						<div class="indent-show" id="1-15-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-15-button', '1-15-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 				 		<div class="indent-hide" id="1-15-content">
-							<p id="cleanup">Please replace ${WorkshopBucket} below with your "WorkshopBucket" Output from your CloudFormation Stack.</p>
-							<div id="code1"># Delete QuickSight account, Athena Hive DB, Kinesis Analytics, Athena Query Results buckets, then run the following cleanup commands from your Bastion Host:
+							<p id="cleanup">
+								1. If you do not currently use QuickSight for other purposes and wish to delete it, visit <a href="https://us-east-1.quicksight.aws.amazon.com/sn/admin" target="_blank">this page</a>, click on "Account settings", then "Unsubscribe" to delete your account<br />
+								2. Please run the scripts below to delete the resources you created in this workshop</p>
+							<div id="code1"># Delete your EMR cluster and QuickSight account, then run the following cleanup command on your Bastion Host:
 cleanupPipeline1Infra.sh
 exit
 
-# And then run the following command from your local machine
+# Run the following command from your local machine:
 aws cloudformation delete-stack --stack-name GamingWorkshopStack --region=us-west-2
 </div>
 							</p>
