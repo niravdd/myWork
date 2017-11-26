@@ -86,7 +86,7 @@ ssh -i ${WorkshopKeyPair.pem} ec2-user@${BastionPublicDNS}
 						<p><div id="code3">./pipeline1Script.sh
 </div>
 						</p>
-						<p>If you have problems creating the SQL commands, they are available here:</p>
+						<p>The script will pause to allow you to copy and paste some SQL commands to create tables in Redshift. If you have problems creating the SQL commands, they are available here:</p>
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content"><p>
 							<div id="code5"># Connect to the Redshift DB and create the tables in Redshift. To do this, copy the "ClusterEndpointConnectCmd" from your CloudFormation stack Output into your SSH terminal. It should look like this:
@@ -98,7 +98,8 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 </div>
 							</p>
-						</div>
+						</div><br />
+						<p> Don't forget to type 'quit' after you've created your tables so the script can continue building your services!</p>
 
 						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
 						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis.</p>
@@ -107,13 +108,15 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 							<p>3. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
 							<p>4. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
 							<p>It will take a few minutes for Firehose to push the data to Redshift.<br /><br />
-								(Optional) You can check the data is being pushed in by running a query like SELECT * FROM telemetry1 LIMIT 10; in your PGCLI terminal, or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> for your <span class="bold">workshopTelemetryFH</span> Delivery Stream.
+								(Optional) You can check the data is being pushed in by running a query like:</p>
+								<div id="code6">SELECT * FROM telemetry1 LIMIT 10;</div><br />
+								<p>in your PGCLI terminal (you can access it using the "ClusterEndpointConnectCmd" from your CloudFormation Outputs), or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> for your <span class="bold">workshopTelemetryFH</span> Delivery Stream.</p>
 
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
 						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>
 						<div class="indent-show" id="1-3-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-3-button', '1-3-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-3-content">
-							<p>1. Click on <a href="https://quicksight.aws.amazon.com/sn/console/signup" target="_blank">this link</a> to visit the QuickSight website or select "QuickSight" in the Console.</p>
+							<p>1. Click on <a href="https://quicksight.aws.amazon.com/" target="_blank">this link</a> to visit the QuickSight website or select "QuickSight" in the Console.</p>
 							<p>2. Select "Sign Up For Free" (or "Sign In" if you've used it before and have an account)</p>
 							<p>3. Select "Continue" to select the Standard edition</p>
 							<p>4. Click the "Go to Amazon QuickSight" button.</p>
@@ -194,7 +197,16 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
     		maxLines: code5.session.getLength()
     	});
 	</script>
-
+	<script>
+		var code6 = ace.edit("code6");
+		code6.setTheme("ace/theme/idle_fingers");
+    	code6.getSession().setMode("ace/mode/snippets");
+    	code6.setReadOnly(false);
+    	code6.setShowPrintMargin(false);
+    	code6.setOptions({
+    		maxLines: code6.session.getLength()
+    	});
+	</script>
 </body>
 
 </html>

@@ -66,31 +66,10 @@
 						<img src="Pipeline3.png" alt="Analytics Pipeline" /><br /><br />
 
 						<h3 class="overline">PIPELINE 3 - CONFIGURE KINESIS ANALYTICS</h3>
-						<p>For this lab we're going to use Kinesis Analytics in the web console. Please visit <a href="https://us-west-2.console.aws.amazon.com/kinesisanalytics/home?region=us-west-2#/gettingstarted" target="_blank">this link</a> and create an application that uses your <span class="bold">workshopTelemetryStream</span> Kinesis Stream as the source, the Redshift table "telemetry2" as the destination, and uses the SQL statements below as the Kinesis Analytics Application. If you get stuck, step-by-step instructions are below:
-						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
-						<div class="indent-hide" id="1-1-content">
-							<p>
-								1. Click on "Create application"<br />
-								2. For "Application name" enter "telemetry2app" and click "Create application"<br />
-								3. Under the "Source" section, click "Connect to a source"<br />
-								4. Under "Select a stream" select "workshopTelemetryStream" and click the "Discover schema" button on the bottom left of the window. This will analyse the data that is passing through the stream and identify the schema of the data in it.<br />
-								5. After about 30 seconds the data should appear. Check that it looks sensible and click "Save and continue"<br />
-								6. Under the "Real time analytics" section click the "Go to SQL editor" button<br />
-								7. A window will appear asking "Would you like to start running telemetry2app?". Click "Yes, start application"<br />
-								8. Copy both the following SQL statements into the query editor, wait for the application to finish creation, and click the "Save and run SQL" button on the middle-right side of the window:<br />
-							</p>							
-						</div>
-						<br />
-						<div id="code1">CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FH_STREAM" (
-	"playerid" bigint, "playerlevel" VARCHAR(16), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
-	"squadguard" integer, "squaddamage" integer, "gameplayseconds" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(8));
-
-CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
-SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
-	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
-</div><br />
-							<p> 9. You should see the data appear in the "Real-time analytics" tab. This is real-time data. Let's see what happens when you change the query. Please change the query to the following SQL statements and click the "Save and run SQL" button on the middle-right side of the window:</p>
+						<p>For this lab we're going to use Kinesis Analytics in the web console. The script you ran in Lab 1 created a Kinesis Analytics application that uses your <span class="bold">workshopTelemetryStream</span> Kinesis Stream as the source and the Redshift table "telemetry2" as the destination. 
+							1. Please visit <a href="https://us-west-2.console.aws.amazon.com/kinesisanalytics/home?region=us-west-2#/gettingstarted" target="_blank">this link</a>, and under the "Real time analytics" section click the "Go to SQL results" button
+							2. Click on the "Real-time analytics" tab in the middle-left of the page. After a brief wait a sample of your real-time data should show up as it's passing through the stream. (Note: if you do not see data flow, check that your GameBot is emitting data!)
+							3. Let's see what happens when you change the query. Please change the query to the following SQL statements and click the "Save and run SQL" button on the middle-right side of the window:</p>
 						<div id="code2">CREATE OR REPLACE STREAM "WORKSHOP_TELEMETRY2_FH_STREAM" (
 	"playerid" bigint, "playerlevel" VARCHAR(8), "squadelementmap" VARCHAR(8), "gamenumber" integer, "squadpower" integer, "squadagility" integer, "squadhealth" integer, "squadluck" integer, "squadspecial" integer,
 	"squadguard" integer, "squaddamage" integer, "gameplayseconds" integer, "bosspower" integer, "bossagility" integer, "bosshealth" integer, "bossluck" integer, "bossspecial" integer, "bossguard" integer, "bossdamage" integer, "result" VARCHAR(4));
@@ -98,12 +77,12 @@ FROM "SOURCE_SQL_STREAM_001" where "gamenumber"=1;
 CREATE OR REPLACE PUMP "STREAM_PUMP" AS INSERT INTO "WORKSHOP_TELEMETRY2_FH_STREAM" 
 SELECT STREAM "playerid", "playerlevel", "squadelementmap", "gamenumber", "squadpower", "squadagility", "squadhealth", "squadluck", "squadspecial",
 	"squadguard", "squaddamage", "gameplayseconds", "bosspower", "bossagility", "bosshealth", "bossluck", "bossspecial", "bossguard", "bossdamage", "COL_result"
-FROM "SOURCE_SQL_STREAM_001" where "COL_result"='DNF';
+FROM "GAME_BOT_001" where "gamenumber"=1;
 </div><br />
-							<p> 10. Once you see the real-time data showing up and can see that it only shows DNF in the "result" column, click the "Destination" tab in the middle-left of the window<br />
-								11. Click the "Connect to a destination" button<br />
-								12. Under "Select a stream" select "workshopTelemetryFHDirect"<br />
-								13. For "In-application stream name" select "WORKSHOP_TELEMETRY2_FH_STREAM" and click the "Save and continue" button<br /><br />
+							<p> 4. Once you see the real-time data showing up and can see that it only shows DNF in the "result" column, click the "Destination" tab in the middle-left of the window<br />
+								5. Click the "Connect to a destination" button<br />
+								6. Under "Select a stream" select "workshopTelemetryFHDirect"<br />
+								7. For "In-application stream name" select "WORKSHOP_TELEMETRY2_FH_STREAM" and click the "Save and continue" button<br /><br />
 							Congratulations, you've configured Kinesis Analytics! You can now click the "Go to SQL Results" if you want to see the results being processed in real-time, and you can also wait a few minutes and then query the results in Redshift that the Firehose Stream has inserted.<br /><br />
 							To do so, SSH into your instance, use the PGCLI command from your CloudFormation Stack Output, and enter the following query:<br />
 							</p>
