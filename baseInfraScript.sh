@@ -147,6 +147,10 @@ IFS=' ' read -ra bastionsgid <<<$(aws ec2 create-security-group --group-name Bas
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 22 --cidr 0.0.0.0/0
 aws ec2 authorize-security-group-ingress --group-id $bastionsgid --protocol tcp --port 80 --cidr 0.0.0.0/0
 
+IFS=' ' read -ra emrsgid <<<$(aws ec2 create-security-group --group-name EMRSecurityGroup --description "Allow access for the EMR Master Node" --vpc-id $vpcid | awk '/GroupId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
+aws ec2 authorize-security-group-ingress --group-id $emrsgid --protocol tcp --port 22 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id $emrsgid --protocol tcp --port 8890 --cidr 0.0.0.0/0
+
 echo -e "## Creating and attaching an instance profile for/to the Bastion host..."
 curl https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ec2-policy.json -o iam-base-ec2-policy.json
 aws iam create-role --role-name BastionDataGenRole --assume-role-policy-document file://iam-base-ec2-policy.json
@@ -182,6 +186,7 @@ echo -e "${Color_Off}===========================================================
 echo -e "## Preparing the ${BIBlue}cleanupBaseInfra.sh${Color_Off} for your infrastructure now... At the end of the workshop, we will run it..."
 sed -i -- "s/varBastionInstanceID/$bastioninstanceid/g" cleanupBaseInfra.sh
 sed -i -- "s/varBastionsgid/$bastionsgid/g" cleanupBaseInfra.sh
+sed -i -- "s/varEMRsgid/$emrsgid/g" cleanupBaseInfra.sh
 sed -i -- "s/varSubnetidA/$subnetidA/g" cleanupBaseInfra.sh
 sed -i -- "s/varSubnetidB/$subnetidB/g" cleanupBaseInfra.sh
 sed -i -- "s/varSubnetidC/$subnetidC/g" cleanupBaseInfra.sh
