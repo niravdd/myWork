@@ -111,6 +111,7 @@ aws iam delete-role --role-name BastionDataGenRole
 aws iam delete-instance-profile --instance-profile-name BastionProfile
 aws ec2 terminate-instances --instance-ids varBastionInstanceID
 aws ec2 delete-security-group --group-id varBastionsgid
+aws ec2 delete-security-group --group-id varEMRsgid
 aws ec2 delete-subnet --subnet-id varSubnetidA
 aws ec2 delete-subnet --subnet-id varSubnetidB
 aws ec2 delete-subnet --subnet-id varSubnetidC
