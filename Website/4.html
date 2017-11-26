@@ -103,12 +103,12 @@
 							<div id="code2"><br />
 ssh -o "ServerAliveInterval 60" -i ~/myWorkshopKeyPair.pem hadoop@&lt;MasterNodeIPAddress&gt;<br />
 </div>
-							<img src="Step20.png" alt="Step 20" />
+							<img src="Step20.png" alt="Step 20" /><br />
 							21. After logging in to the Master Node instance, issue the command as below.<br /><br />
 							<div id="code3"><br />
 hive<br />
 							</div>
-							<img src="Step21.png" alt="Step 21" />
+							<img src="Step21.png" alt="Step 21" /><br />
 							22. Issue the following commands at the hive prompt, one command at a time and review its output. Note that we did not create any database or tables here, however - AWS Glue has crawled and created the schema for us in Hive because we asked it to in Step 5 above.<br /><br />
 							<div id="code4">hive&gt; show databases;<br />
 hive&gt; use workshopdb;<br />
@@ -116,7 +116,7 @@ hive&gt; show tables;<br />
 hive&gt; describe telemetry1;<br />
 hive&gt; 
 </div>
-							<img src="Step22.png" alt="Step 22" />
+							<img src="Step22.png" alt="Step 22" /><br />
 							23. Similarly, you can issue SQL commands to hive &amp; query your data lying in the S3. Try a few queries and note that its querying your S3 bucket - the metadata for which has been prepared for AWS Glue.<br /><br />
 <div id="code5">hive&gt; select count(*) from workshopdb.telemetry1;<br /><br />
 hive&gt; select count(*) from workshopdb.telemetry2;<br />
@@ -132,7 +132,7 @@ $
 spark-sql<br />
 							</div>
 							<img src="Step24-1.png" alt="Step 24" />
-							<img src="Step24-2.png" alt="Step 24" />
+							<img src="Step24-2.png" alt="Step 24" /><br />
 							25. Issue &amp; try the following SQL commands again, one-at-a-time - this time in Spark SQL:<br /><br />
 							<div id="code7"><br />
 spark-sql&gt; show databases;<br />
