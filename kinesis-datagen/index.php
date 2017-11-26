@@ -117,7 +117,7 @@ catch (\Exception $e) {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
     <style>
-        #container textarea { margin:10px auto; width:90%; background-color:white; font-size:0.7em; text-align:left; }
+        #container textarea { margin:10px auto; width:90%; background-color:white; font-family:"Courier New"; font-size:0.8em; text-align:left; }
         #container .small { width:100px; margin-right:20px; }
         #container .tiny { width:50px; margin-right:20px; }
         #container .marginRight { margin-right:40px; }

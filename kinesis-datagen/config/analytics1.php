@@ -17,92 +17,61 @@ return array(
 
     'fields' => array(
         'playerip' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                '1.1.1.1',
-                '2.2.2.2',
-                '3.3.3.3',
-                '4.4.4.4',
-                '5.5.5.5',
-                '6.6.6.6',
-                '7.7.7.7',
-                '8.8.8.8',
-                '9.9.9.9',
-            ),
+            'type' => 'faker',
+            'property' => 'ipv4'
         ),
 
         'handle' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                'cloudy',
-                'cloudinator',
-                'awsome',
-                'cloudymccloudison',
-                'lambdanator',
-                'cognitology',
-                'kinsismaster',
-                'firehosinnoobs',
-                'awsrocks',
-            ),
+            'type' => 'faker',
+            'property' => 'name'
         ),
 
         'email' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                'a@b.com',
-                'b@c.com',
-                'c@d.com',
-                'd@e.com',
-            ),
+            'type' => 'faker',
+            'property' => 'email'
         ),
 
         'uuid' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                'q3g4gq3',
-                'h45w6jn',
-                '3ddghhd',
-                '4tg3qgg',
-                '42ty43q',
-                'g5w4hh4',
-            ),
+            'type' => 'faker',
+            'property' => 'uuid'
         ),
 
         'playerid' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                '41234125',
-                '23152532',
-                '46264577',
-                '97505679',
-                '17437347',
-                '47274246',
+            'type' => 'randomNumber',
+            'randomNumber' => array(
+                'max' => '1000000000',
+                'min' => '1000009999',
             ),
         ),
 
         'country' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                'south korea',
-                'australia',
-                'japan',
-                'singapore',
-                'russia',
-                'new zealand',
-                'china',
-                'india',
-                'usa',
+            'type' => 'weightedList',
+            'weightedList' => array(
+                'US' => 25,
+                'Japan' => 20,
+                'Singapore' => 8,
+                'Australia' => 10,
+                'New Zealand' => 2,
+                'Canada' => 15,
+                'UK' => 5,
+                'Malaysia' => 3,
+                'Russia' => 2,
+                'India' => 3,
+                'Philippines' => 4,
+                'Taiwan' => 3,
             ),
         ),
 
         'useragent' => array(
-            'type' => 'randomList',
-            'randomList' => array(
-                'firefox',
-                'chrome',
-                'ielol',
-                'edge',
-                'sarafi',
+            'type' => 'weightedList',
+            'weightedList' => array(
+                'Mozilla Firefox' => 20,
+                'Chrome' => 26,
+                'Brave' => 4,
+                'Safari' => 6,
+                'Opera' => 6,
+                'Internet Explorer' => 3,
+                'Unknown' => 35,
             ),
         ),
 
@@ -114,8 +83,8 @@ return array(
         'walletbalance' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '1',
-                'min' => '1000',
+                'max' => '0',
+                'min' => '1200',
             ),
         ),
         
@@ -137,9 +106,9 @@ return array(
         'status' => array(
             'type' => 'weightedList',
             'weightedList' => array(
-                'active' => 5,
-                'premium' => 3,
-                'inactive' => 8,
+                'Player' => 91,
+                'DevTest' => 8,
+                'Blacklisted' => 1,
             ),        
         ),
     ),
