@@ -74,7 +74,7 @@
 							<br /><img src="Step2.png" alt="Step 2" /><br /><br /><br />
 							3. Choose "Release": "emr-5.10.0" in the Software Configuration<br />
 							4. Enable "Hadoop 2.7.3", "Presto 0.187", "Pig 0.17.0", "Hue 4.0.1", "Zeppelin 0.7.3", "Hive 2.3.1", "Spark 2.2.0". You can choose to enable others there, however we will use these primarily for the guided section of the workshop.<br />
-							5. Enable the "AWS Glue Data Catalog settings" only for "Use for Hive table metadata" and "Use for Presto table metadata".<br />
+							5. Enable the "AWS Glue Data Catalog settings" only for "Use for Hive table metadata".<br />
 							6. Click on the Next button to proceed to the Hardware configuration<br />
 							<br /><img src="Steps3-4-5-6.png" alt="Step 3, 4, 5, 6" /><br /><br /><br />
 							7. Choose the VPC you have been using for the workshop from the "Network" dropdown. Choose any one subnet for the EC2 Subnet dropdown.<br />
@@ -86,7 +86,7 @@
 							12. Click the Next button to proceed to the Security configuration<br />
 							<br /><img src="Steps10-11-12.png" alt="Step 10, 11, 12" /><br /><br /><br />
 							13. Choose the "myWorkshopKeyPair" from the "EC2 Key Pair" dropdown<br />
-							14. Open the "EC2 security groups" section. We need to select the Additional security groups for the Master and the Core &amp; Task node types. Edit the "Additional security groups" and select the same security groups as the one used for the Bastion Host - it should be named "BastionSecurityGroup". Make the change for both the Node types there.<br />
+							14. Open the "EC2 security groups" section. We need to select the Additional security groups for the Master and the Core &amp; Task node types. Edit the "Additional security groups" and select the security group named "EMRSecurityGroup". Perform this change for both the Node types there.<br />
 							15. Click the "Create cluster" button to start the cluster creation. The cluster should be built for you, and should take at least 11 minutes to complete the creation.<br />
 							<br /><img src="Steps13-14-15.png" alt="Step 13, 14, 15" /><br /><br /><br />
 							16. From the Cluster Summary screen, click on the "Clusters" on the review the progress from the Clusters dashboard. The Cluster will be ready after the "Status" for the cluster changes to "Waiting - Cluster ready"...<br />
@@ -100,13 +100,16 @@
 							19. In the EC2 Dashboard, note the public IP of the Master Node instance<br />
 							<br /><img src="Step19.png" alt="Step 19" /><br /><br /><br />
 							20. ssh in to the master node instance with the command as below. Note carefully, the user-name is "hadoop".<br />
-							<div id="code2">ssh -o "ServerAliveInterval 60" -i ~/myWorkshopKeyPair.pem hadoop@&lt;MasterNodeIPAddress&gt;<br /></div>
+							<div id="code2"><br />
+ssh -o "ServerAliveInterval 60" -i ~/myWorkshopKeyPair.pem hadoop@&lt;MasterNodeIPAddress&gt;<br />
+</div>
 							<img src="Step20.png" alt="Step 20" />
 							21. After logging in to the Master Node instance, issue the command as below.<br /><br />
-							<div id="code3">hive<br />
+							<div id="code3"><br />
+hive<br />
 							</div>
 							<img src="Step21.png" alt="Step 21" />
-							22. Issue the following commands at the hive prompt, one command at a time and review its output.<br /><br />
+							22. Issue the following commands at the hive prompt, one command at a time and review its output. Note that we did not create any database or tables here, however - AWS Glue has crawled and created the schema for us in Hive because we asked it to in Step 5 above.<br /><br />
 							<div id="code4">hive&gt; show databases;<br />
 hive&gt; use workshopdb;<br />
 hive&gt; show tables;<br />
@@ -124,23 +127,81 @@ hive&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
 hive&gt; quit;<br />
 $ 
 </div><br /><br />
-							24. Launch spark-sql by issuing the command as below.<br /><br />
-							<div id="code6">spark-sql
+							24. Next, launch spark-sql by issuing the command as below.<br /><br />
+							<div id="code6"><br />
+spark-sql<br />
 							</div>
 							<img src="Step24-1.png" alt="Step 24" />
 							<img src="Step24-2.png" alt="Step 24" />
 							25. Issue &amp; try the following SQL commands again, one-at-a-time - this time in Spark SQL:<br /><br />
-							<div id="code7">spark-sql&gt; show databases;<br />
+							<div id="code7"><br />
+spark-sql&gt; show databases;<br />
+spark-sql&gt; create database workshopdb;<br /><br />
+spark-sql&gt; CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry1 (<br />
+	`datestamp` string,<br />
+	`playerid` bigint,<br />
+	`playerlevel` string,<br />
+	`squadelementmap` string,<br />
+	`gamenumber` int,<br />
+	`squadpower` int,<br />
+	`squadagility` int,<br />
+	`squadhealth` int,<br />
+	`squadluck` int,<br />
+	`squadspecial` int,<br />
+	`squadguard` int,<br />
+	`squaddamage` int,<br />
+	`gameplayseconds` int,<br />
+	`bosspower` int,<br />
+	`bossagility` int,<br />
+	`bosshealth` int,<br />
+	`bossluck` int,<br />
+	`bossspecial` int,<br />
+	`bossguard` int,<br />
+	`bossdamage` int,<br />
+	`result` string<br />
+)<br />
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'<br />
+WITH SERDEPROPERTIES (<br />
+	'serialization.format' = '1'<br />
+) LOCATION 's3://&lt;bucket-name&gt;/telemetry1/'<br />
+TBLPROPERTIES ('has_encrypted_data'='false');<br /><br />
 spark-sql&gt; use workshopdb;<br />
 spark-sql&gt; show tables;<br />
 spark-sql&gt; describe telemetry1;<br />
 spark-sql&gt; select count(*) from workshopdb.telemetry2;<br />
 spark-sql&gt; select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
+spark-sql&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br /><br />
+spark-sql&gt; CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry2 (<br />
+	`playerid` bigint,<br />
+	`playerlevel` string,<br />
+	`squadelementmap` string,<br />
+	`gamenumber` int,<br />
+	`squadpower` int,<br />
+	`squadagility` int,<br />
+	`squadhealth` int,<br />
+	`squadluck` int,<br />
+	`squadspecial` int,<br />
+	`squadguard` int,<br />
+	`squaddamage` int,<br />
+	`gameplayseconds` int,<br />
+	`bosspower` int,<br />
+	`bossagility` int,<br />
+	`bosshealth` int,<br />
+	`bossluck` int,<br />
+	`bossspecial` int,<br />
+	`bossguard` int,<br />
+	`bossdamage` int,<br />
+	`result` string<br />
+)<br />
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'<br />
+WITH SERDEPROPERTIES (<br />
+	'serialization.format' = '1'<br />
+) LOCATION 's3://&lt;bucket-name&gt;/telemetry2/'<br />
+TBLPROPERTIES ('has_encrypted_data'='false');<br /><br />
 spark-sql&gt; select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
-spark-sql&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br />
 spark-sql&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
 spark-sql&gt; quit;<br />
-$</div><br /><br />
+</div><br /><br />
 							26. Run the following command and confirm that Zeppelin is running on the Master Node. As you would see, AWS EMR has setup, pre-configured &amp; run the applications we chose to install while setting up the cluster.<br /><br />
 							<div id="code8">ps aux | grep zeppelin<br />
 							</div>
@@ -150,13 +211,9 @@ $</div><br /><br />
 							</div><br />
 							Note: If you experience any issues connecting to port 8890, follow instructions as below to create a ssh tunnel.<br /><br />
 							<div id="code10"><br />
-Step 1: Login to your Workshop Bastion host, or switch to the window<br />
-Step 2: cat ~/myWorkshopKeyPair.pem<br />
-Step 3: Copy its output and write a new file in your home (~) directory with the name ~/myWorkshopKeyPair.pem (exact!).<br />
-Step 4: chmod 400 ~/myWorkshopKeyPair.pem<br />
-Step 5: Finally - issue the ssh command as below to create the tunnel<br />
-Step 6: ssh -i ~/myWorkshopKeyPair.pem -L8890:&lt;MasterNodeIP&gt;:8890 hadoop@&lt;MasterNodeIP&gt;<br />
-Step 7: Now, launch your browser and visit http://localhost:8890 - to launch Zeppelin!<br />
+If the TCP port 8890 is blocked for any reason, you can create a SSH tunnel using the Bastion Host as below.<br /><br />
+Step 1: ssh -i ~/myWorkshopKeyPair.pem -L8890:&lt;MasterNodeIP&gt;:8890 hadoop@&lt;MasterNodeIP&gt;<br /><br />
+Step 2: Now, launch your browser and visit http://localhost:8890 - to launch Zeppelin<br />
 <br /></div><br /><br />
 							28. Click on the "Create new note" in the Zeppelin welcome page. Give it a name as "Workshop Note" &amp; leave the default interpreter as "spark".<br /><br />
 							<img src="Step27-28.png" alt="Step 27, 28" /><br /><br />
@@ -185,11 +242,11 @@ select playerlevel, count(playerlevel) from myWorkshop group by playerlevel orde
 						<img src="Step30-1.png" alt="Step 30" /><br /><br />
 						<img src="Step30-2.png" alt="Step 30" /><br /><br />
 						<img src="Step30-3.png" alt="Step 30" /><br /><br />
-						31. Perform further queries on the data, review the results &amp; see the various graphs it creates. The queries are being performed on data (1.7+ million rows) stored on the S3 bucket.
-						32. After performing all the queries, you should log out of ssh sessions to the Master Node (Command: 'exit')
-						33. Visit the Amazon EMR dashboard at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>.
-						34. From the "Clusters" list, select the "workshopCluster" and hit the TERMINATE button to initiate destroying the cluster. As we have enabled the "Termination protection", the cluster will display a warning. Choose the "Off", and click the GREEN Tick to Save disabling of the Termination Protection.
-						35. Finally, click the Terminate button and Amazon EMR will now initiate the destruction of the cluster.
+						31. Perform further queries on the data, review the results &amp; see the various graphs it creates. The queries are being performed on data (1.7+ million rows) stored on the S3 bucket.<br />
+						32. After performing all the queries, you should log out of ssh sessions to the Master Node (Command: 'exit')<br />
+						33. Visit the Amazon EMR dashboard at <a href="https://us-west-2.console.aws.amazon.com/elasticmapreduce/home?region=us-west-2" target="_blank">this link</a>.<br />
+						34. From the "Clusters" list, select the "workshopCluster" and hit the TERMINATE button to initiate destroying the cluster. As we have enabled the "Termination protection", the cluster will display a warning. Choose the "Off", and click the GREEN Tick to Save disabling of the Termination Protection.<br />
+						35. Finally, click the Terminate button and Amazon EMR will now initiate the destruction of the cluster.<br />
 						</p>
 
 						<h3 class="overline">CLEANING UP YOUR ENVIRONMENT</h3>
