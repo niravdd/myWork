@@ -648,10 +648,6 @@ Outputs:
     Description: Key Pair Used
     Value:
       Ref: Ec2KeyPair
-  BastionSecurityGroup:
-    Description: Bastion Security Group to Allow Remote Access
-    Value:
-      Ref: BastionSecurityGroup
   IAMRole:
     Description: IAM Instance Profile Role Created
     Value:
@@ -707,6 +703,10 @@ Outputs:
   InternetGateway:
     Description: Internet Gateway Created for VPC
     Value: !Ref InternetGateway
+  EMRSecurityGroup:
+    Description: EMR Security Group to Allow Remote Access
+    Value:
+      Ref: EMRSecurityGroup
   BastionSecurityGroup:
     Description: Bastion Security Group to Allow Remote Access
     Value:
