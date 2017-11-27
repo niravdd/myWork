@@ -1,0 +1,80 @@
+All tables - Create Statements for Athena and/or Hive/SparkSQL:
+
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.analytics1 (
+  `playerip` string,
+  `handle` string,
+  `email` string,
+  `uuid` string,
+  `playerid` bigint,
+  `country` string,
+  `useragent` string,
+  `datestamp` string,
+  `walletbalance` double,
+  `playerlevel` string,
+  `status` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://{WorkshopBucket}/analytics1/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+
+
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry1 (
+  `datestamp` string,
+  `playerid` bigint,
+  `playerlevel` string,
+  `squadelementmap` string,
+  `gamenumber` int,
+  `squadpower` int,
+  `squadagility` int,
+  `squadhealth` int,
+  `squadluck` int,
+  `squadspecial` int,
+  `squadguard` int,
+  `squaddamage` int,
+  `gameplayseconds` int,
+  `bosspower` int,
+  `bossagility` int,
+  `bosshealth` int,
+  `bossluck` int,
+  `bossspecial` int,
+  `bossguard` int,
+  `bossdamage` int,
+  `result` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://{WorkshopBucket}/telemetry1/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+
+
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry2 (
+  `playerid` bigint,
+  `playerlevel` string,
+  `squadelementmap` string,
+  `gamenumber` int,
+  `squadpower` int,
+  `squadagility` int,
+  `squadhealth` int,
+  `squadluck` int,
+  `squadspecial` int,
+  `squadguard` int,
+  `squaddamage` int,
+  `gameplayseconds` int,
+  `bosspower` int,
+  `bossagility` int,
+  `bosshealth` int,
+  `bossluck` int,
+  `bossspecial` int,
+  `bossguard` int,
+  `bossdamage` int,
+  `result` string 
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = '1'
+) LOCATION 's3://{WorkshopBucket}/telemetry2/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+

@@ -14,7 +14,7 @@ return array(
             'streamName' => 'workshopAnalyticsStream',
 
             // Total number of entries generated
-            'total' => 5000,
+            'total' => 10000,
 
             // Size of the batch to send to Kinesis
             'batchSize' => 400,
@@ -39,7 +39,7 @@ return array(
             'streamName' => 'workshopTelemetryStream',
 
             // Total number of entries generated
-            'total' => 5000,
+            'total' => 10000,
 
             // Size of the batch to send to Kinesis
             'batchSize' => 400,
@@ -64,7 +64,7 @@ return array(
             'streamName' => 'workshopTelemetryStream',
 
             // Total number of entries generated
-            'total' => 5000,
+            'total' => 10000,
 
             // Size of the batch to send to Kinesis
             'batchSize' => 400,

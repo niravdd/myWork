@@ -74,7 +74,7 @@ return array(
         'squadagility' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '9',
+                'max' => '16',
                 'min' => '6',
             ),
         ),
@@ -82,8 +82,8 @@ return array(
         'squadhealth' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '5',
+                'max' => '16',
+                'min' => '7',
             ),
         ),
 
@@ -98,7 +98,7 @@ return array(
         'squadspecial' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '9',
+                'max' => '12',
                 'min' => '6',
             ),
         ),
@@ -106,7 +106,7 @@ return array(
         'squadguard' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '9',
+                'max' => '11',
                 'min' => '6',
             ),
         ),
@@ -115,7 +115,7 @@ return array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '9',
-                'min' => '6',
+                'min' => '5',
             ),
         ),
 
@@ -123,7 +123,7 @@ return array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '240',
-                'min' => '100',
+                'min' => '90',
             ),
         ),
 
@@ -188,8 +188,8 @@ return array(
             // Value => condition
             'rules' => array(
                 'DNF' => '{gameplayseconds} < 120',
-                'Won' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}) / 7) * {gameplayseconds}) >= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}) / 7)',
-                'Lost' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}) / 7) * {gameplayseconds}) <= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}) / 7)'
+                'Won' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} - {squaddamage}) / 7) * ({gameplayseconds} / 60)) >= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossguard} - {bossdamage}) / 7)',
+                'Lost' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} - {squaddamage}) / 7) * ({gameplayseconds} / 60)) <= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossguard} - {bossdamage}) / 7)',
             ),
         ),
     ),
