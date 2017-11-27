@@ -132,6 +132,7 @@ aws s3 rb s3://varBucketName --force
 aws s3 rb s3://aws-athena-query-results-varAccountID-us-west-2 --force
 # aws iam delete-role-policy --role-name redshift_fullaccess_role --policy-name iam-redshift-policy
 # aws iam delete-role --role-name redshift_fullaccess_role
+aws glue delete-crawler --name workshopcrawler
 aws athena start-query-execution --query-string "DROP DATABASE workshoptelemetrydb;"
 aws iam delete-role-policy --role-name wsfirehose_delivery_role --policy-name iam-fh-policy --region us-west-2
 aws iam delete-role --role-name wsfirehose_delivery_role --region us-west-2

@@ -161,7 +161,7 @@ aws iam create-instance-profile --instance-profile-name BastionProfile
 aws iam add-role-to-instance-profile --role-name BastionDataGenRole --instance-profile-name BastionProfile
 
 echo -e "## Creating the Bastion host instance now..."
-IFS=' ' read -ra bastioninstanceid <<<$(aws ec2 run-instances --image-id ami-7f2afa07 --count 1 --instance-type t2.micro --key-name myWorkshopKeyPair --security-group-ids $bastionsgid --subnet-id $subnetidA | awk '/InstanceId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
+IFS=' ' read -ra bastioninstanceid <<<$(aws ec2 run-instances --image-id ami-6f72ad17 --count 1 --instance-type t2.micro --key-name myWorkshopKeyPair --security-group-ids $bastionsgid --subnet-id $subnetidA | awk '/InstanceId/{ gsub(/,/, "", $2); gsub(/"/, "", $2); print $2; }')
 echo -e "## Pausing 30 seconds for the instance to be created..."
 sleep 30
 IFS=' ' read -ra bastionpublicip <<<$(aws ec2 describe-instances --instance-id $bastioninstanceid --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)

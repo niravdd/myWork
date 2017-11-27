@@ -89,7 +89,7 @@ On_IWhite='\033[0;107m'   # White
 
 ## { Start...
 echo -e "........ ${BIWhite}Welcome to ${BIRed}re:Invent 2017${BIWhite} - Workshop - ${BIRed}GAM310${Color_Off} ........"
-echo -e "${On_Blue}${BIRed}           1.  A N A L Y T I C S'   P I P E L I N E           ${Color_Off}\n\n"
+echo -e "${On_Blue}${BIRed}L A N D I N G   Z O N E   I N F R A S T R U C T U R E${Color_Off}\n\n"
 # echo -e "## ${BIWhite}Action Required:${Color_Off}"
 # echo -e "## Please ensure you have run the ${BIBlue}baseInfraScript.sh${Color_Off} OR the ${BIBlue}gam310-workshop-cfn${ColorOff} CloudFormation template"
 # echo -e "   prior to starting this - or else this script will encounter failures.\n\n"
@@ -229,7 +229,7 @@ aws logs create-log-stream --log-group-name "/aws/kinesisfirehose/workshopTeleme
 ## Create a log group and streams for Kinesis Analytics' App
 echo -e "${Blue}aws logs create-log-group  --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --region us-west-2${Color_Off}"
 aws logs create-log-group  --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --region us-west-2
-echo "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --log-stream-name "AppDelivery" --region us-west-2${Color_Off}"
+echo -e "${Blue}aws logs create-log-stream --log-group-name ""/aws/kinesisanalytics/workshopTelemetryKAApp"" --log-stream-name "AppDelivery" --region us-west-2${Color_Off}"
 aws logs create-log-stream --log-group-name "/aws/kinesisanalytics/workshopTelemetryKAApp" --log-stream-name "AppDelivery" --region us-west-2
 
 echo -e "## Analytics' Firehose Stream..."
