@@ -118,6 +118,21 @@ where
 order by datestamp desc
 limit 10;
 
+-- Which players have the highest squadpower on level 3?
+select
+a.handle,
+a.country,
+max(t.squadpower) as maxsquadpower,
+t.playerlevel
+from
+analytics1 a
+join telemetry1 t
+on a.playerid = t.playerid
+where
+t.playerlevel = 'Level 3'
+group by
+a.handle, a.country, t.playerlevel
+limit 10;
 
 
 delete from eval01table where 1=1;

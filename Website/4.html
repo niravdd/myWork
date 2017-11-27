@@ -168,7 +168,7 @@ TBLPROPERTIES ('has_encrypted_data'='false');<br />
 use workshopdb;<br />
 show tables;<br />
 describe telemetry1;<br />
-select count(*) from workshopdb.telemetry2;<br />
+select count(*) from workshopdb.telemetry1;<br />
 select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
 select count(*) from workshopdb.telemetry1 where result='DNF';<br />
 <br />
@@ -200,6 +200,7 @@ WITH SERDEPROPERTIES (<br />
 ) LOCATION 's3://&lt;bucket-name&gt;/telemetry2/'<br />
 TBLPROPERTIES ('has_encrypted_data'='false');<br />
 <br />
+select count(*) from workshopdb.telemetry2;<br />
 select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
 select count(*) from workshopdb.telemetry2 where result='DNF';<br />
 quit;<br />

@@ -109,8 +109,9 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 							<p>4. Click on the "<span class="bold">Sending in loop</span>" checkbox, then click on the "<span class="bold">Generate</span>" button to start pushing a constant stream of data to Kinesis</p>
 							<p>5. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
 							<p>It will take a few minutes for Firehose to push the data to Redshift.<br /><br />
-								(Optional) You can check the data is being pushed in by running a query like:</p>
-								<div id="code6">SELECT * FROM telemetry1 LIMIT 10;
+								(Optional) You can check the data is being pushed in by running a query like this:</p>
+								<div id="code6">-- Check for 10 rows of data in your telemetry1 table
+SELECT * FROM telemetry1 LIMIT 10;
 </div><br />
 								<p>in your PGCLI terminal (you can access it using the "ClusterEndpointConnectCmd" from your CloudFormation Outputs), or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> to monitor your <span class="bold">workshopTelemetryFH</span> Delivery Stream.</p>
 								<p>If you wish to explore further</p>
@@ -124,8 +125,8 @@ select result, count(result), (((cast(count(result) as decimal)/(select count(*)
 						<div class="indent-hide" id="1-3-content">
 							<p>1. Click on <a href="https://quicksight.aws.amazon.com/" target="_blank">this link</a> to visit the QuickSight website or select "<span class="bold">QuickSight</span>" in the Console.</p>
 							<p>2. Select "<span class="bold">Sign Up For Free</span>" (or "Sign In" if you've used it before and have an account)</p>
-							<p>3. Select "Continue" to select the Standard edition (NEW USERS ONLY)</p>
-							<p>4. Enter your name and email address, and for the "QuickSight capacity region" select "US West (Oregon)" and click "Finish". Leave everything else as defaults (NEW USERS ONLY). If you're an existing user, switch to the Oregon region.</p>
+							<p>3. Select "<span class="bold">Continue</span>" to select the Standard edition (NEW USERS ONLY)</p>
+							<p>4. Enter your name and email address, and for the "QuickSight capacity region" select "US West (Oregon)" and click "<span class="bold">Finish</span>". Leave everything else as defaults (NEW USERS ONLY). If you're an existing user, switch to the Oregon region.</p>
 							<p>5. Click the "<span class="bold">Go to Amazon QuickSight</span>" button (NEW USERS ONLY)</p>
 							<p>6. Click the "<span class="bold">New analysis</span>" button in the top left</p>
 							<p>7. Click the "<span class="bold">New data set</span>" button in the top left</p>
@@ -133,7 +134,7 @@ select result, count(result), (((cast(count(result) as decimal)/(select count(*)
 							<p>9. A "<span class="bold">New Redshift data source</span>" window will appear. For the "<span class="bold">Data source name</span>" enter "<span class="bold">GamingWorkshopRedshift</span>". For "Instance ID" click the drop-down arrow on the right of the selection box, and select "<span class="bold">workshopcluster</span>". The "<span class="bold">Database name</span>" should be automatically populated with "workshopdb", but you will need to enter a "<span class="bold">Username</span>" of "<span class="bold">wsuser</span>" and "<span class="bold">Password</span>" of "<span class="bold">wsPassword0</span>". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
 							<p>10. Select "<span class="bold">analytics1</span>" and click the "<span class="bold">Select</span>" button on the bottom right</p>
 							<p>11. Select "<span class="bold">Directly query your data</span>" and click the "<span class="bold">Visualize</span>" button on the bottom right</p>
-							<p>12. Explore your data! Let's start with by looking at the average walletbalance per country. Click on "walletbalance" in the list on the left. QuickSight will automatically select a graph type once after you select your next measure.</p>
+							<p>12. Explore your data! Let's start with by looking at the average walletbalance per country. Click on "<span class="bold">walletbalance</span>" in the list on the left. QuickSight will automatically select a graph type once after you select your next measure.</p>
 							<p>13. Select "<span class="bold">country</span>" from the left side, and QuickSight will show you the "Count of records by Country"</p>
 							<p>14. Click the chevron in the top-right side to expand the Field wells</p>
 							<p>15. Click and drag "<span class="bold">walletbalance</span>" to the "Value" field well</p>
