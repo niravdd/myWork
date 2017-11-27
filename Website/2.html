@@ -70,38 +70,40 @@
 							You have two options to create your Hive metastore:
 							<ul>
 								<li>Create a database in AWS Glue and set up a Crawler to automatically create the table schema based on the content of your data</li>
-								<li>Create a database in Athena and use a script to create your table based on prior knowledge of the data structures</li>
+								<li>Create a database in Athena and use a script to create your table based on prior knowledge of the data structures (FASTEST)</li>
 							</ul>
 						</p>
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">OPTION 1: GLUE INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-1-content">
-						<p>AWS Glue is a service that can be used to manage your complex data ETL requirements. To do this, you create a Database, and then set up a "Crawler" that processes the data in your S3 buckets and adds the metadata to the Database. If you want to use Glue, use the following instructions as an alternative. The fastest way to create the Hive database will be to skip Glue and move on to the instructions for using the scripts.</p>
+						<p>AWS Glue is a service that can be used to manage your complex data ETL requirements. To do this, you create a Database, and then set up a "Crawler" that processes the data in your S3 buckets and adds the metadata to the Database in the form of a table. The fastest way to create the Hive database will be to skip Glue and move on to the instructions for using the scripts, but do this if you want to learn how to do this automatically!</p>
 						<p>
-							1. Close the introductory tutorial window (this will not appear if you've used Athena before).<br />
-							2. On the left side you will see the "DATABASE" section. Click on "Create Table" dropdown, then "Automatically (AWS Glue Crawler)". This will pop up a notification that you're going to Glue. Click "Continue".<br />
-							3. Click "Get started".<br />
-							4. Click on "Crawlers", then "Add crawler"<br />
-							5. Enter a Crawler name of "workshopcrawler" and "Next"<br />
-							6. The Data store should already have "S3" selected. Click the folder icon on the right side of the "Include path" and expand your workshop folder. It will be named "gamingworkshop-workshopbucket-XXXXXXXXXXXX". Inside that folder, click on "telemetry12017" and click the "Select" button, then "Next" on the Add a data store page.<br />
-							7. Click "Next" on the "Add another data store" page ("No" should already be selected).<br />
-							8. On the "Choose and IAM role" page, select "Create an IAM role" and enter "workshop" as the name, then click "Next".<br />
-							9. On the "Create a scheduler for this crawler" page, click "Next" ("Run on demand" should already be selected).<br />
-							10. On the "Configure the crawler's output" page, click the "Add database" button, then enter "workshoptelemetrydb" and click the "Create" button. Click "Next"<br />
-							11. Click "Finish". This will create the crawler and return you to the "Crawlers" page.<br />
-							12. At the top should be a green banner asking if you want to run your crawler. Click "Run it now".<br />
+							1. Visit the <a href="https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2" target="_blank">Athena console page</a>, and click the "AWS Glue Data Catalog" link in the top-middle of the window<br />
+							2. Close the introductory tutorial window (this will not appear if you've used Athena before)<br />
+							3. On the left side you will see the "DATABASE" section. Click on "Create Table" dropdown, then "Automatically (AWS Glue Crawler)". This will pop up a notification that you're going to Glue. Click "Continue"<br />
+							4. Click "Get started" (NEW USERS ONLY)<br />
+							5. Click on "Crawlers", then "Add crawler"<br />
+							6. Enter a Crawler name of "workshopcrawler" and "Next"<br />
+							7. The Data store should already have "S3" selected. Click the folder icon on the right side of the "Include path" and expand your workshop folder. It will be named "gamingworkshop-workshopbucket-XXXXXXXXXXXX". Inside that folder, click on "telemetry12017" and click the "Select" button, then "Next" on the Add a data store page.<br />
+							8. Click "Next" on the "Add another data store" page ("No" should already be selected)<br />
+							9. On the "Choose and IAM role" page, select "Create an IAM role" and enter "workshop" as the name, then click "Next"<br />
+							10. On the "Create a scheduler for this crawler" page, click "Next" ("Run on demand" should already be selected)<br />
+							11. On the "Configure the crawler's output" page, click the "Add database" button, then enter "workshopdb" and click the "Create" button. Click "Next".<br />
+							12. Click "Finish". This will create the crawler and return you to the "Crawlers" page.<br />
+							13. At the top should be a green banner asking if you want to run your crawler. Click "Run it now".<br />
 						</p>
 						</div><br />
 						<div class="indent-show" id="1-5-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-5-button', '1-5-content')">OPTION 2: ATHENA SCRIPT INSTRUCTIONS</a></div></div>
 						<div class="indent-hide" id="1-5-content">
-						<p>If you want to do things the fast way (and have not done this in Glue go to the Athena console page (available at <a href="https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2" target="_blank">this link</a>). You'll need to use your S3 bucket name, which is the "WorkshopBucket" Output from your CloudFormation stack. If you've closed the window, the Outputs can be found at <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Update the bucket name in the following script, then copy and paste it into the query editor:</p>
+						<p>If you want to do things the fast way (and have not done this in Glue) go to the <a href="https://us-west-2.console.aws.amazon.com/athena/home?region=us-west-2" target="_blank">Athena console page</a>. You'll need to use your S3 bucket name, which is the "WorkshopBucket" Output from your CloudFormation stack. If you've closed the window, the Outputs can be found at <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a>. Update the bucket name in the following script, then copy and paste it into the query editor:</p>
 						<div id="code2"># Replace ${WorkshopBucket} the "WorkshopBucket" field from your CloudFormation Outputs
-CREATE DATABASE IF NOT EXISTS workshoptelemetrydb
+CREATE DATABASE IF NOT EXISTS workshopdb
 	COMMENT 'Gaming workshop telemetry database'
-	LOCATION 's3://${WorkshopBucket}/workshoptelemetrydb';
+	LOCATION 's3://${WorkshopBucket}/workshopdb';
 </div>
 </div><br />
 						<p>You've just created a Hive database. Now you need to create a table. This table describes the way in which you want to read the data from your S3 bucket. Update the bucket name in the following script, then copy and paste it into the query editor, replacing the previous script. Replace ${WorkshopBucket} the "WorkshopBucket" field from your CloudFormation Outputs</p>
-						<div id="code3">CREATE EXTERNAL TABLE IF NOT EXISTS workshoptelemetrydb.telemetry12017 (
+						<div id="code3">-- Create table for telemetry data
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry12017 (
 	datestamp string,
 	playerid bigint,
 	playerlevel string,
@@ -130,15 +132,49 @@ WITH SERDEPROPERTIES (
 ) LOCATION 's3://${WorkshopBucket}/telemetry12017/'
 TBLPROPERTIES ('has_encrypted_data'='false');
 </div><br />
-						<p>Click "Run Query". Now that you've set up your table, let's explore the data! The following query will tell you how many wins your game bot has had in the last 30 minutes:</p>
-						<div id="code4">select
+						<p>You will also need to create a table for the player analytics data. Run the following SQL statement, replacing ${WorkshopBucket} with the same bucket name as the previous statement.</p>
+						<div id="code4">-- Create table for player analytics data
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.analytics12017 (
+playerip string,
+handle string,
+email string,
+uuid string,
+playerid bigint,
+country string,
+useragent string,
+datestamp string,
+walletbalance int,
+playerlevel string,
+status string
+)
+ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'
+WITH SERDEPROPERTIES (
+	'serialization.format' = '1'
+) LOCATION 's3://${WorkshopBucket}/analytics12017/'
+TBLPROPERTIES ('has_encrypted_data'='false');
+</div><br />
+						<p>Click "Run Query". Now that you've set up your table, let's explore the data! The following query will show you details of 10 games your game bot has had in the last 30 minutes:</p>
+						<div id="code5">-- Show the details of 10 games from the last 30 minutes
+select
 	*
 from
-	workshoptelemetrydb.telemetry12017
+	workshopdb.telemetry12017
 where
 	cast(datestamp as timestamp) > current_timestamp - INTERVAL '30' MINUTE
 	limit 10;
-</div>
+</div><br />
+						<p>Perhaps you'd like to see how the latest 10 players who have been blacklisted in India.</p>
+						<div id="code6">-- Show all blacklisted players from India
+select
+	*
+from
+	workshopdb.analytics12017
+where
+	country = 'India' and
+	status = 'Blacklisted'
+order by datestamp desc
+limit 10;
+</div><br />
 
 						<h3 class="overline">PIPELINE 2 - SET UP QUICKSIGHT TO USE ATHENA</h3>
 						<p>Let's get QuickSight working with Athena as a Data Source!</p>
@@ -152,7 +188,7 @@ where
 							<p>6. Click the "New data set" button in the top left</p>
 							<p>7. Click the "Athena" button</p>
 							<p>8. A "New Athena data source" window will appear. For the "Data source name" enter "GamingWorkshopAthena". Click the "Validate" button on the bottom left of the window. This should turn to "Validated" with a green tick if you're successful. Click "Create data source".</p>
-							<p>9. Select "workshoptelemetrydb" and then select "telemetry12017" and click the "Select" button on the bottom right</p>
+							<p>9. Select "workshopdb" and then select "telemetry12017" and click the "Select" button on the bottom right</p>
 							<p>10. Select "Directly query your data" and click the "Visualize" button on the bottom right</p>
 							<p>11. Explore your data!</p>
 						</div>
@@ -210,6 +246,26 @@ where
     	code4.setShowPrintMargin(false);
     	code4.setOptions({
     		maxLines: code4.session.getLength()
+    	});
+	</script>
+	<script>
+		var code5 = ace.edit("code5");
+		code5.setTheme("ace/theme/idle_fingers");
+    	code5.getSession().setMode("ace/mode/snippets");
+    	code5.setReadOnly(false);
+    	code5.setShowPrintMargin(false);
+    	code5.setOptions({
+    		maxLines: code5.session.getLength()
+    	});
+	</script>
+	<script>
+		var code6 = ace.edit("code6");
+		code6.setTheme("ace/theme/idle_fingers");
+    	code6.getSession().setMode("ace/mode/snippets");
+    	code6.setReadOnly(false);
+    	code6.setShowPrintMargin(false);
+    	code6.setOptions({
+    		maxLines: code6.session.getLength()
     	});
 	</script>
 </body>

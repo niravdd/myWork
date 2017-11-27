@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
-	<title>Run your CICD and Test Workloads for 90% less with Amazon EC2 Spot - CMP317 | AWS re:Invent</title>
+	<title>Telemetry &amp; Analytics' Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
@@ -42,8 +42,8 @@
 	<header class="page-header"> 
 		<div class="central-column">
 			<div class="text">
-				<h2 class="headline-s1">CMP317</h2>
-				<h3 class="headline-s2">Run your CI/CD and Test Workloads for 90% less with Amazon EC2 Spot</h3>
+				<h2 class="headline-s1">GAM310</h2>
+				<h3 class="headline-s2">Telemetry &amp; Analytics' Pipelines for Game Balancing</h3>
 				<p class="lower-link">So, How are things progressing?</p>
 			</div>
 		</div>
@@ -69,6 +69,10 @@
 						<h3 class="overline">LAB 4</h3>
 						<p>There are <span class="bold" id="lab4_count">0</span> out of <span id="lab4_total">0</span> participants working on Lab 4.</p>
 						<p>The participant's seat numbers are: <span id="lab4_seats">N/A</span></p>
+
+						<h3 class="overline">Conclusion</h3>
+						<p>There are <span class="bold" id="lab0_count">0</span> out of <span id="lab0_total">0</span> participants who have completed all of the labs.</p>
+						<p>The participant's seat numbers are: <span id="lab0_seats">N/A</span></p>
 
 						<h3 class="overline">Stale data?</h3>
 						<div class="indent-show"><div class="expand"><a class="border" href="javascript:void();" onClick="getStatus();">UPDATE</a>&nbsp;<span id="message">&nbsp;</span></div></div>
@@ -102,14 +106,12 @@
 						document.getElementById("message").innerHTML = '&nbsp;';
 					}, 5000);
 				} else {
-					var lab_count = [0, 0, 0, 0, 0, 0, 0];
+					var lab_count = [0, 0, 0, 0, 0];
 					var lab0_seats = 'N/A';
 					var lab1_seats = 'N/A';
 					var lab2_seats = 'N/A';
 					var lab3_seats = 'N/A';
 					var lab4_seats = 'N/A';
-					var lab5_seats = 'N/A';
-					var lab6_seats = 'N/A';
 
 					var status = JSON.parse(data.Payload);
 					var total = status.Count;

@@ -59,8 +59,45 @@ select playerid, country, email, walletbalance as wallet, COUNT( CASE WHEN walle
 ###########
 Try to build SQL Statements which can show:
 1. Player accounts created in the last 15 minutes
+-- Details of the last 10 games within the last 15 minutes
+select
+  *
+from
+  workshoptelemetrydb.telemetry12017
+where
+  cast(datestamp as timestamp) > current_timestamp - INTERVAL '15' MINUTE
+limit 10;
 2. Player accounts from a particular country
+-- Details of the 10 most recent player registrations from Japan
+select
+  *
+from
+  workshoptelemetrydb.analytics12017
+where
+  country = 'Japan'
+order by
+  datestamp desc
+limit 10;
 3. Player accounts who have wallet balance > 1000 and are not at level x yet
+-- Show details of players who have a walletbalance > 1000 and are level 3-5 (Redshift)
+select
+  playerlevel, substring(playerlevel,7,1)
+from
+  analytics1
+where
+  walletbalance > 1000 and
+  cast(substring(playerlevel,7,1) as int) < 3
+limit 10;
+
+-- Show details of players who have a walletbalance > 1000 and are level 3-5 (Athena)
+select
+  playerlevel
+from
+  workshoptelemetrydb.analytics12017
+where
+  walletbalance > 1000 and
+  playerlevel in ('Level 3', 'Level 4', 'Level 5')
+limit 10;
 4. Player accounts who have wallet balance < 100
     select playerid, country, email, walletbalance from eval01table where walletbalance < 100 limit 100;
     select playerid, country, email, walletbalance from eval01table where walletbalance < 100 order by walletbalance limit 100;
@@ -70,7 +107,16 @@ Try to build SQL Statements which can show:
 6. Player accounts from Australia who are playing Level 9
     select playerid, email, playerlevel, walletbalance, useragent from eval01table where country = 'Australia' and playerlevel = 'Level 9' limit 100;
 7. Player accounts who are blacklisted in the last 24 hours. Further filter to a particular country. Get a count of blacklisted players from all countries.
-
+-- Show all blacklisted players from India
+select
+  *
+from
+  workshoptelemetrydb.analytics12017
+where
+  country = 'India' and
+  status = 'Blacklisted'
+order by datestamp desc
+limit 10;
 
 
 
