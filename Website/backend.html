@@ -1,0 +1,179 @@
+<!doctype html>
+<html class="no-js" lang="en">
+<head>
+	<title>Run your CICD and Test Workloads for 90% less with Amazon EC2 Spot - CMP317 | AWS re:Invent</title>
+	<meta charset="utf-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
+
+	<!--Favicon-->
+	<link rel="icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="shortcut icon" type="image/ico" href="https://a0.awsstatic.com/main/images/site/fav/favicon.ico" /> 
+	<link rel="apple-touch-icon" sizes="57x57" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="72x72" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="114x114" href="https://a0.awsstatic.com/main/images/site/touch-icon-iphone-114-precomposed.png" /> 
+	<link rel="apple-touch-icon" sizes="144x144" href="https://a0.awsstatic.com/main/images/site/touch-icon-ipad-144-precomposed.png" /> 
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700" rel="stylesheet">
+	<link rel="stylesheet" href="/style.css" type="text/css" media="all">
+	<script src="https://sdk.amazonaws.com/js/aws-sdk-2.2.32.min.js"></script>
+</head>
+<body class="template-aside yellow page-sessions loading" data-page="sessions">
+	<div class="video">
+		<div class="overlay"></div>
+		<video width="100%" height="100%" autoplay loop muted poster="">
+			<source src="https://reinvent.awsevents.com/_media/video/hero-yellow.mp4?20170517" type="video/mp4">
+			Your browser does not support the video tag.
+		</video>
+	</div>
+	<div class="site-wrapper">
+		<div class="site-content">
+
+<header class="site-header">
+	<div class="central-column">
+		<a class="site-branding" href="/">
+			<img src="https://reinvent.awsevents.com/_media/images/branding/aws-reinvent-logo.png" alt="AWS re:Invent 2017 logo" />
+			<span class="offscreen">AWS re:Invent</span>
+		</a>
+	</div>
+</header>
+
+<main class="site-main">
+	<header class="page-header"> 
+		<div class="central-column">
+			<div class="text">
+				<h2 class="headline-s1">CMP317</h2>
+				<h3 class="headline-s2">Run your CI/CD and Test Workloads for 90% less with Amazon EC2 Spot</h3>
+				<p class="lower-link">So, How are things progressing?</p>
+			</div>
+		</div>
+	</header>
+	<div class="sections body-copy">
+		<section id="section-sessions" class="page-section dark">
+			<div class="central-column">
+				<div class="indent">
+					<p class="intro">This tool will allow us to see how many people are active in each lab of the workshop. Content will refresh every 60 seconds (you can force an update by hitting the button at the bottom of the page).</p>
+					<div class="session">
+						<h3>LAB 1</h3>
+						<p>There are <span class="bold" id="lab1_count">0</span> out of <span id="lab1_total">0</span> participants working on Lab 1.</p>
+						<p>The participant's seat numbers are: <span id="lab1_seats">N/A</span></p>
+
+						<h3 class="overline">LAB 2</h3>
+						<p>There are <span class="bold" id="lab2_count">0</span> out of <span id="lab2_total">0</span> participants working on Lab 2.</p>
+						<p>The participant's seat numbers are: <span id="lab2_seats">N/A</span></p>
+
+						<h3 class="overline">LAB 3</h3>
+						<p>There are <span class="bold" id="lab3_count">0</span> out of <span id="lab3_total">0</span> participants working on Lab 3.</p>
+						<p>The participant's seat numbers are: <span id="lab3_seats">N/A</span></p>
+
+						<h3 class="overline">LAB 4</h3>
+						<p>There are <span class="bold" id="lab4_count">0</span> out of <span id="lab4_total">0</span> participants working on Lab 4.</p>
+						<p>The participant's seat numbers are: <span id="lab4_seats">N/A</span></p>
+
+						<h3 class="overline">Stale data?</h3>
+						<div class="indent-show"><div class="expand"><a class="border" href="javascript:void();" onClick="getStatus();">UPDATE</a>&nbsp;<span id="message">&nbsp;</span></div></div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</main>
+
+		</div>
+	</div>
+	<script>
+		function getStatus() {
+			//console.log("getStatus fired.")
+			// Initialize the Amazon Cognito credentials provider
+			AWS.config.region = 'us-west-2'; // Region
+			AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+				IdentityPoolId: 'us-west-2:b41e82e7-43db-4d15-9509-de05d39f00ff',
+			});
+
+			var lambda = new AWS.Lambda();
+			lambda.invoke({
+				FunctionName: 'gam310WorkshopStatus',
+				Payload: ''
+			}, function (err, data) {
+				if (err) {
+					console.log(err, err.stack);
+					document.getElementById("message").innerHTML = 'There was a problem updating the status of the workshop';
+					setTimeout(function() {
+						document.getElementById("message").innerHTML = '&nbsp;';
+					}, 5000);
+				} else {
+					var lab_count = [0, 0, 0, 0, 0, 0, 0];
+					var lab0_seats = 'N/A';
+					var lab1_seats = 'N/A';
+					var lab2_seats = 'N/A';
+					var lab3_seats = 'N/A';
+					var lab4_seats = 'N/A';
+					var lab5_seats = 'N/A';
+					var lab6_seats = 'N/A';
+
+					var status = JSON.parse(data.Payload);
+					var total = status.Count;
+					for(var i = 0; i < status.Items.length; i++) {
+						var item = status.Items[i];
+						lab_count[item.Lab]++;
+						if (item.Lab == "0") {
+							if (lab_count[0] == 1) {
+								lab0_seats = item.Seat;
+							} else {
+								lab0_seats += ', ' + item.Seat;
+							}
+						} else if (item.Lab == "1") {
+							if (lab_count[1] == 1) {
+								lab1_seats = item.Seat;
+							} else {
+								lab1_seats += ', ' + item.Seat;
+							}
+						} else if (item.Lab == "2") {
+							if (lab_count[2] == 1) {
+								lab2_seats = item.Seat;
+							} else {
+								lab2_seats += ', ' + item.Seat;
+							}
+						} else if (item.Lab == "3") {
+							if (lab_count[3] == 1) {
+								lab3_seats = item.Seat;
+							} else {
+								lab3_seats += ', ' + item.Seat;
+							}
+						} else if (item.Lab == "4") {
+							if (lab_count[4] == 1) {
+								lab4_seats = item.Seat;
+							} else {
+								lab4_seats += ', ' + item.Seat;
+							}
+						}
+
+					}
+					document.getElementById("lab0_count").innerHTML = lab_count[0];
+					document.getElementById("lab1_count").innerHTML = lab_count[1];
+					document.getElementById("lab2_count").innerHTML = lab_count[2];
+					document.getElementById("lab3_count").innerHTML = lab_count[3];
+					document.getElementById("lab4_count").innerHTML = lab_count[4];
+					document.getElementById("lab0_seats").innerHTML = lab0_seats;
+					document.getElementById("lab1_seats").innerHTML = lab1_seats;
+					document.getElementById("lab2_seats").innerHTML = lab2_seats;
+					document.getElementById("lab3_seats").innerHTML = lab3_seats;
+					document.getElementById("lab4_seats").innerHTML = lab4_seats;
+					document.getElementById("lab0_total").innerHTML = total;
+					document.getElementById("lab1_total").innerHTML = total;
+					document.getElementById("lab2_total").innerHTML = total;
+					document.getElementById("lab3_total").innerHTML = total;
+					document.getElementById("lab4_total").innerHTML = total;
+				}
+			})
+
+		}
+
+		getStatus();
+		window.setInterval(function() {
+			getStatus();
+		}, 60000);
+	</script>
+</body>
+
+</html>
