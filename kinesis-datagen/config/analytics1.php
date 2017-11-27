@@ -4,7 +4,7 @@ return array(
     
     'distribution' => array(
         // If you want to disable the distribution, set disable to true
-        'disable' => true,
+        'disable' => false,
 
         'fields' => array(
             'status' => array(

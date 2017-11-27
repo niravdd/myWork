@@ -491,7 +491,7 @@ Resources:
     Properties:
       IamInstanceProfile:
         Ref: IamInstanceProfile
-      ImageId: "ami-6f72ad17"
+      ImageId: "ami-32d8124a"
       InstanceInitiatedShutdownBehavior: stop
       InstanceType:
         Ref: InstanceType
@@ -509,6 +509,37 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash -xe
+          yum install php71.x86_64 httpd24 python-pip gcc postgresql-devel python-devel -y
+          pip install pgcli
+          pip install awscli --upgrade
+          service httpd start
+          chkconfig httpd on
+          groupadd www
+          usermod -a -G www ec2-user
+          chown -R root:www /var/www
+          chmod 2775 /var/www
+          find /var/www -type d -exec chmod 2775 {} +
+          find /var/www -type f -exec chmod 0664 {} +
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/kinesis-datagen.tar
+          tar -xf /home/ec2-user/kinesis-datagen.tar -C /var/www/html/
+          service httpd restart
+          mkdir /home/ec2-user/.aws
+          echo "[default]" >> /home/ec2-user/.aws/config
+          echo "region = us-west-2" >> /home/ec2-user/.aws/config
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-fh-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-base-ka-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-fh-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/iam-ka-policy.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/analytics1Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry1Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/telemetry2Input.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/kinesisAnalyticsInput.json
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/pipeline1Script.sh
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/cleanupPipeline1Infra.sh
+          wget -P /home/ec2-user/ https://s3-us-west-2.amazonaws.com/gam310-2017/connectRedshift.sh
+          chmod 777 /home/ec2-user/pipeline1Script.sh
+          chmod 777 /home/ec2-user/cleanupPipeline1Infra.sh
+          chmod 777 /home/ec2-user/connectRedshift.sh
           sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/*.json
           sed -i 's/varAccountID/${AWS::AccountId}/g' /home/ec2-user/*.sh
           sed -i 's/varBucketName/${WorkshopBucket}/g' /home/ec2-user/*.json
