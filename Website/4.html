@@ -110,22 +110,21 @@ hive<br />
 							</div>
 							<img src="Step21.png" alt="Step 21" /><br />
 							22. Issue the following commands at the hive prompt, one command at a time and review its output. Note that we did not create any database or tables here, however - AWS Glue has crawled and created the schema for us in Hive because we asked it to in Step 5 above.<br /><br />
-							<div id="code4">hive&gt; show databases;<br />
-hive&gt; use workshopdb;<br />
-hive&gt; show tables;<br />
-hive&gt; describe telemetry1;<br />
-hive&gt; 
+							<div id="code4">hive&gt;   ## At the hive prompt as shown here, issue each of the commands listed below<br />
+show databases;<br />
+use workshopdb;<br />
+show tables;<br />
+describe telemetry1;<br />
 </div>
 							<img src="Step22.png" alt="Step 22" /><br />
 							23. Similarly, you can issue SQL commands to hive &amp; query your data lying in the S3. Try a few queries and note that its querying your S3 bucket - the metadata for which has been prepared for AWS Glue.<br /><br />
-<div id="code5">hive&gt; select count(*) from workshopdb.telemetry1;<br /><br />
-hive&gt; select count(*) from workshopdb.telemetry2;<br />
-hive&gt; select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
-hive&gt; select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
-hive&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br />
-hive&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
-hive&gt; quit;<br />
-$ 
+<div id="code5">select count(*) from workshopdb.telemetry1;<br /><br />
+select count(*) from workshopdb.telemetry2;<br />
+select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
+select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
+select count(*) from workshopdb.telemetry1 where result='DNF';<br />
+select count(*) from workshopdb.telemetry2 where result='DNF';<br />
+quit;<br />
 </div><br /><br />
 							24. Next, launch spark-sql by issuing the command as below.<br /><br />
 							<div id="code6"><br />
@@ -134,10 +133,10 @@ spark-sql<br />
 							<img src="Step24-1.png" alt="Step 24" />
 							<img src="Step24-2.png" alt="Step 24" /><br />
 							25. Issue &amp; try the following SQL commands again, one-at-a-time - this time in Spark SQL:<br /><br />
-							<div id="code7"><br />
-spark-sql&gt; show databases;<br />
-spark-sql&gt; create database workshopdb;<br /><br />
-spark-sql&gt; CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry1 (<br />
+							<div id="code7">spark-sql&gt;    ## At the Spark-SQL prompt as shown here, issue each of the commands listed below<br />
+show databases;<br />
+create database workshopdb;<br /><br />
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry1 (<br />
 	`datestamp` string,<br />
 	`playerid` bigint,<br />
 	`playerlevel` string,<br />
@@ -164,14 +163,16 @@ ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'<br />
 WITH SERDEPROPERTIES (<br />
 	'serialization.format' = '1'<br />
 ) LOCATION 's3://&lt;bucket-name&gt;/telemetry1/'<br />
-TBLPROPERTIES ('has_encrypted_data'='false');<br /><br />
-spark-sql&gt; use workshopdb;<br />
-spark-sql&gt; show tables;<br />
-spark-sql&gt; describe telemetry1;<br />
-spark-sql&gt; select count(*) from workshopdb.telemetry2;<br />
-spark-sql&gt; select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
-spark-sql&gt; select count(*) from workshopdb.telemetry1 where result='DNF';<br /><br />
-spark-sql&gt; CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry2 (<br />
+TBLPROPERTIES ('has_encrypted_data'='false');<br />
+<br />
+use workshopdb;<br />
+show tables;<br />
+describe telemetry1;<br />
+select count(*) from workshopdb.telemetry2;<br />
+select * from workshopdb.telemetry1 where result='DNF' limit 100;<br />
+select count(*) from workshopdb.telemetry1 where result='DNF';<br />
+<br />
+CREATE EXTERNAL TABLE IF NOT EXISTS workshopdb.telemetry2 (<br />
 	`playerid` bigint,<br />
 	`playerlevel` string,<br />
 	`squadelementmap` string,<br />
@@ -197,10 +198,11 @@ ROW FORMAT SERDE 'org.openx.data.jsonserde.JsonSerDe'<br />
 WITH SERDEPROPERTIES (<br />
 	'serialization.format' = '1'<br />
 ) LOCATION 's3://&lt;bucket-name&gt;/telemetry2/'<br />
-TBLPROPERTIES ('has_encrypted_data'='false');<br /><br />
-spark-sql&gt; select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
-spark-sql&gt; select count(*) from workshopdb.telemetry2 where result='DNF';<br />
-spark-sql&gt; quit;<br />
+TBLPROPERTIES ('has_encrypted_data'='false');<br />
+<br />
+select * from workshopdb.telemetry2 where result='DNF' limit 100;<br />
+select count(*) from workshopdb.telemetry2 where result='DNF';<br />
+quit;<br />
 </div><br /><br />
 							26. Run the following command and confirm that Zeppelin is running on the Master Node. As you would see, AWS EMR has setup, pre-configured &amp; run the applications we chose to install while setting up the cluster.<br /><br />
 							<div id="code8">ps aux | grep zeppelin<br />
