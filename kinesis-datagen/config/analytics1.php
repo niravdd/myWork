@@ -4,7 +4,7 @@ return array(
     
     'distribution' => array(
         // If you want to disable the distribution, set disable to true
-        'disable' => false,
+        'disable' => true,
 
         'fields' => array(
             'status' => array(
@@ -106,8 +106,8 @@ return array(
         'status' => array(
             'type' => 'weightedList',
             'weightedList' => array(
-                'Player' => 91,
-                'DevTest' => 8,
+                'Player' => 95,
+                'DevTest' => 4,
                 'Blacklisted' => 1,
             ),        
         ),

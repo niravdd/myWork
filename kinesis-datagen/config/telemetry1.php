@@ -3,7 +3,7 @@ return array(
     
     'distribution' => array(
         // If you want to disable the distribution, set disable to true
-        'disable' => true,
+        'disable' => false,
 
         'fields' => array(
             'result' => array(
@@ -67,7 +67,7 @@ return array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '4',
-                'min' => '14',
+                'min' => '10',
             ),
         ),
 
@@ -75,15 +75,15 @@ return array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '6',
-                'min' => '16',
+                'min' => '9',
             ),
         ),
 
         'squadhealth' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '8',
-                'min' => '12',
+                'max' => '5',
+                'min' => '10',
             ),
         ),
 
@@ -98,31 +98,31 @@ return array(
         'squadspecial' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '18',
+                'max' => '6',
+                'min' => '9',
             ),
         ),
 
         'squadguard' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '12',
+                'max' => '6',
+                'min' => '9',
             ),
         ),
 
         'squaddamage' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '10',
-                'min' => '15',
+                'max' => '6',
+                'min' => '9',
             ),
         ),
 
         'gameplayseconds' => array(
             'type' => 'randomNumber',
             'randomNumber' => array(
-                'max' => '120',
+                'max' => '90',
                 'min' => '240',
             ),
         ),
@@ -179,7 +179,7 @@ return array(
             'type' => 'randomNumber',
             'randomNumber' => array(
                 'max' => '40',
-                'min' => '70',
+                'min' => '50',
             ),
         ),
 
@@ -187,10 +187,10 @@ return array(
             'type' => 'rules',
             // Value => condition
             'rules' => array(
-                'Won' => '{squadpower} + {squadluck} + {squadguard} + {squadagility} > {bossguard}',
-                'Lost' => '{squadpower} + {squadluck} + {squadguard} + {squadagility} < {bossguard} - 3',
-                'DNF' => '{squadpower} + {squadluck} + {squadguard} + {squadagility} <= {bossguard}',
-            ),        
+                'DNF' => '{gameplayseconds} < 120',
+                'Won' => '{{{{squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}} / 7} * {gameplayseconds}} >= {{{bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}} / 7}',
+                'Lost' => '{{{{squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}} / 7} * {gameplayseconds}} <= {{{bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}} / 7}'
+            ),
         ),
     ),
 );
