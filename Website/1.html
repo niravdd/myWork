@@ -107,17 +107,24 @@ create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementm
 							<p>2. Click on the "<span class="bold">Generate</span>" button. This will start a bot that generates and submits data to your "<span class="bold">workShopTelemetryStream</span>" Amazon Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of...". Click the "<span class="bold">Generate</span>" button a few times to give you some more data.</p>
 							<p>3. Click on the drop-down menu on the top and select "<span class="bold">telemetry1-1</span>", then click the "<span class="bold">Load configuration profile</span>" button. This will change the stream that you're pushing data to. Click the "<span class="bold">Generate</span>" button to push data to the "<span class="bold">workshopTelemetryStream</span>"</p>
 							<p>4. Click on the "<span class="bold">Sending in loop</span>" checkbox, then click on the "<span class="bold">Generate</span>" button to start pushing a constant stream of data to Kinesis</p>
-							<p>5. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
+							<p>5. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p>
 							<p>It will take a few minutes for Firehose to push the data to Redshift.<br /><br />
-								(Optional) You can check the data is being pushed in by running a query like this:</p>
+							<p>6. You can check the data is being pushed in by running a query like this in your PGCLI terminal (you can access it using the "ClusterEndpointConnectCmd" from your CloudFormation Outputs):</p>
 								<div id="code6">-- Check for 10 rows of data in your telemetry1 table
 SELECT * FROM telemetry1 LIMIT 10;
-</div><br />
-								<p>in your PGCLI terminal (you can access it using the "ClusterEndpointConnectCmd" from your CloudFormation Outputs), or you can visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> to monitor your <span class="bold">workshopTelemetryFH</span> Delivery Stream.</p>
-								<p>If you wish to explore further</p>
-								<div id="code7">-- This query shows you the percentage of wins, losses, and DNFs (Did Not Finish)
+</div></p>
+							<p>You can also visit the <a href="https://us-west-2.console.aws.amazon.com/firehose/home?region=us-west-2#/details/workshopTelemetryFH" target="_blank">Kinesis Firehose Monitoring page</a> to monitor your <span class="bold">workshopTelemetryFH</span> Delivery Stream.</p>
+							<p>7. Run another query in PGCLI to see what the win rate looks like:</p>
+							<div id="code7">-- This query shows you the percentage of wins, losses, and DNFs (Did Not Finish)
 select result, count(result), (((cast(count(result) as decimal)/(select count(*) from telemetry1)))*100.00) as percentage from telemetry1 group by result;
 </div>
+							<p>You will notice that the Losses and DNFs are very high, and the Wins are very low. This isn't a good player experience and implies that there is a game balancing issue. Try making a change to the game telemetry parameters to see how they effect the proportions of wins.</p>
+							<p>8. Click on the "<span class="bold">telemetry1-1</span> drop-down and change it to "<span class="bold">telemetry1-2</span>", then click "Load configuration profile". This applies a different profile that increases the player parameters. Feel free to change the JSON if you want to experiment with how the numbers affect the win rate. Run the same query as before to see how the win rate changes.
+							</p>
+							<div id="code8">-- This query shows you the percentage of wins, losses, and DNFs (Did Not Finish)
+select result, count(result), (((cast(count(result) as decimal)/(select count(*) from telemetry1)))*100.00) as percentage from telemetry1 group by result;
+</div>
+						<p>After a few minutes of the data from telemetry1-2 propagating, you should see the changes in the win rate.</p>
 
 						<h3 class="overline">PIPELINE 1 - SET UP QUICKSIGHT</h3>
 						<p>Let's get QuickSight working! Please visit QuickSight, connect to the Redshift table you've created, and experiment with graphing the data. Full instructions are below.</p>
@@ -229,6 +236,16 @@ select result, count(result), (((cast(count(result) as decimal)/(select count(*)
     	code7.setShowPrintMargin(false);
     	code7.setOptions({
     		maxLines: code7.session.getLength()
+    	});
+	</script>
+	<script>
+		var code8 = ace.edit("code8");
+		code8.setTheme("ace/theme/idle_fingers");
+    	code8.getSession().setMode("ace/mode/snippets");
+    	code8.setReadOnly(false);
+    	code8.setShowPrintMargin(false);
+    	code8.setOptions({
+    		maxLines: code8.session.getLength()
     	});
 	</script>
 </body>
