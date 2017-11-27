@@ -1,7 +1,7 @@
 <!doctype html>
 <html class="no-js" lang="en">
 <head>
-	<title>Telemetry & Analytics’ Pipelines for Game Balancing - GAM310 | AWS re:Invent</title>
+	<title>Telemetry &amp; Analytics' Pipelines for Game Balancing - GAM310 | AWS re:Invent 2017</title>
 	<meta charset="utf-8">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1 user-scalable=no">
@@ -50,7 +50,7 @@
 		<div class="central-column">
 			<div class="text">
 				<h2 class="headline-s1">GAM310</h2>
-				<h3 class="headline-s2">Telemetry & Analytics’ Pipelines for Game Balancing</h3>
+				<h3 class="headline-s2">Telemetry &amp; Analytics' Pipelines for Game Balancing</h3>
 				<p class="lower-link">Welcome to the Workshop!</p>
 			</div>
 		</div>
@@ -69,7 +69,7 @@
 aws --region us-west-2 cloudformation create-stack --stack-name GamingWorkshopStack --template-url https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml --parameters ParameterKey=Ec2KeyPair,ParameterValue=WorkshopKeyPair --capabilities CAPABILITY_IAM
 </div><br />
 						<p>Alternatively, you can click <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/new?&templateURL=https://s3-us-west-2.amazonaws.com/gam310-2017/gam310-workshop-cfn.yml" target="_blank">this link</a> to use the Web Console.</p>
-						<p>This CloudFormation stack will take about 10 minutes to build.</p>
+						<p>This CloudFormation stack will take about 10 minutes to construct the infrastructure we need.</p>
 
 						<h3 class="overline">PIPELINE 1 - ANALYTICS PIPELINE</h3>
 						<p>Now that you have your Bastion Host configured and have logged in, let's set up your first analytics pipeline! The pipeline is described in the following diagram:<br />
@@ -80,11 +80,11 @@ aws --region us-west-2 cloudformation create-stack --stack-name GamingWorkshopSt
 aws --region us-west-2 cloudformation describe-stack-resources --stack-name GamingWorkshopStack --query 'StackResources[?ResourceType==`AWS::EC2::EIP`].PhysicalResourceId' --output text
 
 # Look for the BastionPublicDNS Output value, then replace ${WorkshopKeyPair.pem} with your keypair .pem file, and ${BastionPublicDNS} with the Output from your CloudFormation template.
-ssh -i ${WorkshopKeyPair.pem} ec2-user@${BastionPublicDNS}
+ssh -o "ServerAliveInterval 60" -i ${WorkshopKeyPair.pem} ec2-user@${BastionPublicDNS}
 </div><br />
 						<p>Now that you're in the instance, you are going to create your Kinesis Streams! We've created a script that will set up your security and create the Kinesis Streams and Kinesis Firehose Streams for you. To run the script, execute the following command from your Bastion Host.</p>
-						<p><div id="code3">./pipeline1Script.sh
-</div>
+						<p><div id="code3"><br />./pipeline1Script.sh<br />
+						</div>
 						</p>
 						<p>The script will pause to allow you to copy and paste some SQL commands to create tables in Redshift. If you have problems creating the SQL commands, they are available here:</p>
 						<div class="indent-show" id="1-1-button"><div class="expand"><a class="border" href="javascript:void();" onClick="reveal('1-1-button', '1-1-content')">CLICK TO TOGGLE INSTRUCTIONS</a></div></div>
@@ -97,14 +97,14 @@ create table telemetry1 (datestamp timestamptz, playerid bigint, playerlevel var
 
 create table telemetry2 (playerid bigint, playerlevel varchar(16), squadelementmap varchar(8), gamenumber int, squadpower int, squadagility int, squadhealth int, squadluck int, squadspecial int, squadguard int, squaddamage int, gameplayseconds int, bosspower int, bossagility int, bosshealth int, bossluck int, bossspecial int, bossguard int, bossdamage int, result varchar(8));
 </div>
-							</p>
+						</p>
 						</div><br />
-						<p> Don't forget to type 'quit' after you've created your tables so the script can continue building your services!</p>
+						<p> Don't forget to issue a 'quit' after you've created your tables so the script can continue building your services!</p>
 
 						<h3 class="overline">PIPELINE 1 - FIRE UP YOUR GAME BOT!</h3>
 						<p>Let's fire up your game bot! You have a little web application installed on your bastion host that will propagate data from your EC2 instance to Kinesis.</p>
 							<p>1. Visit <a href="https://us-west-2.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks?filter=active&tab=outputs" target="_blank">this link</a> if you don't already have your CloudFormation Output parameters open. Click on the CloudFormation stack "GamingWorkshopStack". Click on the URL from the "GameBotURLPublicDns" Output of this Stack. This will open a website hosted on your EC2 instance where the GameBot resides.</p>
-							<p>2. Click on the "Generate" button. This will start a script that posts data to your "workShopTelemetryStream" Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of..."</p>
+							<p>2. Click on the "Generate" button. This will start a bot that generates and submits data to your "workShopTelemetryStream" Amazon Kinesis Stream. Another window will appear showing the data being sent. Please notify a staff member if you have any error messages. You should see numerous messages saying "Pushing to kinesis a batch of..."</p>
 							<p>3. Click on the "Sending in loop" checkbox, then click on the "Generate" button to start pushing a constant stream of data to Kinesis</p>
 							<p>4. Check the <a href="https://us-west-2.console.aws.amazon.com/kinesis/home?region=us-west-2#/streams/details?streamName=workshopTelemetryStream" target="_blank">AWS Kinesis console</a> monitoring window to see your data propagating.</p><br />
 							<p>It will take a few minutes for Firehose to push the data to Redshift.<br /><br />
