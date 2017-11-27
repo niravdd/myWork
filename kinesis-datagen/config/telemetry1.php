@@ -188,8 +188,8 @@ return array(
             // Value => condition
             'rules' => array(
                 'DNF' => '{gameplayseconds} < 120',
-                'Won' => '{{{{squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}} / 7} * {gameplayseconds}} >= {{{bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}} / 7}',
-                'Lost' => '{{{{squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}} / 7} * {gameplayseconds}} <= {{{bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}} / 7}'
+                'Won' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}) / 7) * {gameplayseconds}) >= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}) / 7)',
+                'Lost' => '((({squadpower} + {squadagility} + {squadhealth} + {squadluck} + {squadspecial} + {squadguard} + {squaddamage}) / 7) * {gameplayseconds}) <= (({bosspower} + {bossagility} + {bosshealth} + {bossluck} + {bossspecial} + {bossdamage} + {bossguard}) / 7)'
             ),
         ),
     ),
