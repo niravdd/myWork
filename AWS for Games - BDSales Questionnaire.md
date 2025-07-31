@@ -121,14 +121,19 @@
 | 🎯 **I Need To...** | 📍 **Go To Section** | 🔧 **Key AWS Solutions** |
 |---------------------|----------------------|---------------------------|
 | **Reduce build times & costs** | [Development Infrastructure](#1-️-development-infrastructure--build-systems) | AWS CodeBuild, EC2 Spot |
-| **Scale multiplayer game servers** | [Game Servers & Matchmaking](#3--dedicated-game-servers--matchmaking) | Amazon GameLift Servers |
-| **Implement game analytics** | [Game Analytics & Data Pipeline](#1--game-analytics--data-pipeline) | Game Analytics Pipeline Solution |
-| **Add AI to content creation** | [AI-Assisted Content](#4--ai-assisted-content-creation) | Amazon Bedrock, SageMaker |
-| **Automate game testing** | [Game Testing & QA](#5--game-testing--quality-assurance) | AWS Device Farm |
-| **Enable cloud gaming** | [Cloud Gaming & Streaming](#5--cloud-gaming--game-streaming) | Amazon GameLift Streams |
-| **Improve player retention** | [Player Engagement & Retention](#3--player-engagement--retention) | AWS GameKit, Personalize |
-| **Optimize infrastructure costs** | [Monitoring & Observability](#4--monitoring-observability--devops) | CloudWatch, Trusted Advisor |
 | **Handle large game assets** | [Version Control & Assets](#2--version-control--asset-management) | Git LFS + S3, FSx |
+| **Speed up rendering workloads** | [Cloud Rendering & Compute](#3-️-cloud-rendering--compute-intensive-workloads) | EC2 Spot, Deadline Cloud |
+| **Add AI to content creation** | [AI-Assisted Content](#4--ai-assisted-content-creation) | Amazon Bedrock, SageMaker |
+| **Automate game testing** | [Game Testing & QA](#5--game-testing--quality-assurance) | AWS Device Farm, GameLift Streams |
+| **Build scalable game backend** | [Backend Architecture](#1-️-game-backend-architecture--deployment) | ECS, Lambda, API Gateway |
+| **Manage player data at scale** | [Databases & Data](#2-️-databases--data-management) | DynamoDB, RDS, ElastiCache |
+| **Scale multiplayer game servers** | [Game Servers & Matchmaking](#3--dedicated-game-servers--matchmaking) | Amazon GameLift Servers |
+| **Monitor game performance** | [Monitoring & Observability](#4--monitoring-observability--devops) | CloudWatch, X-Ray, DevOps Guru |
+| **Enable cloud gaming** | [Cloud Gaming & Streaming](#5--cloud-gaming--game-streaming) | Amazon GameLift Streams |
+| **Implement game analytics** | [Game Analytics & Data Pipeline](#1--game-analytics--data-pipeline) | Kinesis, S3, QuickSight |
+| **Optimize marketing campaigns** | [Player Acquisition & Marketing](#2--player-acquisition--marketing-technology) | End User Messaging, Clean Rooms |
+| **Improve player retention** | [Player Engagement & Retention](#3--player-engagement--retention) | Personalize, SageMaker |
+| **Maximize game revenue** | [Monetization & Business Intelligence](#4--monetization--business-intelligence) | QuickSight, CloudWatch Evidently |
 | **Prevent fraud & cheating** | [AI-Powered Insights & Fraud](#5--ai-powered-insights--fraud-detection) | Amazon Fraud Detector |
 
 ---
