@@ -411,11 +411,11 @@
 </td>
 <td>
 
-**AWS CodeBuild**
+**<span style="color: #FF9900;">[AWS CodeBuild](https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html)</span>**
 </td>
 <td>
 
-"CodeBuild could provide managed, scalable build infrastructure that automatically scales with your needs, reducing infrastructure management overhead."
+"Managed, scalable build infrastructure that automatically scales with your needs, reducing infrastructure management overhead"
 </td>
 </tr>
 <tr>
@@ -425,11 +425,11 @@
 </td>
 <td>
 
-**EC2 Spot Instances**
+**<span style="color: #FF9900;">[EC2 Spot Instances for Builds](https://aws.amazon.com/blogs/compute/cost-optimization-and-resilience-ec2-spot-instances-at-work/)</span>**
 </td>
 <td>
 
-"For your build workloads, EC2 Spot Instances could reduce costs by up to 90% since builds can tolerate interruptions."
+"Up to 90% cost reduction for build workloads since builds can tolerate interruptions"
 </td>
 </tr>
 <tr>
@@ -439,7 +439,7 @@
 </td>
 <td>
 
-**AWS Batch**
+**<span style="color: #FF9900;">[AWS Batch for Game Builds](https://docs.aws.amazon.com/batch/latest/userguide/what-is-batch.html)</span>**
 </td>
 <td>
 
@@ -472,13 +472,13 @@
 
 #### 📦 **For Artifact Management**
 
-- **<span style="color: #FF9900;">Amazon S3</span>**: "S3 could provide scalable, cost-effective storage for your build artifacts with lifecycle policies to automatically manage costs as artifacts age."
+- **<span style="color: #FF9900;">[Amazon S3 for Build Artifacts](https://docs.aws.amazon.com/codebuild/latest/userguide/build-caching.html)</span>**: "Scalable, cost-effective storage for build artifacts with lifecycle policies to automatically manage costs as artifacts age."
 
-- **<span style="color: #FF9900;">Amazon CloudFront</span>**: "CloudFront could accelerate build artifact distribution to your global team, reducing download times for large builds."
+- **<span style="color: #FF9900;">[Amazon CloudFront for Global Distribution](https://aws.amazon.com/blogs/networking-and-content-delivery/accelerating-software-distribution-with-amazon-cloudfront/)</span>**: "Accelerate build artifact distribution to your global team, reducing download times for large builds."
 
 #### 🚀 **For Advanced Scenarios**
 
-- **<span style="color: #FF9900;">AWS ParallelCluster</span>**: "For compute-intensive builds, ParallelCluster could provide HPC-grade infrastructure that scales automatically based on your build queue."
+- **<span style="color: #FF9900;">[AWS ParallelCluster for HPC Builds](https://docs.aws.amazon.com/parallelcluster/latest/ug/what-is-aws-parallelcluster.html)</span>**: "For compute-intensive builds, ParallelCluster could provide HPC-grade infrastructure that scales automatically based on your build queue."
 
 ---
 
@@ -558,7 +558,7 @@
 
 #### 📊 **Repository Scale & Performance**
 
-> **💾 Repository Size Impact Analysis**:
+**💾 Repository Size Impact Analysis:**
 
 ```mermaid
 graph TD
@@ -717,7 +717,7 @@ graph TD
 </td>
 <td>
 
-**<span style="color: #FF9900;">[Git LFS + Amazon S3](https://docs.aws.amazon.com/s3/)</span>**
+**<span style="color: #FF9900;">[Git LFS with Amazon S3](https://aws.amazon.com/blogs/devops/using-git-lfs-and-aws-codebuild-to-manage-large-binary-files/)</span>**
 </td>
 <td>
 
@@ -731,7 +731,7 @@ graph TD
 </td>
 <td>
 
-**<span style="color: #FF9900;">[AWS CodeStar Connections](https://docs.aws.amazon.com/codestar-connections/)</span>**
+**<span style="color: #FF9900;">[AWS CodeStar Connections](https://docs.aws.amazon.com/codestar-connections/latest/userguide/welcome.html)</span>**
 </td>
 <td>
 
@@ -742,9 +742,9 @@ graph TD
 
 #### 🔧 **For Perforce Workflows**
 
-- **<span style="color: #FF9900;">[Perforce on Amazon EC2](https://docs.aws.amazon.com/ec2/)</span>**: "Optimized Perforce deployment with high-performance storage and automated scaling"
+- **<span style="color: #FF9900;">[Perforce P4 (Helix Core) on AWS](https://aws.amazon.com/solutions/guidance/building-perforce-helix-core-on-aws/)</span>**: "Complete deployment guide for optimized Perforce infrastructure with high-performance storage and automated scaling"
 
-- **<span style="color: #FF9900;">[Amazon FSx for Lustre](https://docs.aws.amazon.com/fsx/latest/LustreGuide/)</span>**: "High-performance file system providing the IOPS and throughput needed for large Perforce repositories"
+- **<span style="color: #FF9900;">[Amazon FSx for Lustre with Perforce](https://aws.amazon.com/blogs/gametech/centralize-your-game-production-assets-on-aws-with-perforce-helix-core/)</span>**: "High-performance file system providing the IOPS and throughput needed for large Perforce repositories"
 
 #### 🛡️ **For Backup & Disaster Recovery**
 
@@ -760,7 +760,7 @@ graph TD
 
 #### 🤝 **AWS Partners for Version Control**
 
-- **[Perforce Helix Core](https://www.perforce.com/products/helix-core)**: Industry-standard version control for game development, optimized for AWS
+- **[Perforce P4 (Helix Core)](https://www.perforce.com/products/helix-core)**: Industry-standard version control for game development, optimized for AWS
 - **[GitHub Enterprise](https://github.com/enterprise)**: Git-based version control with enterprise features and AWS integration
 - **[GitLab](https://about.gitlab.com/)**: Complete DevOps platform with Git repositories and CI/CD
 - **[Atlassian Bitbucket](https://bitbucket.org/)**: Git repository management with Jira integration
@@ -3160,7 +3160,7 @@ DynamoDB auto-sharding
 
 #### 🚀 **NoSQL Database Services**
 
-- **<span style="color: #FF9900;">[Amazon DynamoDB](https://docs.aws.amazon.com/dynamodb/)</span>**: "Serverless NoSQL database with single-digit millisecond performance and automatic scaling for player data, game state, and leaderboards"
+- **<span style="color: #FF9900;">[Amazon DynamoDB](https://aws.amazon.com/blogs/database/amazon-dynamodb-gaming-use-cases-and-design-patterns/)</span>**: "Serverless NoSQL database with single-digit millisecond performance and automatic scaling for player data, game state, and leaderboards"
 
 - **<span style="color: #FF9900;">[Amazon DocumentDB](https://docs.aws.amazon.com/documentdb/)</span>**: "MongoDB-compatible managed service with better performance and integrated AWS security features"
 
@@ -3424,7 +3424,7 @@ mindmap
 </td>
 <td>
 
-**<span style="color: #FF9900;">[Amazon GameLift Servers](https://docs.aws.amazon.com/gameliftservers/latest/developerguide/)</span>**
+**<span style="color: #FF9900;">[Amazon GameLift Servers](https://docs.aws.amazon.com/gameliftservers/latest/developerguide/getting-started-intro.html)</span>**
 </td>
 <td>
 
@@ -3729,7 +3729,7 @@ graph TD
 </td>
 <td>
 
-**<span style="color: #FF9900;">Amazon CloudWatch</span>**
+**<span style="color: #FF9900;">[Amazon CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Dashboards.html)</span>**
 </td>
 <td>
 
@@ -4093,7 +4093,7 @@ Mobile: 1-5%, PC: 2-10%
 </td>
 <td>
 
-**<span style="color: #FF9900;">[Amazon Kinesis Data Streams](https://docs.aws.amazon.com/kinesis/latest/dev/)</span>**
+**<span style="color: #FF9900;">[Amazon Kinesis Data Streams](https://aws.amazon.com/solutions/implementations/real-time-web-analytics-with-kinesis/)</span>**
 </td>
 <td>
 
