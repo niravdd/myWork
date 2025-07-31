@@ -8,9 +8,9 @@
 
 </div>
 
-> **🎯 Target Audience**: AWS for Games Sales & Business Development Representatives  
-> **📋 Purpose**: Complete discovery tool to identify opportunities across the game development lifecycle  
-> **🚀 Usage**: Guide conversations with game studios to understand current state, gaps, and growth opportunities
+**🎯 Target Audience**: AWS for Games Sales & Business Development Representatives  
+**📋 Purpose**: Complete discovery tool to identify opportunities across the game development lifecycle  
+**🚀 Usage**: Guide conversations with game studios to understand current state, gaps, and growth opportunities
 
 ---
 
@@ -234,12 +234,12 @@
 
 # 🔨 BUILD: Game Development & Content Creation
 
-> <img src="https://img.shields.io/badge/Phase-BUILD-orange?style=flat-square"> *The BUILD phase encompasses all activities related to creating game content, assets, and code. This includes development infrastructure, content creation pipelines, and AI-assisted development tools.*
+<img src="https://img.shields.io/badge/Phase-BUILD-orange?style=flat-square"> *The BUILD phase encompasses all activities related to creating game content, assets, and code. This includes development infrastructure, content creation pipelines, and AI-assisted development tools.*
 
 ## 1. 🏗️ Development Infrastructure & Build Systems
 
 ### 💡 **Knowledge Context for Sales Rep**
-> **🎓 Background**: Game development requires robust build systems that handle complex codebases, large binary assets, and multiple target platforms. Unlike traditional software, games often have lengthy build times due to asset processing, shader compilation, and platform-specific optimizations. A typical AAA game build can take 2-8 hours, and studios often need to build for 5+ platforms simultaneously. This creates significant infrastructure costs and developer productivity challenges.
+**🎓 Background**: Game development requires robust build systems that handle complex codebases, large binary assets, and multiple target platforms. Unlike traditional software, games often have lengthy build times due to asset processing, shader compilation, and platform-specific optimizations. A typical AAA game build can take 2-8 hours, and studios often need to build for 5+ platforms simultaneously. This creates significant infrastructure costs and developer productivity challenges.
 
 ### 🔍 **Primary Discovery Questions**
 
@@ -326,7 +326,7 @@
 
 #### 🛠️ **Build System Technology**
 
-> **🎯 Common Responses and Strategic Follow-ups**:
+**🎯 Common Responses and Strategic Follow-ups**:
 
 <details>
 <summary><strong>Unity Cloud Build</strong></summary>
@@ -394,7 +394,7 @@
 
 ### 🔗 **AWS Solution Mapping**
 
-> <img src="https://img.shields.io/badge/⚠️-Only%20introduce%20after%20understanding%20specific%20challenges-red?style=flat-square">
+<img src="https://img.shields.io/badge/⚠️-Only%20introduce%20after%20understanding%20specific%20challenges-red?style=flat-square">
 
 #### 🏗️ **For Build Infrastructure Challenges**
 
@@ -485,7 +485,7 @@
 ## 2. 📚 Version Control & Asset Management
 
 ### 💡 **Knowledge Context for Sales Rep**
-> **🎓 Background**: Game development involves managing both source code and massive binary assets - textures, models, audio, video. A typical AAA game can have 500GB-2TB of assets. Traditional version control systems like Git struggle with large files, leading most game studios to use Perforce, which can handle large binaries but requires significant infrastructure and expertise to manage at scale.
+**🎓 Background**: Game development involves managing both source code and massive binary assets - textures, models, audio, video. A typical AAA game can have 500GB-2TB of assets. Traditional version control systems like Git struggle with large files, leading most game studios to use Perforce, which can handle large binaries but requires significant infrastructure and expertise to manage at scale.
 
 ### 🔍 **Primary Discovery Questions**
 
@@ -607,7 +607,7 @@ graph TD
 
 #### ⚡ **Performance & Scalability**
 
-> **🚨 Critical Performance Indicators**:
+**🚨 Critical Performance Indicators**:
 
 | Metric | 🟢 Good | 🟡 Concerning | 🔴 Critical |
 |--------|---------|---------------|-------------|
@@ -2541,7 +2541,7 @@ pie title Content Creation Budget Distribution
 
 # 🚀 RUN: Game Backend & Operations
 
-> <img src="https://img.shields.io/badge/Phase-RUN-blue?style=flat-square"> *The RUN phase covers all aspects of deploying, operating, and maintaining live game services. This includes backend infrastructure, databases, real-time services, monitoring, and player-facing systems.*
+<img src="https://img.shields.io/badge/Phase-RUN-blue?style=flat-square"> *The RUN phase covers all aspects of deploying, operating, and maintaining live game services. This includes backend infrastructure, databases, real-time services, monitoring, and player-facing systems.*
 
 ## 1. 🏗️ Game Backend Architecture & Deployment
 
@@ -3781,7 +3781,7 @@ graph TD
 ---
 # 📈 GROW: Player Engagement & Business Intelligence
 
-> <img src="https://img.shields.io/badge/Phase-GROW-green?style=flat-square"> *The GROW phase focuses on understanding players, optimizing engagement, and scaling the business. This includes analytics, marketing, player acquisition, retention strategies, and AI-driven insights.*
+<img src="https://img.shields.io/badge/Phase-GROW-green?style=flat-square"> *The GROW phase focuses on understanding players, optimizing engagement, and scaling the business. This includes analytics, marketing, player acquisition, retention strategies, and AI-driven insights.*
 
 ## 1. 📊 Game Analytics & Data Pipeline
 
