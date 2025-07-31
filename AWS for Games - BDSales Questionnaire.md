@@ -121,7 +121,7 @@
 
 ---
 
-## 🎯 **Advanced Sales Methodology for GameTech**
+## 🎯 **Advanced Sales Methodology for AWS for Games**
 
 ### 💡 **Strategic Discovery Framework**
 
@@ -229,64 +229,6 @@
 | **🟢 Basic** | Manual processes, single platform | Managed services, automation |
 | **🟡 Intermediate** | Some automation, multi-platform | Advanced analytics, AI/ML |
 | **🔴 Advanced** | Full automation, global scale | Cost optimization, innovation |
-
----
-
-## 📖 **How to Use This Document**
-
-<table>
-<tr>
-<td width="33%">
-
-### 🔨 **BUILD**
-*Development & Content Creation*
-- Development Infrastructure
-- Version Control & Assets  
-- Cloud Rendering
-- AI-Assisted Content
-
-</td>
-<td width="33%">
-
-### 🚀 **RUN** 
-*Backend & Operations*
-- Game Backend Architecture
-- Databases & Data Management
-- Game Servers & Matchmaking
-- Monitoring & Observability
-
-</td>
-<td width="33%">
-
-### 📈 **GROW**
-*Engagement & Business Intelligence*
-- Game Analytics & Data Pipeline
-- Player Acquisition & Marketing
-- Player Engagement & Retention
-- AI-Powered Insights & Fraud Detection
-
-</td>
-</tr>
-</table>
-
-### 🎯 **Conversation Approach**
-
-```diff
-+ Start with knowledge context to establish credibility
-+ Ask open discovery questions to understand current state
-+ Use natural follow-ups based on their responses
-+ Drill down to technical specifics when opportunities emerge
-+ Map to AWS solutions only after understanding their needs
-```
-
-### 🔑 **Key Principles**
-
-| Principle | Description |
-|-----------|-------------|
-| 👂 **Listen First** | Listen more than you talk |
-| 🧠 **Understand Before Recommending** | Understand before you recommend |
-| 🎯 **Focus on Outcomes** | Focus on business outcomes, not just technology |
-| 🤝 **Build Trust** | Build trust through technical understanding |
 
 ---
 
