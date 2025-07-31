@@ -446,7 +446,29 @@
 "AWS Batch could automatically manage compute resources and job queues, optimizing for cost and performance."
 </td>
 </tr>
+<tr>
+<td>
+
+**Developer productivity & code quality**
+</td>
+<td>
+
+**<span style="color: #FF9900;">[Amazon Q Developer](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/)</span>**
+</td>
+<td>
+
+"AI-powered code completion, security scanning, and unit test generation to accelerate development velocity and improve code quality"
+</td>
+</tr>
 </table>
+
+#### 🤖 **For Developer Productivity Enhancement**
+
+- **<span style="color: #FF9900;">[Amazon Q Developer Code Completion](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/code-completion.html)</span>**: "Real-time AI code suggestions in your IDE to accelerate feature development"
+
+- **<span style="color: #FF9900;">[Amazon Q Developer Security Scans](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/security-scans.html)</span>**: "Automated security vulnerability detection and remediation suggestions"
+
+- **<span style="color: #FF9900;">[Amazon Q Developer Test Generation](https://docs.aws.amazon.com/amazonq/latest/qdeveloper-ug/test-generation.html)</span>**: "Automatically generate comprehensive unit tests to improve code coverage"
 
 #### 📦 **For Artifact Management**
 
@@ -2424,7 +2446,21 @@ pie title Content Creation Budget Distribution
 </td>
 <td>
 
-"Access to foundation models like Claude, Stable Diffusion, and Amazon Titan through a single API without managing AI infrastructure"
+"Access to latest foundation models including Amazon Nova, Claude 3.5, Stable Diffusion, and specialized models through a single API without managing AI infrastructure"
+</td>
+</tr>
+<tr>
+<td>
+
+**Advanced multimodal AI**
+</td>
+<td>
+
+**<span style="color: #FF9900;">[Amazon Nova Models](https://docs.aws.amazon.com/nova/latest/userguide/)</span>**
+</td>
+<td>
+
+"Amazon's latest multimodal AI models: Nova Pro (text/image/video), Nova Canvas (image generation), Nova Reel (video generation), Nova Sonic (speech)"
 </td>
 </tr>
 <tr>
@@ -2456,6 +2492,20 @@ pie title Content Creation Budget Distribution
 </td>
 </tr>
 </table>
+
+#### 🎨 **Latest Amazon Bedrock Models (2025)**
+
+**Amazon Nova Models:**
+- **[Nova Pro](https://docs.aws.amazon.com/nova/latest/userguide/)**: Multimodal model for text, image, and video understanding
+- **[Nova Canvas](https://docs.aws.amazon.com/nova/latest/userguide/image-gen-access.html)**: Advanced image generation with fine-grained control
+- **[Nova Reel](https://docs.aws.amazon.com/nova/latest/userguide/video-gen-access.html)**: Video generation from text and image prompts
+- **[Nova Sonic](https://docs.aws.amazon.com/nova/latest/userguide/)**: Speech-to-speech and speech-to-text capabilities
+
+**Third-Party Models:**
+- **Claude 3.5 Sonnet**: Advanced reasoning and code generation
+- **Stable Diffusion**: Image generation and editing
+- **AI21 Jamba 1.5**: Large language model for text generation
+- **Amazon Titan**: Text embeddings and image generation
 
 #### 🌍 **Language & Translation Services**
 
