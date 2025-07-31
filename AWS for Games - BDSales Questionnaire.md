@@ -4849,12 +4849,12 @@ graph TD
     D --> E["🔄 Repeat Purchasers<br/>800<br/>(40% conversion)"]
     E --> F["💎 High-Value Players<br/>200<br/>(25% conversion)"]
     
-    style A fill:#e1f5fe,stroke:#01579b,stroke-width:2px
-    style B fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
-    style C fill:#fff3e0,stroke:#e65100,stroke-width:2px
-    style D fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
-    style E fill:#fff8e1,stroke:#f57f17,stroke-width:2px
-    style F fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    style A fill:#1565c0,stroke:#0d47a1,stroke-width:3px,color:#ffffff
+    style B fill:#7b1fa2,stroke:#4a148c,stroke-width:3px,color:#ffffff
+    style C fill:#e65100,stroke:#bf360c,stroke-width:3px,color:#ffffff
+    style D fill:#2e7d32,stroke:#1b5e20,stroke-width:3px,color:#ffffff
+    style E fill:#f57c00,stroke:#e65100,stroke-width:3px,color:#ffffff
+    style F fill:#c2185b,stroke:#880e4f,stroke-width:3px,color:#ffffff
 ```
 
 <details>
