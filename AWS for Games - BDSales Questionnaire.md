@@ -4,7 +4,7 @@
 
 ![AWS for Games](https://img.shields.io/badge/AWS-for%20Games-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Target Audience](https://img.shields.io/badge/Target-Sales%20%26%20BD-blue?style=for-the-badge)
-![Last Updated](https://img.shields.io/badge/Updated-January%202025-green?style=for-the-badge)
+![Last Updated](https://img.shields.io/badge/Updated-July%202025-green?style=for-the-badge)
 
 </div>
 
@@ -226,9 +226,9 @@
 ### 📊 **By Technical Maturity**
 | Maturity Level | Key Indicators | AWS Opportunity Areas |
 |----------------|----------------|----------------------|
-| **🟢 Basic** | Manual processes, single platform | Managed services, automation |
-| **🟡 Intermediate** | Some automation, multi-platform | Advanced analytics, AI/ML |
-| **🔴 Advanced** | Full automation, global scale | Cost optimization, innovation |
+| **✅ Basic** | Manual processes, single platform | Managed services, automation |
+| **⚠️ Intermediate** | Some automation, multi-platform | Advanced analytics, AI/ML |
+| **🚀 Advanced** | Full automation, global scale | Cost optimization, innovation |
 
 ---
 
@@ -562,9 +562,9 @@
 
 ```mermaid
 graph TD
-    A[Repository Size] --> B{<100GB}
-    A --> C{100GB-1TB}
-    A --> D{>1TB}
+    A[Repository Size] --> B["<100GB"]
+    A --> C["100GB-1TB"]
+    A --> D["1TB+"]
     
     B --> B1[Plan for Growth]
     C --> C1[Performance Issues]
@@ -609,7 +609,7 @@ graph TD
 
 **🚨 Critical Performance Indicators**:
 
-| Metric | 🟢 Good | 🟡 Concerning | 🔴 Critical |
+| Metric | ✅ Good | ⚠️ Concerning | ❌ Critical |
 |--------|---------|---------------|-------------|
 | **Full Checkout Time** | <2 hours | 2-8 hours | >8 hours |
 | **Team Onboarding** | <1 day | 1-3 days | >3 days |
@@ -1143,7 +1143,7 @@ Reduced operational overhead
 - **[High Performance Computing on AWS](https://aws.amazon.com/hpc/)**
 - **[AWS Pricing Calculator for GPU Instances](https://calculator.aws/#/createCalculator/EC2)**
 
-> **💡 Pro Tip**: Start the conversation with cost comparison - "What's your current monthly spend on high-end workstations?" Then show how cloud can provide better performance at lower total cost.
+**💡 Pro Tip**: Start the conversation with cost comparison - "What's your current monthly spend on high-end workstations?" Then show how cloud can provide better performance at lower total cost.
 
 ---
 
@@ -2369,9 +2369,9 @@ pie title Content Creation Budget Distribution
 
 #### 🌍 **Localization & Translation**
 
-> **🗺️ Localization Complexity Matrix**:
+**🗺️ Localization Complexity Matrix**:
 
-| Languages Supported | 🟢 1-3 | 🟡 4-8 | 🟠 9-15 | 🔴 15+ |
+| Languages Supported | ✅ 1-3 | ⚠️ 4-8 | 🔶 9-15 | ❌ 15+ |
 |-------------------|---------|---------|----------|--------|
 | **Complexity** | Basic | Moderate | High | Enterprise |
 | **AI Opportunity** | Medium | High | Very High | Critical |
@@ -3002,9 +3002,9 @@ Session data, leaderboards, caching
 
 #### 🏆 **Leaderboards & Rankings**
 
-> **🎯 Leaderboard Complexity Matrix**:
+**🎯 Leaderboard Complexity Matrix**:
 
-| Player Count | 🟢 <10K | 🟡 10K-100K | 🟠 100K-1M | 🔴 1M+ |
+| Player Count | ✅ <10K | ⚠️ 10K-100K | 🔶 100K-1M | ❌ 1M+ |
 |-------------|---------|-------------|------------|--------|
 | **Update Frequency** | Real-time | Near real-time | Batch | Batch + Cache |
 | **Query Complexity** | Simple | Moderate | High | Very High |
@@ -3358,7 +3358,7 @@ mindmap
 
 #### ⏱️ **Performance Metrics**
 
-| Metric | 🟢 Excellent | 🟡 Good | 🟠 Concerning | 🔴 Poor |
+| Metric | ✅ Excellent | ⚠️ Good | 🔶 Concerning | ❌ Poor |
 |--------|-------------|---------|---------------|---------|
 | **Average Match Time** | <30s | 30-60s | 1-2min | >2min |
 | **Match Quality** | >90% | 80-90% | 70-80% | <70% |
@@ -3696,9 +3696,9 @@ graph TD
 
 | Maturity Level | 🔍 Detection | ⚡ Response | 📢 Communication | 📊 Learning |
 |---------------|-------------|------------|------------------|-------------|
-| **🟢 Advanced** | Automated, predictive | <5 min MTTR | Proactive updates | Post-mortems, automation |
-| **🟡 Intermediate** | Mostly automated | 5-30 min MTTR | Reactive updates | Some documentation |
-| **🔴 Basic** | Manual/reactive | >30 min MTTR | Ad-hoc communication | Limited learning |
+| **🚀 Advanced** | Automated, predictive | <5 min MTTR | Proactive updates | Post-mortems, automation |
+| **⚠️ Intermediate** | Mostly automated | 5-30 min MTTR | Reactive updates | Some documentation |
+| **❌ Basic** | Manual/reactive | >30 min MTTR | Ad-hoc communication | Limited learning |
 
 ### 💼 **Business Impact Assessment**
 
