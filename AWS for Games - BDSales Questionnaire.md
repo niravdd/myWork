@@ -119,24 +119,89 @@
 | **Handle large game assets** | [Version Control & Assets](#2--version-control--asset-management) | Git LFS + S3, FSx |
 | **Prevent fraud & cheating** | [AI-Powered Insights & Fraud](#5--ai-powered-insights--fraud-detection) | Amazon Fraud Detector |
 
-### 🎯 **Conversation Approach**
+---
 
+## 🎯 **Advanced Sales Methodology for GameTech**
+
+### 💡 **Strategic Discovery Framework**
+
+**Value-Based Questioning Hierarchy:**
 ```diff
-+ Start with knowledge context to establish credibility
-+ Ask open discovery questions to understand current state
-+ Use natural follow-ups based on their responses
-+ Drill down to technical specifics when opportunities emerge
-+ Map to AWS solutions only after understanding their needs
++ Level 1: Business Impact - "What would 50% faster builds mean for your release schedule?"
++ Level 2: Technical Pain - "How do current limitations constrain your technical roadmap?"
++ Level 3: Competitive Advantage - "What capabilities would differentiate you in the market?"
++ Level 4: Future Vision - "Where do you see your infrastructure in 18 months?"
 ```
 
-### 🔑 **Key Principles**
+### 🧠 **Cognitive Bias Awareness**
 
-| Principle | Description |
-|-----------|-------------|
-| 👂 **Listen First** | Listen more than you talk |
-| 🧠 **Understand Before Recommending** | Understand before you recommend |
-| 🎯 **Focus on Outcomes** | Focus on business outcomes, not just technology |
-| 🤝 **Build Trust** | Build trust through technical understanding |
+| **Bias** | **Game Studio Manifestation** | **Counter-Strategy** |
+|----------|-------------------------------|---------------------|
+| **Status Quo Bias** | "Our current engine/infrastructure works fine" | Quantify opportunity cost and competitive risk |
+| **Sunk Cost Fallacy** | "We've invested too much in our current solution" | Reframe as future ROI vs. past investment |
+| **Not Invented Here** | "We prefer to build everything in-house" | Position AWS as force multiplier, not replacement |
+| **Anchoring Bias** | Fixated on current costs/metrics | Introduce new success metrics and benchmarks |
+
+### 🎪 **Stakeholder Influence Mapping**
+
+**Technical Decision Makers:**
+- **CTO/Technical Director**: Focus on architectural scalability and technical debt reduction
+- **Lead Engineers**: Emphasize developer productivity and operational efficiency
+- **DevOps/Infrastructure**: Highlight automation, reliability, and cost optimization
+
+**Business Decision Makers:**
+- **CEO/Studio Head**: Connect to business outcomes, competitive advantage, time-to-market
+- **CFO/Finance**: ROI analysis, cost predictability, capital vs. operational expenditure
+- **Product/Game Directors**: Player experience impact, feature velocity, market responsiveness
+
+### 🔄 **Objection Anticipation & Reframing**
+
+<details>
+<summary><strong>"Cloud is too expensive for our scale"</strong></summary>
+
+**Reframe Strategy:**
+- Shift from cost-per-unit to total cost of ownership
+- Highlight hidden costs: maintenance, scaling, opportunity cost
+- Introduce elasticity value: "You only pay for what you use, when you use it"
+- **Proof Point**: "Studios typically see 30-60% cost reduction when factoring in operational overhead"
+
+</details>
+
+<details>
+<summary><strong>"We need full control over our infrastructure"</strong></summary>
+
+**Reframe Strategy:**
+- Distinguish between control and management overhead
+- Position managed services as "control without complexity"
+- Emphasize focus on core competency: game development vs. infrastructure management
+- **Proof Point**: "You maintain full control over your game logic while AWS handles the undifferentiated heavy lifting"
+
+</details>
+
+<details>
+<summary><strong>"Our data is too sensitive for the cloud"</strong></summary>
+
+**Reframe Strategy:**
+- Address with compliance credentials and security posture
+- Compare AWS security to typical game studio capabilities
+- Highlight shared responsibility model benefits
+- **Proof Point**: "AWS meets the security requirements of banks and governments - we can certainly secure your game data"
+
+</details>
+
+### 📊 **ROI Quantification Framework**
+
+**Hard Benefits (Quantifiable):**
+- Infrastructure cost reduction: 30-60%
+- Developer productivity gain: 20-40%
+- Time-to-market acceleration: 25-50%
+- Operational overhead reduction: 40-70%
+
+**Soft Benefits (Strategic):**
+- Competitive differentiation through faster innovation
+- Risk mitigation through managed services
+- Talent attraction/retention through modern tooling
+- Global expansion capabilities
 
 ---
 
