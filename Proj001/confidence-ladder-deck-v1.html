@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Confidence Ladder — re:Invent 2026 Deck</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,400&family=Hanken+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root{
+    --ink:#080b0f; --ink2:#0e141b;
+    --panel:rgba(255,255,255,.035); --panel-line:rgba(255,255,255,.10);
+    --text:#e9eff4; --muted:#8a9aa8; --faint:#5b6976;
+    --cool:#6f9bcf; --teal:#43b89c; --gold:#e3a93b; --bright:#f5d472; --warm:#d08a6f;
+    --display:'Fraunces',Georgia,'Times New Roman',serif;
+    --body:'Hanken Grotesk','Helvetica Neue',Arial,sans-serif;
+    --mono:'JetBrains Mono','SFMono-Regular',Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--text);font-family:var(--body)}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 80% at 85% -10%, rgba(229,169,59,.10), transparent 55%),
+      radial-gradient(90% 70% at 0% 110%, rgba(111,155,207,.10), transparent 55%),
+      linear-gradient(180deg,#0a0f15,#070a0e);}
+  body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  /* ---- slide system: TOP-ALIGNED so notes drawer never covers the headline ---- */
+  .stage{position:fixed;inset:0;z-index:2}
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-start;
+    padding:4.5vh 7vw 4vh;opacity:0;visibility:hidden;transform:translateY(12px);
+    transition:opacity .45s ease,transform .45s ease,visibility .45s;overflow:hidden}
+  .slide.active{opacity:1;visibility:visible;transform:none}
+  .slide.active .reveal{animation:rise .55s both}
+  .slide.active .reveal:nth-child(2){animation-delay:.05s}
+  .slide.active .reveal:nth-child(3){animation-delay:.10s}
+  .slide.active .reveal:nth-child(4){animation-delay:.15s}
+  .slide.active .reveal:nth-child(5){animation-delay:.20s}
+  .slide.active .reveal:nth-child(6){animation-delay:.25s}
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+  .kicker{font-family:var(--mono);font-size:.7rem;letter-spacing:.26em;text-transform:uppercase;
+    color:var(--faint);margin-bottom:1.1rem;display:flex;gap:.9rem;align-items:center;flex-wrap:wrap}
+  .kicker .tick{width:30px;height:1px;background:var(--faint)}
+  .kicker .accent{color:var(--rc,var(--muted))}
+
+  h1{font-family:var(--display);font-weight:340;font-size:clamp(2.4rem,6vw,5rem);line-height:.99;letter-spacing:-.02em}
+  h1 em{font-style:italic;color:var(--bright)}
+  h2{font-family:var(--display);font-weight:360;font-size:clamp(1.7rem,3.9vw,3rem);line-height:1.04;letter-spacing:-.015em;margin-bottom:.3rem}
+  h2 em{font-style:italic;color:var(--rc,var(--teal))}
+  .lede{font-size:clamp(1rem,1.55vw,1.32rem);color:var(--muted);max-width:48ch;line-height:1.5;font-weight:300}
+  .lede strong{color:var(--text);font-weight:600}
+
+  .cols{display:grid;gap:2rem;align-items:start}
+  .cols.split{grid-template-columns:1.05fr .95fr;gap:3rem}
+  .cols.split.even{grid-template-columns:1fr 1fr}
+
+  .cards{display:grid;gap:.9rem;margin-top:.3rem}
+  .cards.g4{grid-template-columns:repeat(4,1fr)}
+  .cards.g2{grid-template-columns:repeat(2,1fr)}
+  .card{background:var(--panel);border:1px solid var(--panel-line);border-radius:13px;padding:1.1rem 1.2rem;position:relative;overflow:hidden}
+  .card .ct{font-family:var(--mono);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);margin-bottom:.5rem}
+  .card h3{font-family:var(--body);font-weight:600;font-size:1.02rem;margin-bottom:.4rem;color:var(--text)}
+  .card p{font-size:.88rem;color:var(--muted);line-height:1.42;font-weight:300}
+  .card .edge{position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--rc,var(--cool))}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:.7rem;margin-top:.5rem}
+  ul.clean li{display:flex;gap:.75rem;font-size:.98rem;color:var(--muted);line-height:1.4;font-weight:300}
+  ul.clean li b{color:var(--text);font-weight:600}
+  ul.clean .mk{flex:0 0 auto;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;
+    font-family:var(--mono);font-size:.66rem;color:var(--ink);background:var(--rc,var(--muted));font-weight:700;margin-top:.05rem}
+
+  /* ---- ELI5 explainer ---- */
+  .eli5{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:stretch;margin-top:.3rem}
+  .analogy{background:linear-gradient(180deg,rgba(255,255,255,.05),var(--panel));border:1px solid var(--rc,var(--panel-line));
+    border-radius:16px;padding:1.5rem 1.6rem;position:relative}
+  .analogy .scene{font-size:2.2rem;margin-bottom:.7rem;letter-spacing:.2rem}
+  .analogy .lbl{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--rc,var(--teal));margin-bottom:.6rem}
+  .analogy p{font-size:1.08rem;color:var(--text);line-height:1.55;font-weight:300}
+  .analogy p em{font-style:italic;color:var(--rc,var(--bright));font-weight:400}
+  .mech{display:flex;flex-direction:column;gap:.7rem;justify-content:center}
+  .mech .step{display:flex;gap:.8rem;align-items:flex-start}
+  .mech .step .num{flex:0 0 auto;font-family:var(--mono);font-size:.72rem;font-weight:700;color:var(--rc,var(--teal));
+    border:1px solid var(--rc,var(--panel-line));border-radius:7px;width:26px;height:26px;display:grid;place-items:center;margin-top:.1rem}
+  .mech .step p{font-size:.96rem;color:var(--muted);line-height:1.42;font-weight:300}
+  .mech .step p b{color:var(--text);font-weight:600}
+  .gist{margin-top:1.1rem;font-size:1.02rem;color:var(--text);font-weight:300;border-left:3px solid var(--rc,var(--gold));
+    padding-left:1rem;line-height:1.5;max-width:80ch}
+  .gist b{font-weight:600}
+
+  /* ---- Today -> With this -> Result flow ---- */
+  .flow3{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:1.1rem;align-items:stretch;margin-top:.4rem}
+  .fcard{background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;padding:1.2rem 1.25rem;display:flex;flex-direction:column}
+  .fcard .ph{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;margin-bottom:.7rem;display:flex;align-items:center;gap:.5rem}
+  .fcard .ph .d{width:8px;height:8px;border-radius:50%}
+  .fcard.today{border-color:rgba(208,138,111,.3)} .fcard.today .ph{color:var(--warm)} .fcard.today .ph .d{background:var(--warm)}
+  .fcard.after{border-color:var(--rc,var(--teal))} .fcard.after .ph{color:var(--rc,var(--teal))} .fcard.after .ph .d{background:var(--rc,var(--teal))}
+  .fcard.result{border-color:rgba(245,212,114,.4);background:linear-gradient(180deg,rgba(245,212,114,.06),var(--panel))} .fcard.result .ph{color:var(--bright)} .fcard.result .ph .d{background:var(--bright)}
+  .fcard h4{font-family:var(--body);font-weight:600;font-size:1rem;margin-bottom:.5rem;color:var(--text);line-height:1.2}
+  .fcard p{font-size:.88rem;color:var(--muted);line-height:1.45;font-weight:300}
+  .fcard p+p{margin-top:.5rem}
+  .flow3 .ar{align-self:center;font-size:1.3rem;color:var(--faint)}
+
+  /* terminal */
+  .term{background:#05080b;border:1px solid var(--panel-line);border-radius:11px;font-family:var(--mono);
+    font-size:.76rem;line-height:1.6;padding:1rem 1.15rem;color:#c4d2dd;overflow:hidden}
+  .term .c{color:var(--faint)} .term .g{color:var(--teal)} .term .y{color:var(--gold)}
+  .term .r{color:#e08a6f} .term .b{color:var(--cool)} .term .dim{color:#5a6772}
+
+  /* ladder diagram */
+  .ladder{display:flex;flex-direction:column-reverse;gap:.6rem;margin-top:.3rem}
+  .rung{display:grid;grid-template-columns:42px 1fr auto;gap:1rem;align-items:center;
+    background:var(--panel);border:1px solid var(--panel-line);border-radius:11px;padding:.8rem 1.1rem}
+  .rung .n{font-family:var(--mono);font-weight:700;font-size:1.05rem;width:42px;height:42px;border-radius:9px;display:grid;place-items:center;color:var(--ink);background:var(--rc)}
+  .rung h4{font-family:var(--body);font-weight:600;font-size:1rem;color:var(--text)}
+  .rung p{font-size:.83rem;color:var(--muted);font-weight:300;line-height:1.3}
+  .rung .strength{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--rc);text-align:right;white-space:nowrap}
+
+  table.prog{width:100%;border-collapse:collapse;margin-top:.5rem;font-size:.88rem}
+  table.prog th,table.prog td{text-align:left;padding:.6rem .85rem;border-bottom:1px solid var(--panel-line);vertical-align:top}
+  table.prog th{font-family:var(--mono);font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--faint);font-weight:500}
+  table.prog td{color:var(--muted);font-weight:300;line-height:1.38}
+  table.prog td b{color:var(--text);font-weight:600}
+  table.prog .rdot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:.5rem;vertical-align:middle}
+  .strbar{height:5px;border-radius:3px;background:linear-gradient(90deg,var(--cool),var(--c2,var(--cool)));width:var(--w,40%);margin-top:.3rem}
+
+  .pill{display:inline-flex;align-items:center;gap:.5rem;font-family:var(--mono);font-size:.64rem;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--rc,var(--muted));border:1px solid var(--panel-line);border-radius:999px;padding:.32rem .75rem}
+
+  .note-strip{margin-top:1.1rem;font-size:.92rem;color:var(--muted);font-weight:300;border-left:2px solid var(--rc,var(--gold));padding-left:1rem;max-width:78ch;line-height:1.5}
+  .note-strip b{color:var(--text);font-weight:600}
+
+  /* ladder rail */
+  .rail{position:fixed;right:2vw;top:50%;transform:translateY(-50%);z-index:5;display:flex;flex-direction:column-reverse;gap:.6rem}
+  .rail .step{display:flex;align-items:center;gap:.6rem;justify-content:flex-end;opacity:.4;transition:opacity .4s,transform .4s}
+  .rail .step .lbl{font-family:var(--mono);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .rail .step .dot{width:10px;height:10px;border-radius:3px;background:var(--muted);transition:all .4s}
+  .rail .step[data-r="1"] .dot{background:var(--cool)} .rail .step[data-r="2"] .dot{background:var(--teal)}
+  .rail .step[data-r="3"] .dot{background:var(--gold)} .rail .step[data-r="4"] .dot{background:var(--bright)}
+  .rail .step.on{opacity:1;transform:translateX(-3px)} .rail .step.on .dot{width:14px;height:14px;box-shadow:0 0 0 4px rgba(255,255,255,.06)}
+  .rail .spine{position:absolute;right:4px;top:-6px;bottom:-6px;width:1px;background:linear-gradient(var(--bright),var(--cool));opacity:.25}
+
+  .chrome{position:fixed;left:2vw;bottom:1.8vh;z-index:6;display:flex;align-items:center;gap:1rem;
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.09em;color:var(--faint)}
+  .chrome .ct{color:var(--text)}
+  .bar{position:fixed;left:0;top:0;height:2px;background:linear-gradient(90deg,var(--cool),var(--teal),var(--gold),var(--bright));z-index:7;transition:width .4s}
+  .hint{position:fixed;right:2vw;bottom:1.8vh;z-index:6;font-family:var(--mono);font-size:.62rem;color:var(--faint);letter-spacing:.07em}
+  .hint b{color:var(--muted)}
+
+  /* notes drawer — capped height + clear scrollbar so it never hides slide content */
+  .notes-drawer{position:fixed;left:0;right:0;bottom:0;z-index:20;height:46vh;overflow-y:auto;
+    background:rgba(6,9,13,.985);border-top:2px solid var(--gold);
+    transform:translateY(101%);transition:transform .38s ease;padding:1.4rem 7vw 2.5rem;backdrop-filter:blur(10px)}
+  .notes-drawer.open{transform:none}
+  .notes-drawer::-webkit-scrollbar{width:10px}
+  .notes-drawer::-webkit-scrollbar-thumb{background:#2a3540;border-radius:6px;border:2px solid #06090d}
+  .notes-drawer::-webkit-scrollbar-track{background:#0a0f14}
+  .notes-drawer h5{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;position:sticky;top:0}
+  .notes-drawer .nbody{font-size:.92rem;line-height:1.58;color:#c2cdd6;font-weight:300;max-width:95ch}
+  .notes-drawer .nbody p{margin-bottom:.7rem}
+  .notes-drawer .nbody b{color:var(--text);font-weight:600}
+  .notes-drawer .nbody .el{color:var(--teal);font-family:var(--mono);font-size:.8rem;font-weight:500}
+  .notes-drawer .nbody ul{margin:.3rem 0 .8rem 1.1rem}
+  .notes-drawer .nbody li{margin-bottom:.4rem}
+  .ndclose{position:fixed;right:7vw;top:1.2rem;z-index:21;font-family:var(--mono);font-size:.64rem;color:var(--faint);cursor:pointer;letter-spacing:.1em}
+  .slide aside.notes{display:none}
+
+  @media (max-width:860px){
+    .cols.split,.cols.split.even,.cards.g4,.eli5{grid-template-columns:1fr}
+    .flow3{grid-template-columns:1fr;gap:.7rem}.flow3 .ar{transform:rotate(90deg)}
+    .rail{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar" id="bar"></div>
+
+<div class="rail" id="rail">
+  <div class="spine"></div>
+  <div class="step" data-r="1"><span class="lbl">Detect</span><span class="dot"></span></div>
+  <div class="step" data-r="2"><span class="lbl">Verify&nbsp;rules</span><span class="dot"></span></div>
+  <div class="step" data-r="3"><span class="lbl">Verify&nbsp;pipeline</span><span class="dot"></span></div>
+  <div class="step" data-r="4"><span class="lbl">Expose</span><span class="dot"></span></div>
+</div>
+
+<div class="stage" id="stage">
+
+  <!-- 1 · TITLE -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> AWS re:Invent 2026 · Games &amp; Interactive</div>
+    <h1 class="reveal">The Confidence Ladder</h1>
+    <h1 class="reveal" style="font-size:clamp(1.3rem,3vw,2.4rem);margin-top:.5rem;color:var(--muted);font-weight:300">Climb from <em>guesswork</em> to <em>proof</em> in your game</h1>
+    <p class="reveal lede" style="margin-top:1.8rem">A studio-side toolkit that turns <strong>“we think our game is fair”</strong> into <strong>“we can prove it”</strong> — using AI/ML where it earns its keep, and mathematics where the stakes demand certainty. <strong>No prior data-science knowledge needed</strong> — we explain every idea in plain language first.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The cold-open. The room mixes studio engineers, LiveOps leads, designers, and producers — many of whom are <i>not</i> data scientists. The job of this slide is to plant the central metaphor (a <b>ladder of confidence</b>), signal this is a <b>studio-side</b> talk (how <i>we</i> know our own game behaves), and promise — explicitly — that no math background is required. Hold ~30 seconds.</p>
+      <p><span class="el">Title — "The Confidence Ladder."</span> The entire talk is one mental model: every signal you can produce about your game sits on a ladder, from a probabilistic hunch at the bottom to a mathematical proof at the top. Say "ladder" and gesture up; the rail on the right edge of every slide <i>is</i> that ladder.</p>
+      <p><span class="el">Subtitle — "Climb from guesswork to proof."</span> The arc in five words. "Guesswork" is deliberately provocative; "proof" is the payoff.</p>
+      <p><span class="el">Lede — the two halves + the promise.</span> Note the two halves of the value: AI/ML "where it earns its keep" and mathematics "where stakes demand certainty." The final sentence — <b>"no prior data-science knowledge needed"</b> — is a deliberate inclusivity promise: we explain each technique with an everyday analogy before any jargon. Say it; it relaxes the non-technical half of the room.</p>
+      <p><b>Reader note.</b> The right-edge rail shows the four rungs (Detect → Verify rules → Verify pipeline → Expose). It is dim now because we're still "on the ground" framing the problem; it lights up rung-by-rung as we climb.</p>
+    </aside>
+  </section>
+
+  <!-- 2 · PROBLEM: BOTH TRUE -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The business problem · 01</div>
+    <div class="cols split">
+      <div>
+        <h2 class="reveal">Two things that are <em style="color:var(--bright)">both true</em> at once.</h2>
+        <p class="reveal lede" style="margin-top:1rem">Your dashboard says the economy is healthy. Your community says the drop rates are rigged, the ladder is full of cheaters, and that ban was unfair.</p>
+        <p class="reveal note-strip" style="--rc:var(--gold)"><b>The operator’s real question:</b> “Is my game behaving as I designed it — and how strongly can I actually <i>know</i> that it is?” Today, the honest answer is usually: <b>we think so.</b></p>
+      </div>
+      <div class="reveal cards" style="gap:.9rem">
+        <div class="card"><span class="edge" style="--rc:var(--teal)"></span><div class="ct">Your telemetry</div><h3>“Economy healthy ✅”</h3><p>Aggregate metrics inside normal bands. Faucets and sinks balanced. No alert fired.</p></div>
+        <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Your community</div><h3>“It’s rigged.”</h3><p>Threads on impossible drop rates, win-trading rings, and a wrongful ban — none of which your dashboard can confirm or deny.</p></div>
+      </div>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Establish the business problem as <i>tension</i>, not a feature list. The most relatable operator pain isn't "we have cheaters" — it's the gap between what the instruments say and what reality is. This dramatizes that gap so the rest of the talk has something to close.</p>
+      <p><span class="el">Headline — "Two things both true at once."</span> The dashboard and the angry players aren't contradicting each other; both can be right because the dashboard measures the wrong <i>altitude of certainty</i>. Aggregate health can be green while a targeted exploit, a collusion ring, or a tampered drop table runs underneath.</p>
+      <p><span class="el">Left card — "Economy healthy ✅."</span> Today's observability: aggregate, lagging, threshold-based. Not wrong — just blind to what players are shouting about.</p>
+      <p><span class="el">Right card — "It's rigged."</span> The three perennial accusations — bad odds, win-trading, unfair bans — chosen because each maps to a later rung (odds → Rung 3; rings → Rung 1; unfair ban → the "attach a reason" theme).</p>
+      <p><span class="el">Strip — "we think so."</span> Land this hard; pause after it. The whole talk replaces "we think so" with calibrated, defensible answers. <b>Reader note:</b> this exact phrase is paid off on the closing slide ("we can prove it").</p>
+    </aside>
+  </section>
+
+  <!-- 3 · STAKES -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The business problem · 02 &nbsp;·&nbsp; why it costs real money</div>
+    <h2 class="reveal" style="max-width:22ch">Four places the gap shows up on the P&amp;L.</h2>
+    <div class="reveal cards g4" style="margin-top:1.3rem">
+      <div class="card"><span class="edge" style="--rc:var(--cool)"></span><div class="ct">Revenue erosion</div><h3>Cheats, fraud, RMT</h3><p>Refunds, chargebacks, gold-farming, and paying players who quit a cheater-ridden ladder. Direct, measurable loss.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--teal)"></span><div class="ct">Trust &amp; retention</div><h3>Churn from doubt</h3><p>When players stop believing the odds or the rank are fair, they stop spending — long before they post about it.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--gold)"></span><div class="ct">Regulatory exposure</div><h3>Loot-box scrutiny</h3><p>Odds-disclosure mandates and gambling reclassification mean you may need casino-grade audit trails — not optional.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--bright)"></span><div class="ct">Operational cost</div><h3>Analyst hours &amp; disputes</h3><p>Every alert with no rationale is an investigation. Every “I was robbed” is a CS escalation. It scales badly.</p></div>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--cool);margin-top:1.3rem">Every rung in this talk is accountable to these four. <b>If a technique doesn’t move one of them, it’s a science project — not an investment.</b></p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Convert slide 2's tension into <b>money</b>, because the room includes the people who fund the work. Four cards, four distinct cost centers; we refer back to these when deciding which rungs are worth building.</p>
+      <p><span class="el">Card 1 — Revenue erosion.</span> The most concrete: cheating/fraud/RMT cause refunds, chargebacks, and churn of the exact players who pay. Lead ROI argument; maps to Rung 1.</p>
+      <p><span class="el">Card 2 — Trust &amp; retention.</span> The silent one: players who doubt fairness spend less <i>before</i> they ever complain, so it never shows up as a ticket. Maps to Rungs 3–4.</p>
+      <p><span class="el">Card 3 — Regulatory exposure.</span> Board-level risk: loot-box-as-gambling and odds-disclosure rules. If they land you need auditable RNG anyway, so early building is a moat. Maps to Rung 3 / optional Rung 4.</p>
+      <p><span class="el">Card 4 — Operational cost.</span> Felt daily: alerts without rationale = investigation hours; disputes without evidence = escalations. Maps to the cross-cutting "every signal ships a reason" theme.</p>
+      <p><span class="el">Strip — "or it's a science project."</span> Credibility line: the techniques are judged against these four outcomes, nothing else. Pre-empts the "tech for tech's sake" skeptic and sets up the honest "you may not need all of it" later.</p>
+    </aside>
+  </section>
+
+  <!-- 4 · TRADITIONAL TOOLKIT -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> Baseline · 01 &nbsp;·&nbsp; what studios already do well</div>
+    <div class="cols split">
+      <div>
+        <h2 class="reveal">The toolkit you <em style="color:var(--teal)">already run</em>.</h2>
+        <p class="reveal lede" style="margin-top:1rem">Modern operators are not naive. This stack is serious, and the talk does <strong>not</strong> replace any of it.</p>
+        <p class="reveal note-strip" style="--rc:var(--teal)">We <b>build on top of this</b>, not throw it away. Respecting the baseline earns the right to talk about what it misses.</p>
+      </div>
+      <ul class="reveal clean" style="--rc:var(--teal)">
+        <li><span class="mk">✓</span><span><b>Server-authoritative simulation</b> — the player’s device isn’t trusted to report the truth.</span></li>
+        <li><span class="mk">✓</span><span><b>Rules &amp; thresholds</b> — “ban if accuracy &gt; X or actions/min &gt; Y.”</span></li>
+        <li><span class="mk">✓</span><span><b>Statistical &amp; ML anti-cheat</b> — reputation scoring, bot heuristics.</span></li>
+        <li><span class="mk">✓</span><span><b>Payment-fraud rules engines</b> — blocklists, velocity checks.</span></li>
+        <li><span class="mk">✓</span><span><b>Economy dashboards &amp; anomaly alerts</b> — faucets/sinks, spike detection.</span></li>
+        <li><span class="mk">✓</span><span><b>Manual review &amp; player reports</b> — the human backstop.</span></li>
+      </ul>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Disarm the skeptic. Before criticising the status quo, show genuine respect for it — name the real machinery studios run, accurately. An audience that feels understood accepts the critique; one that feels condescended to tunes out.</p>
+      <p><span class="el">Headline — "the toolkit you already run."</span> Signal you know their world. Say plainly: "this does not replace any of it — it sits alongside and closes specific gaps."</p>
+      <p><span class="el">The six items.</span> Walk them quickly; the room should be nodding. Server-authoritative simulation (device can't be trusted), rules/thresholds (the workhorse), statistical/ML anti-cheat (name Valve Trust Factor / Activision Ricochet only if re-verified; otherwise describe generically), payment-fraud engines, economy dashboards/anomaly alerts, and the human-review backstop. Listing all six avoids any straw-man accusation.</p>
+      <p><span class="el">Strip — "build on top, not throw away."</span> Thesis of the baseline section: the new rungs compose with this, they don't compete. <b>Reader note:</b> Rung 1 (ML detection) is itself "traditional" for big studios — we're honest that the novelty is in the higher rungs and in the <i>posture</i>, not in inventing anti-cheat.</p>
+    </aside>
+  </section>
+
+  <!-- 5 · WHERE BASELINE FALLS SHORT -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> Baseline · 02 &nbsp;·&nbsp; the gaps that hit the P&amp;L</div>
+    <h2 class="reveal" style="max-width:22ch">Good tools. Four blind spots.</h2>
+    <div class="reveal cards g2" style="margin-top:1.1rem">
+      <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Blind spot · reactive</div><h3>You find out <i>after</i> the damage</h3><p>The dupe is noticed when prices crater; the bot ring when reports pile up. Tools say “something broke,” rarely “here’s the rule that allowed it.”</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Blind spot · evasion</div><h3>Cheats tune <i>just under</i> the line</h3><p>A fixed threshold is a target. Adaptive cheats sit one notch below every rule and pass clean.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Blind spot · relational</div><h3>Per-account rules can’t see <i>rings</i></h3><p>Collusion and win-trading are invisible one account at a time — each member looks ordinary. The signal is in the relationships.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Blind spot · self-trust</div><h3>You assume your <i>own</i> pipeline is honest</h3><p>Is prod running the odds you configured? The binary you shipped? Usually there’s no artifact that proves it — it’s assumed.</p></div>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--warm);margin-top:1.1rem">And a fifth, cutting across all of them: <b>most alerts don’t localize the root cause.</b> “Metric X spiked” still costs an analyst hours. Every rung that follows hands back a <b>reason</b>, not just an alarm.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The pivot. Having honoured the baseline, name precisely where it goes blind — and tie each blind spot to a cost from slide 3. These four gaps are exactly what the four rungs solve, so this is the structural hinge of the deck. Tone: diagnostic, not gleeful.</p>
+      <p><span class="el">Blind spot 1 — Reactive.</span> Today's analytics are lagging: you learn of the dupe after the economy absorbed it. → motivates <b>Rung 2</b> (prove the exploit can't exist before launch).</p>
+      <p><span class="el">Blind spot 2 — Evasion.</span> A published/guessable threshold is something an adversary optimises against; the evasive cheat tunes every stat just under the line. → motivates <b>Rung 1's anomaly detection</b> (model "normal," not a fixed line).</p>
+      <p><span class="el">Blind spot 3 — Relational.</span> Per-account scoring structurally can't see collusion — each colluder looks normal; only the <i>graph</i> of who-plays-whom reveals the ring. → motivates <b>Rung 1's graph beat</b>.</p>
+      <p><span class="el">Blind spot 4 — Self-trust.</span> The most under-served gap: studios verify the client exhaustively but assume their own backend is honest. → motivates <b>Rung 3</b>.</p>
+      <p><span class="el">Strip — the fifth gap: no localization.</span> The unifying complaint: alarms without rationale. State the principle every following rung obeys — "hand back a reason, not just an alarm." <b>Reader note:</b> this thread connects otherwise different techniques (feature attribution on models, the implicated subgraph, the named tampered record).</p>
+    </aside>
+  </section>
+
+  <!-- 6 · THE LADDER -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The idea</div>
+    <div class="cols split" style="align-items:start">
+      <div>
+        <h2 class="reveal">One idea: match the <em style="color:var(--bright)">strength of your evidence</em> to the stakes.</h2>
+        <p class="reveal lede" style="margin-top:1rem">Every signal sits on a ladder — from a <strong>probabilistic suspicion</strong> to a <strong>mathematical proof</strong>. Higher rungs cost more and prove more.</p>
+        <p class="reveal note-strip" style="--rc:var(--bright)"><b>You don’t need every rung.</b> The skill isn’t climbing as high as possible — it’s knowing which rung <i>your</i> problem needs, and stopping there. Pick and choose.</p>
+      </div>
+      <div class="reveal ladder">
+        <div class="rung" style="--rc:var(--cool)"><div class="n">1</div><div><h4>Detect <span style="color:var(--faint);font-weight:400;font-size:.82rem">· aimbots, win-trading rings</span></h4><p>Spot likely cheating — “we suspect, and here’s why.”</p></div><div class="strength">Probabilistic</div></div>
+        <div class="rung" style="--rc:var(--teal)"><div class="n">2</div><div><h4>Verify rules <span style="color:var(--faint);font-weight:400;font-size:.82rem">· the infinite-gold dupe</span></h4><p>Prove no legal play breaks the economy.</p></div><div class="strength">Proof · of the rules</div></div>
+        <div class="rung" style="--rc:var(--gold)"><div class="n">3</div><div><h4>Verify pipeline <span style="color:var(--faint);font-weight:400;font-size:.82rem">· tampered loot odds</span></h4><p>Prove nobody altered the live system.</p></div><div class="strength">Proof · cryptographic</div></div>
+        <div class="rung" style="--rc:var(--bright)"><div class="n">4</div><div><h4>Expose <span style="color:var(--faint);font-weight:400;font-size:.82rem">· regulator-grade odds</span></h4><p>Let outsiders check it — “don’t trust us, verify.”</p></div><div class="strength">Optional · outward</div></div>
+      </div>
+      <div class="reveal" style="display:flex;justify-content:space-between;margin-top:.7rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--faint)">
+        <span>↑ more effort · stronger guarantee</span><span>simpler → harder to fool</span>
+      </div>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The keystone — the one image the audience carries out. Everything before built the need; everything after tours these four rungs. Spend ~90 seconds. The right-edge rail is a miniature of this exact ladder.</p>
+      <p><span class="el">Headline — "match evidence strength to stakes."</span> The thesis. Not "use more math" — <i>calibrate</i>. This is the spine and the line that makes the talk defensible to a skeptic.</p>
+      <p><span class="el">The ladder, bottom to top — read each with its strength label.</span>
+        <ul>
+          <li><b>Rung 1 · Detect — "Probabilistic."</b> Produces ranked suspicions with reasons; false positives by design → feeds human review, never auto-bans.</li>
+          <li><b>Rung 2 · Verify rules — "Proof of the rules."</b> Proves no reachable state in your specified ruleset breaks an invariant. Real proof — over the rules as written, not the shipped code.</li>
+          <li><b>Rung 3 · Verify pipeline — "Cryptographic proof."</b> A tamper provably fails verification — a hard true positive, not a suspicion.</li>
+          <li><b>Rung 4 · Expose — "Optional, outward."</b> Publishing a rung-2/3 artifact so an outsider can re-check; as strong as the artifact beneath it.</li>
+        </ul></p>
+      <p><span class="el">Strip — "you don't need every rung."</span> The single most trust-building sentence; say it early and mean it. It frames the rest of the talk as "here are your options," not "here's a mandate" — what a senior engineer respects.</p>
+    </aside>
+  </section>
+
+  <!-- 7 · PRIMER PROMISE -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> Before we climb &nbsp;·&nbsp; how the next few slides work</div>
+    <h2 class="reveal" style="max-width:24ch">For each rung: <em style="color:var(--bright)">plain English first</em>, then the comparison.</h2>
+    <div class="reveal cards g4" style="margin-top:1.4rem">
+      <div class="card"><span class="edge" style="--rc:var(--bright)"></span><div class="ct">Step A</div><h3>An everyday analogy</h3><p>Each technique explained with something you already understand — no maths, no jargon.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--warm)"></span><div class="ct">Step B · Today</div><h3>How it’s done now</h3><p>The traditional approach a studio uses today — and exactly where it falls short.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--teal)"></span><div class="ct">Step B · With this</div><h3>What changes</h3><p>The new approach, and the one thing it does that the old one structurally can’t.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--gold)"></span><div class="ct">Step B · Result</div><h3>The eventual outcome</h3><p>The business result you should expect — measured, not asserted.</p></div>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--bright);margin-top:1.4rem">If you remember one shape: <b>analogy → today → with this → expected result.</b> Same pattern, every rung.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> A signposting slide that sets the audience's expectations and, crucially, reassures the non-technical half of the room that every technique will be explained in plain language <i>before</i> any detail. It also establishes the repeating comparison structure so the audience knows what to look for at each rung.</p>
+      <p><span class="el">Step A — everyday analogy.</span> Promise that each technique starts with something they already understand (a bank teller, a detective's corkboard, a sealed envelope). This is the inclusivity contract.</p>
+      <p><span class="el">Step B, three parts — Today / With this / Result.</span> The comparison engine the user asked for. <b>Today</b> = the current method and its specific failure. <b>With this</b> = the new method and the one thing it does that the old one structurally cannot. <b>Result</b> = the expected business outcome, stated as something measurable (recall, hours saved, disputes closed), never hand-waved.</p>
+      <p><span class="el">Strip — the memorable shape.</span> "Analogy → today → with this → expected result." Repeating one structure four times is what lets a lay audience follow four unfamiliar techniques without getting lost. <b>Reader note:</b> tell them the pattern repeats, so each new rung feels familiar in form even when the content is new.</p>
+    </aside>
+  </section>
+
+  <!-- 8 · RUNG 1 · ANOMALY — EXPLAINED SIMPLY -->
+  <section class="slide" data-rung="1">
+    <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> &nbsp;·&nbsp; Technique 1 of 2: anomaly detection, in plain English</div>
+    <h2 class="reveal" style="--rc:var(--cool)">Spotting the fake without ever being shown one.</h2>
+    <div class="reveal eli5" style="--rc:var(--cool);margin-top:1rem">
+      <div class="analogy">
+        <div class="scene">🏦✍️</div>
+        <div class="lbl">Imagine…</div>
+        <p>A bank teller who has handled <em>thousands</em> of real signatures. Nobody ever taught them what a <em>forgery</em> looks like — but when a fake slides across the counter, it just <em>feels wrong</em>. The slant, the pressure, the speed: each could be fine alone, but together they don’t match what “real” feels like.</p>
+      </div>
+      <div class="mech">
+        <div class="step"><span class="num">1</span><p><b>The computer studies normal players</b> — thousands of them — across many traits at once: aim steadiness, reaction time, how often they land a perfect shot.</p></div>
+        <div class="step"><span class="num">2</span><p><b>It builds a sense of “what normal feels like”</b> — not a rulebook, a feel for the whole crowd.</p></div>
+        <div class="step"><span class="num">3</span><p><b>Anything that doesn’t fit gets flagged</b> — even when every single trait, on its own, looks perfectly legal.</p></div>
+      </div>
+    </div>
+    <p class="reveal gist" style="--rc:var(--cool)"><b>The gist:</b> instead of a checklist of what’s <i>bad</i> (which a cheat can dodge), it learns what’s <i>normal</i> and notices what’s off — weighing lots of small oddities together. The fancy name is <b>anomaly detection</b>.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The first "explain like I'm five" slide. Goal: a non-technical attendee leaves able to describe anomaly detection in one sentence to a colleague. The rail's bottom rung (cool blue) is now lit. Spend ~75 seconds; let the analogy breathe before the mechanism.</p>
+      <p><span class="el">Analogy — the bank teller.</span> Chosen deliberately: it captures the two ideas that matter — (1) you learn from <i>normal</i> examples, never from labelled fakes, and (2) the giveaway is the <i>combination</i> of traits, not any single one. Tell it as a story, not a definition. Alternative analogies if the room prefers: recognising a stranger's footsteps on your stairs; a parent knowing their child is "off" without a thermometer.</p>
+      <p><span class="el">Mechanism, three steps (plain).</span> (1) Study many normal players across many traits. (2) Build a feel for normal — emphasise it's a learned <i>feel</i>, not a written rule. (3) Flag what doesn't fit, even when each trait alone is legal. Keep the language exactly this plain; resist saying "z-score," "distribution," or "feature vector" out loud here.</p>
+      <p><span class="el">Gist line — the payoff + the real name.</span> Only <i>after</i> the intuition lands do we attach the term "anomaly detection." This ordering — intuition first, jargon last — is the whole point of the slide. <b>Reader note:</b> the key contrast to seed here, paid off on the next-but-one slide, is "checklist of bad (dodgeable) vs. sense of normal (not dodgeable)."</p>
+    </aside>
+  </section>
+
+  <!-- 9 · RUNG 1 · GRAPH — EXPLAINED SIMPLY -->
+  <section class="slide" data-rung="1">
+    <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> &nbsp;·&nbsp; Technique 2 of 2: graph analysis, in plain English</div>
+    <h2 class="reveal" style="--rc:var(--cool)">The conspiracy you can’t see one suspect at a time.</h2>
+    <div class="reveal eli5" style="--rc:var(--cool);margin-top:1rem">
+      <div class="analogy">
+        <div class="scene">🕵️🧵📌</div>
+        <div class="lbl">Imagine…</div>
+        <p>A detective’s corkboard. Interview any <em>one</em> suspect and they seem ordinary. But pin up <em>who calls whom, who meets whom</em>, and stretch string between them — and a tight little cluster lights up. The plot was never in one person. It was in the <em>connections</em>.</p>
+      </div>
+      <div class="mech">
+        <div class="step"><span class="num">1</span><p><b>Draw a dot for every player</b>, and a line between two players each time they play each other.</p></div>
+        <div class="step"><span class="num">2</span><p><b>Cheating partners light up as a tight knot</b> — they face each other far more than chance would ever explain.</p></div>
+        <div class="step"><span class="num">3</span><p><b>The shape gives them away</b>, even though each player’s own stats look completely normal.</p></div>
+      </div>
+    </div>
+    <p class="reveal gist" style="--rc:var(--cool)"><b>The gist:</b> some cheating only exists <i>between</i> people — win-trading, boosting, fraud rings. Looking at the <b>map of who-plays-whom</b> reveals the group. The fancy name is a <b>graph</b>; the smart version that learns these patterns is a <b>graph neural network (GNN)</b>.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The second plain-language explainer, paired with the first because both live on Rung 1. Goal: the audience understands that some abuse is <i>relational</i> — invisible per-account, obvious as a structure. Rail stays on Rung 1.</p>
+      <p><span class="el">Analogy — the detective's corkboard.</span> The string-and-pins image is near-universal from crime drama. It carries the exact insight: one suspect looks innocent; the <i>web</i> of connections reveals the conspiracy. This maps perfectly to win-trading, where each colluder's individual record is unremarkable.</p>
+      <p><span class="el">Mechanism, three steps (plain).</span> (1) A dot per player, a line each time two play each other — this is literally what "a graph" means; say so, demystifying the word. (2) Colluders form a tight knot because they face each other far more than chance. (3) The shape betrays them despite normal individual stats. Avoid "node embeddings," "topology," "adjacency" out loud.</p>
+      <p><span class="el">Gist line — names attached last.</span> Introduce "graph" as simply "a map of connections," then note the learning version is a "graph neural network (GNN)." <b>Reader note:</b> in the live demo we use transparent graph analysis (connected clusters) rather than a trained GNN so it runs in seconds; the structure it finds is exactly what a production GNN would learn — say this when the demo appears so nobody thinks the demo is the full production system.</p>
+    </aside>
+  </section>
+
+  <!-- 10 · RUNG 1 · TODAY / WITH / RESULT + DEMO -->
+  <section class="slide" data-rung="1">
+    <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> &nbsp;·&nbsp; today → with this → expected result</div>
+    <div class="reveal flow3" style="--rc:var(--cool)">
+      <div class="fcard today"><div class="ph"><span class="d"></span>Today</div><h4>Fixed thresholds &amp; per-account checks</h4><p>“Ban if accuracy &gt; 0.55 or APM &gt; 175.” A bouncer with a list.</p><p><b>Falls short:</b> evasive cheats dress just under the line; rings hide because each member looks average. <span style="color:var(--warm)">0/35 cheats, 0/40 ring.</span></p></div>
+      <div class="ar">→</div>
+      <div class="fcard after"><div class="ph"><span class="d"></span>With this</div><h4>Anomaly + graph detection</h4><p>Learn “normal,” flag the odd <i>combination</i>; map who-plays-whom, surface the knot.</p><p><b>The thing rules can’t do:</b> judge the whole picture and the relationships, not one stat at a time. <span style="color:var(--teal)">35/35 cheats, 40/40 ring.</span></p></div>
+      <div class="ar">→</div>
+      <div class="fcard result"><div class="ph"><span class="d"></span>Expected result</div><h4>More caught, each with a reason</h4><p>Higher recall on novel &amp; evasive abuse, every flag carrying a “why” your analyst and your appeals process can stand behind.</p><p><b>Bottom line:</b> fewer cheats slipping through; faster, defensible review.</p></div>
+    </div>
+    <div class="reveal term" style="margin-top:1.1rem">
+      <span class="c"># what a reviewer actually sees — score + the reason it fired:</span><br>
+      &nbsp;&nbsp;p<span class="b">412</span>  score=<span class="y">38.6</span>  reason: <span class="dim">reaction time too consistent for a human</span>  [<span class="g">cheat the rules MISSED</span>]<br>
+      &nbsp;&nbsp;ring&nbsp;3: <span class="b">[c984 c985 c986 c987 c988 c989]</span>  <span class="g">[all colluders — each had a normal win rate]</span>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--cool)"><b>Honesty note:</b> this rung produces <i>suspicions</i>, not verdicts. It surfaces suspects <b>for human review</b> — it never auto-bans on a score. Trading a little precision for big recall is the right call here.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The comparison slide for Rung 1: the repeating Today → With this → Expected result structure, plus a live demo line and the honesty boundary. This is where the plain-English ideas from the previous two slides become a measurable business story.</p>
+      <p><span class="el">Today.</span> A deliberately <i>reasonable</i> rule (not a straw man): "ban if accuracy &gt; 0.55 or APM &gt; 175." The bouncer-with-a-list image. Its specific failures, stated with the demo's real numbers: 0/35 evasive cheats (they sit under each line) and 0/40 ring members (win-traders share wins ~50/50, so win rate looks normal).</p>
+      <p><span class="el">With this.</span> Anomaly detection judges the <i>combination</i> of traits; graph analysis judges the <i>relationships</i>. State the one structural thing rules can't do: "look at the whole picture and the connections, not one stat at a time." Real numbers: 35/35 and 40/40.</p>
+      <p><span class="el">Expected result.</span> The business outcome, framed as something measurable: higher recall on novel/evasive abuse, and a reason attached to every flag (for the analyst and the appeals process). Bottom line: fewer cheats slip through; review is faster and defensible. <b>Reader note:</b> "expected result" is intentionally about outcomes (catch rate, review speed, defensibility), not about the algorithm.</p>
+      <p><span class="el">Terminal line.</span> Make it concrete: a detection carrying its dominant reason in plain words ("reaction time too consistent for a human") and a surfaced ring whose members each had a normal win rate. The numbers are computed live on synthetic data — say so. In production: score+reason → an LLM copilot drafts the case note; the cluster → the implicated ring handed to a reviewer.</p>
+      <p><span class="el">Honesty strip.</span> The governing boundary for all probabilistic detection: detect → explain → human review → remedy; never auto-ban on a score. Trading some precision for recall is correct because the output <i>surfaces</i> suspects, it doesn't punish them. This is what separates a trusted system from a false-ban PR incident.</p>
+    </aside>
+  </section>
+
+  <!-- 11 · RUNG 1 · LLM ANALYST COPILOT -->
+  <section class="slide" data-rung="1">
+    <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> &nbsp;·&nbsp; closing the loop: the analyst copilot</div>
+    <h2 class="reveal" style="--rc:var(--cool)">A detection is useless until a <em>human</em> can act on it fast.</h2>
+    <div class="reveal eli5" style="--rc:var(--cool);margin-top:1rem">
+      <div class="analogy">
+        <div class="scene">🧑‍⚖️🤖📋</div>
+        <div class="lbl">Imagine…</div>
+        <p>Your fraud-and-cheat team drowns in flags — thousands a day, each just a number. Now imagine a sharp <em>junior analyst</em> who never tires: for every flag they read the player’s history, write a plain-English <em>“here’s why this looks like win-trading,”</em> attach the evidence, and sort the pile by severity. They don’t pass judgement — they make the <em>human</em> judge ten times faster.</p>
+      </div>
+      <div class="mech">
+        <div class="step"><span class="num">1</span><p><b>It reads the messy evidence</b> — the score, the feature that fired, the player’s recent matches and trades, the implicated ring.</p></div>
+        <div class="step"><span class="num">2</span><p><b>It writes the case in plain language</b> — “flagged for reaction times too consistent across 40 matches; trades only with 3 linked accounts.”</p></div>
+        <div class="step"><span class="num">3</span><p><b>It triages and drafts</b> — ranks by severity, drafts the case note, suggests next steps. The human decides.</p></div>
+      </div>
+    </div>
+    <p class="reveal gist" style="--rc:var(--cool)"><b>The gist:</b> a <b>large language model</b> (the tech behind chat assistants) turns raw “score + features” into a reviewer-ready case file. It’s the force-multiplier for the human-review bottleneck every detection system eventually hits — and the natural <b>generative-AI</b> hook in the stack. <i>It explains and accelerates; it never auto-bans.</i></p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The close of Rung 1 — and the answer to "so a model flagged 4,000 sessions… now what?" Every probabilistic detector creates a human-review bottleneck; this slide shows the LLM copilot as the thing that makes that human fast, consistent, and defensible. It is also the most natural generative-AI / Amazon Bedrock hook in the whole talk, which matters for an AWS audience. Rail stays on Rung 1 (cool blue). Spend ~60 seconds.</p>
+      <p><span class="el">Headline — "useless until a human can act on it fast."</span> The motivating truth: detection volume without triage just moves the bottleneck. Rung 1 catches more (slides 8–10) — which would <i>drown</i> a review team without this. The copilot is what makes higher recall operationally affordable.</p>
+      <p><span class="el">Analogy — the tireless junior analyst.</span> Deliberately chosen to bound the claim: a junior analyst <i>prepares</i> the case, a senior human <i>decides</i>. This keeps the copilot firmly on the right side of the honesty line (detect → explain → human review → remedy; never auto-ban). Tell it as "ten times faster," not "replaces the team."</p>
+      <p><span class="el">Mechanism, three steps (plain).</span> (1) Reads the messy evidence — score, the feature that fired, recent matches/trades, the implicated ring from the graph beat. (2) Writes the case in plain language a reviewer (or an appeals process) can act on. (3) Triages by severity and drafts the note; the human decides. Avoid "prompt," "context window," "RAG," "inference" out loud — say "reads," "writes," "sorts."</p>
+      <p><span class="el">Gist line — name + boundary + AWS hook.</span> Attach the term "large language model / generative AI" last, exactly as with the other techniques. Restate the boundary: it explains and accelerates, never auto-bans. <b>Reader note &amp; AWS hook:</b> in production this is an LLM on <b>Amazon Bedrock</b> ingesting the detection's "score + features + subgraph + history" and emitting a plain-language case note; it ties the probabilistic detections (anomaly + graph) into the human remedy workflow. This is the slide where the abstract's "explain why" promise becomes a concrete tool.</p>
+      <p><span class="el">Transition to Rung 2.</span> Close Rung 1 here: "That's as far as probability takes us — ranked, explained suspicions a human acts on. Now we step UP a rung, from suspicion to <i>proof</i>." Sets up the jump to Automated Reasoning.</p>
+    </aside>
+  </section>
+
+  <!-- 12 · RUNG 2 · AUTOMATED REASONING — EXPLAINED SIMPLY -->
+  <section class="slide" data-rung="2">
+    <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> &nbsp;·&nbsp; the technique, in plain English</div>
+    <h2 class="reveal" style="--rc:var(--teal)">A tireless rule-lawyer who checks <em>every</em> possible move.</h2>
+    <div class="reveal eli5" style="--rc:var(--teal);margin-top:1rem">
+      <div class="analogy">
+        <div class="scene">📜⚖️♾️</div>
+        <div class="lbl">Imagine…</div>
+        <p>Your playtesters try thousands of things hoping to break the game. Now imagine instead a <em>tireless logician</em> who reads the rulebook and checks <em>every move sequence that could ever happen</em> — and either hands you the <em>exact recipe</em> that breaks it, or proves, with certainty, that <em>nothing can</em>.</p>
+      </div>
+      <div class="mech">
+        <div class="step"><span class="num">1</span><p><b>Write the shop &amp; crafting rules as precise logic</b> — what buying, selling, and crafting each do to a player’s gold and items.</p></div>
+        <div class="step"><span class="num">2</span><p><b>State the promise you want kept</b> — e.g. “no loop of buying, selling, and crafting can leave a player with the same items but more gold.”</p></div>
+        <div class="step"><span class="num">3</span><p><b>The solver searches all possibilities at once</b> — not by trying them one by one, but by reasoning — and reports the exact exploit loop or proves there is none.</p></div>
+      </div>
+    </div>
+    <p class="reveal gist" style="--rc:var(--teal)"><b>The gist:</b> playtesting is “we tried a lot and didn’t break it.” This is “we <i>proved</i> it can’t break.” Like proving a Sudoku has exactly one answer — without trying every grid. The fancy name is <b>Automated Reasoning</b> (formal methods).</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The plain-language explainer for the most unfamiliar — and most differentiated — technique. The leap a lay audience must make: from "test a lot and hope" to "prove it can't happen." The rail's second rung (teal) lights. This is the conceptual heart of the talk; spend ~90 seconds.</p>
+      <p><span class="el">Analogy — the tireless rule-lawyer / logician.</span> Contrasts the familiar (playtesters trying things) with the new (a logician checking <i>every</i> possible sequence by reasoning, not by trial). The two outcomes are the point: it either hands you the exact exploit recipe or proves none exists. Both are valuable.</p>
+      <p><span class="el">Mechanism, three steps (plain).</span> (1) Write the rules as precise logic (what each action does to gold/items/stats). (2) State the promise to keep ("never end with more gold than earned"). (3) The solver searches <i>all</i> possibilities by reasoning, not one-by-one — and returns a loophole or a proof. Emphasise "all at once, by reasoning" — that's why it's certainty, not sampling. Avoid "SMT solver," "satisfiability," "state space" out loud.</p>
+      <p><span class="el">Gist line — the Sudoku image + the name.</span> "Proving a Sudoku has exactly one answer without trying every grid" is the cleanest everyday image of proof-vs-search. Attach the name "Automated Reasoning (formal methods)" last. <b>Reader note &amp; honest ceiling:</b> the proof is over the rules <i>as written</i>, not the shipped code — mention this here lightly; it's stated fully on the credibility slide. AWS hook: Bedrock Guardrails' Automated Reasoning checks; AWS's formal-methods heritage (Zelkova, s2n). Verify current naming before presenting.</p>
+    </aside>
+  </section>
+
+  <!-- 13 · RUNG 2 · TODAY / WITH / RESULT + DEMO -->
+  <section class="slide" data-rung="2">
+    <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> &nbsp;·&nbsp; today → with this → expected result</div>
+    <div class="reveal flow3" style="--rc:var(--teal)">
+      <div class="fcard today"><div class="ph"><span class="d"></span>Today</div><h4>Playtest, fuzz, and hope</h4><p>QA and automated testing try huge numbers of combinations before launch.</p><p><b>Falls short:</b> “we tried 10 million times and found nothing” isn’t the same as “it can’t happen.” One missed loop = an economy meltdown — found <i>after</i> players do.</p></div>
+      <div class="ar">→</div>
+      <div class="fcard after"><div class="ph"><span class="d"></span>With this</div><h4>Prove it before you ship</h4><p>Encode the economy; the solver checks every reachable state.</p><p><b>The thing testing can’t do:</b> give you <i>certainty</i> over the whole space, plus the <i>exact</i> exploit recipe when one exists.</p></div>
+      <div class="ar">→</div>
+      <div class="fcard result"><div class="ph"><span class="d"></span>Expected result</div><h4>A class of exploits never ships</h4><p>Caught <i>left of launch</i>, with the offending rule pinpointed — not a post-launch fire drill and emergency patch.</p><p><b>Bottom line:</b> no dupe meltdown, no refund wave, no rollback.</p></div>
+    </div>
+    <div class="reveal term" style="margin-top:1.1rem">
+      <span class="c"># the shop &amp; crafting rules — each looks fine on its own:</span><br>
+      &nbsp;&nbsp;<span class="dim">buy_shield −40g · sell_shield +35g · buy_gem −100g · sell_gem +90g · craft: 2 shields → 1 gem</span><br>
+      <span class="c"># ask the solver: any legal loop that ends with the same items but MORE gold?</span><br>
+      <span class="r">✗ MONEY PUMP FOUND</span> &nbsp;<span class="dim">buy_shield → buy_shield → craft_gem → sell_gem</span> &nbsp;<span class="y">(+10g, items unchanged → forever)</span><br>
+      <span class="c"># fix: crafting now needs 3 shields (a gold sink, as intended). ask again:</span><br>
+      <span class="g">✓ PROVEN — no sequence of legal actions yields free gold</span>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--teal)"><b>Better than Rung 1, and earlier.</b> Rung 1 catches a cheater <i>after</i> they act, statistically. Rung 2 proves a whole class of exploits <b>can’t exist</b>, <i>before</i> a single player logs in.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Rung 2's comparison slide. Same Today → With this → Expected result structure, now applied to prevention-by-proof. The demo arc is the emotional peak: "the machine found the exploit your playtesters never did."</p>
+      <p><span class="el">Today.</span> Playtest + fuzz + hope. Honour it — it catches most issues cheaply. Its precise limit: confidence, not certainty. "10 million tries, nothing" ≠ "can't happen," and the one missed infinite-gold loop is catastrophic and found <i>after</i> players exploit it.</p>
+      <p><span class="el">With this.</span> Encode the economy; the solver checks every reachable state. The structural thing testing can't do: deliver <i>certainty</i> over the whole space, and the <i>exact</i> exploit recipe when one exists (the localizing signal — it hands the designer the offending interaction, not a vague warning).</p>
+      <p><span class="el">Expected result.</span> A whole class of exploits never ships — caught left of launch, offending rule pinpointed. Bottom line in business terms: no dupe meltdown, no refund wave, no emergency rollback. <b>Reader note:</b> "expected result" again framed as outcome (prevented incident, prevented cost), not technique.</p>
+      <p><span class="el">Terminal — the three-stage demo, in plain words (matches <code>verify_economy.py</code> exactly).</span> (1) Show the shop &amp; crafting rules: buy_shield −40g, sell_shield +35g, buy_gem −100g, sell_gem +90g, and a craft recipe turning 2 shields into 1 gem. Every rule is individually reasonable. (2) The solver finds the money pump: <b>buy 2 shields (−80g) → craft them into a gem → sell the gem (+90g) = +10g with your items unchanged → repeat forever.</b> Two shields cost 80g but craft into a gem worth 90g — the recipe is mispriced relative to the shop, and no playtester trying actions one at a time ever sees it. This is the wow: the precise recipe, not a vague "something's off." (3) Fix the recipe to need 3 shields (120g, now a gold sink) and ask again → PROVEN. The wording avoids logic notation deliberately. <b>Reader note:</b> the demo's money-pump search is genuinely sound — it finds the pump if one exists or proves none does, over the economy's bounded action lattice.</p>
+      <p><span class="el">Strip — better than Rung 1, and earlier.</span> The compounding argument: Rung 1 is reactive + probabilistic (catch the abuser after the fact); Rung 2 is preventive + certain (the exploit class can't ship). Different time (pre-launch vs live) and different strength (proof vs suspicion). Restate the honest ceiling if asked: proof is over the rules as specified, not the compiled binary.</p>
+    </aside>
+  </section>
+
+  <!-- 14 · RUNG 3 · COMMIT-REVEAL — EXPLAINED SIMPLY -->
+  <section class="slide" data-rung="3">
+    <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> &nbsp;·&nbsp; the technique, in plain English</div>
+    <h2 class="reveal" style="--rc:var(--gold)">The sealed envelope you can’t secretly swap.</h2>
+    <div class="reveal eli5" style="--rc:var(--gold);margin-top:1rem">
+      <div class="analogy">
+        <div class="scene">✉️🔒🔍</div>
+        <div class="lbl">Imagine…</div>
+        <p>Before the draw, the game writes the result on a card, seals it in an envelope, and hands you a <em>tamper-proof fingerprint</em> of what’s inside. You make your move. Then the envelope is opened — and you check the fingerprint still matches. The game <em>could not</em> have changed the card after seeing what you did.</p>
+      </div>
+      <div class="mech">
+        <div class="step"><span class="num">1</span><p><b>A “fingerprint” is published first.</b> Change even one letter inside, and the fingerprint changes completely — and you can’t work backwards from it to peek.</p></div>
+        <div class="step"><span class="num">2</span><p><b>The outcome is locked in before you act</b> — and depends partly on a number <i>you</i> contribute, so the house can’t cherry-pick it.</p></div>
+        <div class="step"><span class="num">3</span><p><b>Anyone can re-check later.</b> If a result was edited afterward, the fingerprint won’t match — a <i>guaranteed</i> catch, not a guess.</p></div>
+      </div>
+    </div>
+    <p class="reveal gist" style="--rc:var(--gold)"><b>The gist:</b> a one-way “fingerprint” (a <b>hash</b>) lets you lock something in <i>publicly</i> without revealing it, then prove later it was never changed. The pattern is <b>commit-reveal</b>; stronger cousins are <b>VRF</b> and <b>attestation</b>.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Plain-language explainer for the cryptographic rung — the one that sounds most intimidating and is actually the most intuitive once anchored to a sealed envelope. Goal: a lay attendee understands "you can lock something in publicly without revealing it, and prove later it wasn't changed." Rail's third rung (gold) lights.</p>
+      <p><span class="el">Analogy — the sealed envelope / sealed prediction.</span> Universally understood (sealed bids, a magician's sealed prediction, sealed exam papers). It carries all three ideas: commit before the action, can't change after seeing the move, anyone can check at reveal.</p>
+      <p><span class="el">Mechanism, three steps (plain).</span> (1) A "fingerprint" (hash) is published first — explain its two magic properties in plain words: any tiny change flips it completely, and you can't reverse it to peek inside. (2) The outcome is locked before the player acts, and depends partly on a number the <i>player</i> contributes, so the house can't cherry-pick. (3) Anyone can re-check later; an edited result won't match — a guaranteed catch. Avoid "SHA-256," "preimage resistance," "nonce" as bare terms — describe them.</p>
+      <p><span class="el">Gist line — names last.</span> Introduce "hash = one-way fingerprint," then the pattern "commit-reveal," then note stronger cousins: <b>VRF</b> (randomness the server can't bias) and <b>attestation</b> (proof the running program is the one you shipped). <b>Reader note &amp; the crucial ceiling (stated fully two slides on):</b> this proves the result wasn't changed <i>after the fact</i> — it does NOT by itself prove the odds were fair. Plant that gently here; don't oversell.</p>
+    </aside>
+  </section>
+
+  <!-- 15 · RUNG 3 · TODAY / WITH / RESULT + DEMO -->
+  <section class="slide" data-rung="3">
+    <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> &nbsp;·&nbsp; today → with this → expected result</div>
+    <div class="reveal flow3" style="--rc:var(--gold)">
+      <div class="fcard today"><div class="ph"><span class="d"></span>Today</div><h4>“Trust our server”</h4><p>The server stores each outcome in a database. We assume nobody changed it.</p><p><b>Falls short:</b> a bad config push, a buggy deploy, or an insider can rewrite a record — and <i>nothing</i> detects it. You’re trusting your own pipeline on faith.</p></div>
+      <div class="ar">→</div>
+      <div class="fcard after"><div class="ph"><span class="d"></span>With this</div><h4>Commit-reveal audit log</h4><p>Publish the fingerprint before the draw; derive the outcome from sealed seeds.</p><p><b>The thing “trust us” can’t do:</b> let <i>anyone</i> re-check and have tampering <b>provably fail</b> — not “look suspicious,” fail.</p></div>
+      <div class="ar">→</div>
+      <div class="fcard result"><div class="ph"><span class="d"></span>Expected result</div><h4>Tampering becomes impossible to hide</h4><p>A single altered record is caught and <i>named</i>, instantly and with certainty.</p><p><b>Bottom line:</b> an insider/supply-chain control your player-facing analytics simply don’t provide.</p></div>
+    </div>
+    <div class="reveal term" style="margin-top:1.1rem">
+      <span class="c"># check the honest log:</span> &nbsp;<span class="g">200 / 200 draws verify</span>  <span class="dim">(rare drops ~1%, exactly as configured)</span><br>
+      <span class="c"># an insider edits one record to gift a rare item:</span> &nbsp;draw #<span class="b">0</span>: <span class="dim">'common'</span> → <span class="r">'RARE'</span><br>
+      &nbsp;&nbsp;OLD <span class="dim">(trust the server):</span> <span class="r">no signal — the value just changed</span><br>
+      &nbsp;&nbsp;NEW <span class="dim">(commit-reveal):</span> <span class="g">1 record FAILS — “draw #0: the fingerprint says ‘common’, not ‘RARE’”</span>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--gold)"><b>Better than Rungs 1–2.</b> Rung 1 is a hunch; Rung 2 proves the rules <i>as written</i>. Rung 3 proves the <b>live, running system</b> wasn’t altered — and a failure here is a <i>certainty</i>, not a confidence score.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> Rung 3's comparison slide, and the place to land the most under-served idea in the talk: turning cryptographic verification <i>inward</i>, onto your own backend. Same Today → With this → Expected result structure; demo shows a hard true positive.</p>
+      <p><span class="el">Today.</span> "Trust our server" — the server stores outcomes and we assume nobody changed them. The precise failure: a bad config push, buggy deploy, or insider can rewrite a record and nothing detects it. You trust your own pipeline on faith — a supply-chain / insider-threat gap.</p>
+      <p><span class="el">With this.</span> Commit-reveal audit log: fingerprint published before the draw, outcome derived from sealed seeds. The structural thing "trust us" can't do: let <i>anyone</i> re-check, with tampering <b>provably failing</b> verification — not merely looking suspicious.</p>
+      <p><span class="el">Expected result.</span> Tampering becomes impossible to hide: a single altered record is caught and <i>named</i>, instantly, with certainty. Bottom line: an insider/supply-chain integrity control that player-facing analytics simply don't provide. <b>Reader note:</b> this reframing — internal control, not player gimmick — is what makes the cryptographic rung fundable without ever invoking the player.</p>
+      <p><span class="el">Terminal — the tamper demo, three stages, plain words.</span> (1) Honest log: 200/200 verify, ~1% rares as configured. (2) Insider rewrites one record ('common' → 'RARE', a free rare item). (3) Old "trust the server" shows nothing — the value just changed; commit-reveal flags exactly one record and names it ("the fingerprint says 'common', not 'RARE'"). The SHA-256 underneath is real, not simulated — say so.</p>
+      <p><span class="el">Strip — better than Rungs 1–2.</span> Completes the compounding argument: Rung 1 = probabilistic hunch; Rung 2 = proof of the rules as written; Rung 3 = proof the <i>running</i> system matches what you intended. Each answers a different question with a stronger guarantee about a different part of the stack. AWS hook: KMS (signing), Lambda (verify endpoint), DynamoDB + hash-chaining (note QLDB deprecation), Nitro Enclaves (attestation).</p>
+    </aside>
+  </section>
+
+  <!-- 16 · RUNG 4 · EXPOSE -->
+  <section class="slide" data-rung="4">
+    <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--bright)">· Expose</span> &nbsp;·&nbsp; optional · plain English + comparison</div>
+    <div class="cols split" style="align-items:start">
+      <div>
+        <h2 class="reveal" style="--rc:var(--bright)">Hand the sealed envelope to the public.</h2>
+        <p class="reveal lede" style="margin-top:.9rem"><b>Imagine</b> publishing the sealed envelope and the draw, so any newspaper — or any player — can check the result themselves and confirm you didn’t cheat. You take the same Rung-3 proof and make it <b>outward-facing</b>.</p>
+        <div class="reveal card" style="--rc:var(--bright);padding:1.3rem;margin-top:1.1rem">
+          <div class="ct" style="color:var(--bright)">The honest boundary</div>
+          <p style="font-size:1rem;color:var(--text);line-height:1.5;font-weight:300">This makes your game <b>auditable</b> — not automatically <i>accountable</i>. Math gives an outsider a record they can verify. Whether you <b>act</b> on it — refund, reverse, re-rank — is policy, not cryptography. <b>Proof supplies the evidence; people supply the remedy.</b></p>
+        </div>
+      </div>
+      <div class="reveal flow3" style="--rc:var(--bright);grid-template-columns:1fr;gap:.7rem">
+        <div class="fcard today"><div class="ph"><span class="d"></span>Today</div><h4>“Trust us, the odds are 1%”</h4><p>Players are told the odds and asked to believe them. Disputes are a shouting match — your word vs. theirs.</p></div>
+        <div class="fcard after" style="--rc:var(--bright)"><div class="ph"><span class="d"></span>With this</div><h4>“Don’t trust us — check it”</h4><p>The published record lets a player, regulator, or partner re-run the check independently and get the same answer.</p></div>
+        <div class="fcard result"><div class="ph"><span class="d"></span>Expected result</div><h4>Evidence-based disputes</h4><p>Fewer CS escalations and chargebacks; a real compliance posture; a genuine brand differentiator — <i>where it’s worth it.</i></p></div>
+      </div>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The optional fourth rung, and the place to draw the talk's sharpest line: <i>auditable</i> vs <i>accountable</i>. Rail's top rung (bright) lights. Keep it brief but precise — this is where over-claiming would undo the credibility built so far. Note: this slide compresses the plain-English explainer and the Today/With/Result comparison together, because Rung 4 is "the same proof, pointed outward" rather than a new technique.</p>
+      <p><span class="el">Headline + "imagine" — publishing the sealed envelope.</span> Reuses slide 13's envelope so no new concept is needed: it's the same Rung-3 artifact, made public. The verifier is now an <i>outsider who doesn't trust you</i> — which is exactly why internal hygiene isn't enough and the cryptographic artifact is.</p>
+      <p><span class="el">Today / With this / Result (right column).</span> <b>Today:</b> "trust us, odds are 1%" — belief-based; disputes are your word vs theirs. <b>With this:</b> "don't trust us, check it" — independent re-verification by player/regulator/partner. <b>Result:</b> evidence-based disputes → fewer escalations and chargebacks, a real compliance posture, a brand differentiator — explicitly "where it's worth it" (ties to the pick-and-choose thesis).</p>
+      <p><span class="el">The honest boundary card — auditable vs accountable.</span> The single most important honesty distinction in the deck. Accountability = a duty to answer + a mechanism for redress; cryptography supplies neither — it supplies an evidentiary substrate. The studio still decides whether to act, governed by policy/SLA/regulation. Say it plainly: "auditable, not automatically accountable — proof supplies the evidence, people supply the remedy." This line is what makes a skeptical audience trust everything else.</p>
+    </aside>
+  </section>
+
+  <!-- 17 · PROOF OF WHAT -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The credibility check &nbsp;·&nbsp; what “proof” does and doesn’t mean</div>
+    <h2 class="reveal" style="max-width:26ch">Be precise about what each proof <em style="color:var(--bright)">actually</em> proves.</h2>
+    <table class="reveal prog" style="margin-top:1.1rem">
+      <thead><tr><th>Technique</th><th>What it really proves</th><th>What people <i>assume</i> it proves</th><th>The gap to name out loud</th></tr></thead>
+      <tbody>
+        <tr><td><b>Commit-reveal</b></td><td>The outcome was locked in before you acted.</td><td>“The odds are fair.”</td><td>You can honestly seal an envelope drawn from a <i>rigged</i> deck. It kills only the “changed-it-after” trick.</td></tr>
+        <tr><td><b>Automated Reasoning</b></td><td>No legal play breaks the rule — in the <i>written rules</i>.</td><td>“The shipped game has no exploit.”</td><td>Proof is over the rulebook, not the actual code that shipped.</td></tr>
+        <tr><td><b>Attestation</b></td><td>Production is running <i>this exact</i> program.</td><td>“The game’s logic is correct.”</td><td>Proves <i>which</i> program runs, not that the program is right.</td></tr>
+      </tbody>
+    </table>
+    <p class="reveal note-strip" style="--rc:var(--bright);margin-top:1.1rem">Why a player would still trust it: <b>they don’t trust your claim — they re-run the check.</b> But it only ever covers the narrow thing the proof is about. Disclosure, governance, and audit bridge the rest — not the math.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The credibility anchor of the talk. After climbing to "proof," immediately fence in what that word covers — the fastest way to lose a technical room is to let "mathematical proof" imply more than it delivers. Delivering this unprompted is what earns a skeptic's trust. Rung-agnostic (rail dim): a deliberate step back to reflect.</p>
+      <p><span class="el">Headline.</span> The discipline: always separate the <i>thing actually proven</i> from the <i>thing people assume</i>.</p>
+      <p><span class="el">Row 1 — Commit-reveal.</span> Proves the outcome was <i>predetermined</i>, not <i>fair</i>. The plain-language version of the ceiling planted on slide 13: you can honestly seal an envelope drawn from a rigged deck. It defeats only the "changed-it-after" attack. The most over-sold claim in "provably fair" marketing — correct it.</p>
+      <p><span class="el">Row 2 — Automated Reasoning.</span> Proves the property over the written rulebook, not the compiled/shipped code. If rulebook and code diverge, the proof says nothing about the code.</p>
+      <p><span class="el">Row 3 — Attestation.</span> Proves <i>which</i> program is running (it's the one you shipped), not that the program is <i>correct</i>. Identity ≠ correctness.</p>
+      <p><span class="el">Strip — why a player trusts it anyway.</span> The resolution: "don't trust, verify" works precisely because trust is removed — the verifier re-runs the check. But it only covers the narrow proven property; the chasm to "this game is fair to me" is bridged by disclosure, governance, and audit, not math. <b>Reader note:</b> this slide is what lets you use "prove" confidently everywhere else without overclaiming.</p>
+    </aside>
+  </section>
+
+  <!-- 18 · THE CLIMB COMPOUNDED -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The climb, in one view</div>
+    <h2 class="reveal" style="max-width:28ch">Each rung answers a different question — with a stronger guarantee.</h2>
+    <table class="reveal prog" style="margin-top:1.1rem">
+      <thead><tr><th>Rung</th><th>Question it answers</th><th>Evidence strength</th><th>Who acts on it</th><th>When it pays</th></tr></thead>
+      <tbody>
+        <tr><td><span class="rdot" style="background:var(--cool)"></span><b>1 · Detect</b></td><td>Which sessions / rings look abusive — and why?</td><td><div class="strbar" style="--c2:var(--cool);--w:28%"></div>Probabilistic</td><td>Human reviewer</td><td>Continuously — operational ROI</td></tr>
+        <tr><td><span class="rdot" style="background:var(--teal)"></span><b>2 · Verify rules</b></td><td>Can any legal play break my economy?</td><td><div class="strbar" style="--c2:var(--teal);--w:62%"></div>Proof · of rules</td><td>Designers, pre-ship</td><td>Once — exploit never ships</td></tr>
+        <tr><td><span class="rdot" style="background:var(--gold)"></span><b>3 · Verify pipeline</b></td><td>Is the running system the one I shipped?</td><td><div class="strbar" style="--c2:var(--gold);--w:88%"></div>Proof · cryptographic</td><td>Anyone — hard true positive</td><td>In the tail — insider / dispute</td></tr>
+        <tr><td><span class="rdot" style="background:var(--bright)"></span><b>4 · Expose</b></td><td>Can an outsider verify without trusting me?</td><td><div class="strbar" style="--c2:var(--bright);--w:100%"></div>As strong as the artifact</td><td>Players, regulators</td><td>When trust is the product</td></tr>
+      </tbody>
+    </table>
+    <p class="reveal note-strip" style="--rc:var(--gold);margin-top:1rem">They <b>compose</b>: detection finds live abuse, rule-proofs stop a class of it ever shipping, pipeline-proofs guard your backend, and exposure lets the outside world check your work. Different questions, increasing certainty.</p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The synthesis slide — collapse the four rungs into one comparable view so the audience sees the <i>progression</i> as a coherent system, not four disconnected tricks. The strength bars grow rung by rung — a visual of "increasing certainty." This is the slide to photograph.</p>
+      <p><span class="el">Column "Question it answers."</span> The key insight: each rung answers a <i>different</i> question, so they don't compete — Detect (which sessions?), Verify-rules (can any play break it?), Verify-pipeline (is prod what I shipped?), Expose (can an outsider check?). A studio chooses <i>which questions it needs answered</i>, not a "best" rung.</p>
+      <p><span class="el">Column "Evidence strength" (the bars).</span> The spine made visual: probabilistic → proof-of-rules → cryptographic proof → as-strong-as-the-artifact. The bar grows because certainty grows; cost grows with it — the trade you make deliberately.</p>
+      <p><span class="el">Column "Who acts on it."</span> Reinforces the honesty boundary across the climb: Rung 1 → a human (never auto-ban); Rungs 2–3 → certainties anyone can act on; Rung 4 → external parties. The shift from "human reviewer" to "anyone" <i>is</i> the shift from suspicion to proof.</p>
+      <p><span class="el">Column "When it pays."</span> The ROI shapes side by side: Rung 1 pays continuously, Rung 2 pays once (exploit never ships), Rung 3 pays in the tail (rare but catastrophic), Rung 4 pays when external trust is the product. Bridges to the next slide.</p>
+      <p><span class="el">Strip — "they compose."</span> Land the systems view: the rungs reinforce each other across the lifecycle. <b>Reader note:</b> this is the whole talk on one screen.</p>
+    </aside>
+  </section>
+
+  <!-- 19 · CHOOSE YOUR RUNG -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> The takeaway that matters Monday &nbsp;·&nbsp; you don’t need all of it</div>
+    <div class="cols split" style="align-items:start">
+      <div>
+        <h2 class="reveal">Don’t climb for its own sake. <em style="color:var(--bright)">Climb to your stakes.</em></h2>
+        <p class="reveal lede" style="margin-top:1rem">Answer five questions about <i>your</i> game. The answers tell you which rungs to build — and which to skip.</p>
+        <p class="reveal note-strip" style="--rc:var(--bright)">Single-player, no money, no ladder? <b>Rung 1, if anything.</b> Real money on random outcomes in a regulated market? <b>You’ll want all four — and you’d have needed them anyway.</b></p>
+      </div>
+      <ul class="reveal clean" style="--rc:var(--bright)">
+        <li><span class="mk">1</span><span>Does an <b>adaptive adversary</b> attack you at scale? → <b>Rung 1</b></span></li>
+        <li><span class="mk">2</span><span>Would a single <b>economy exploit</b> be catastrophic? → <b>Rung 2</b></span></li>
+        <li><span class="mk">3</span><span>Could an <b>insider or bad deploy</b> alter outcomes? → <b>Rung 3</b></span></li>
+        <li><span class="mk">4</span><span>Does an <b>outsider</b> (regulator, player, partner) need to verify? → <b>Rung 4</b></span></li>
+        <li><span class="mk">5</span><span>Does <b>real money, rank, or regulation</b> ride on the result? → <b>climb higher</b></span></li>
+      </ul>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The single most credible — and most useful — slide. After four impressive rungs, explicitly tell people <i>not</i> to build all of them. This is the "real value add, on Monday" moment: a portable decision rule applied to their own game in ten minutes. Saying "you don't need all of it" earns trust on everything you do recommend.</p>
+      <p><span class="el">Headline — "climb to your stakes, not for its own sake."</span> The thesis as advice: the skill is calibration, not maximalism. Separates this from a vendor pitch.</p>
+      <p><span class="el">The five questions (read each as "if yes → build this rung").</span>
+        <ul>
+          <li><b>Q1 adaptive adversary at scale → Rung 1.</b> Almost everyone with a live multiplayer or monetized game says yes — why Rung 1 is near-universal.</li>
+          <li><b>Q2 single economy exploit catastrophic → Rung 2.</b> Yes for tradeable economies, gacha currencies, marketplaces; no for cosmetic-only.</li>
+          <li><b>Q3 insider / bad deploy could alter outcomes → Rung 3.</b> Yes wherever outcomes carry monetary or competitive value.</li>
+          <li><b>Q4 an outsider must verify → Rung 4.</b> Yes only under regulation, on-chain, or explicit competitive-integrity guarantees.</li>
+          <li><b>Q5 money / rank / regulation rides on it → climb higher.</b> The master switch: raises the whole stakes profile and justifies the proof-grade rungs.</li>
+        </ul></p>
+      <p><span class="el">Strip — the two extremes.</span> Make it concrete: single-player, non-monetized, non-competitive → Rung 1 at most (often nothing); real-money random-outcome game in a regulated market → all four, and you'd have needed casino-grade audit anyway. <b>Reader note:</b> this is the worksheet shipped in the Quickstart Kit — the audience leaves able to run it themselves.</p>
+    </aside>
+  </section>
+
+  <!-- 20 · TAKE-HOME KIT -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> What you take home &nbsp;·&nbsp; more than slides</div>
+    <h2 class="reveal" style="max-width:20ch">Leave with a kit, not a memory.</h2>
+    <div class="reveal cards g4" style="margin-top:1.3rem">
+      <div class="card"><span class="edge" style="--rc:var(--bright)"></span><div class="ct">Decide</div><h3>Choose-your-rung worksheet</h3><p>The five-question rule as a checklist. Apply it to your title in ten minutes. The highest-value artifact.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--cool)"></span><div class="ct">Run · Rung 1</div><h3>Detectors with a data contract</h3><p>Anomaly + ring starters. Point them at your own CSV — minimal columns documented — and get flagged-with-reason on day one.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--teal)"></span><div class="ct">Run · Rung 2–3</div><h3>Money-pump prover + sealed-envelope verifier</h3><p>Drop in your shop &amp; crafting rules; the prover finds any free-gold loop or proves there’s none. Plus a real fingerprint (SHA-256) verifier for your draw log.</p></div>
+      <div class="card"><span class="edge" style="--rc:var(--gold)"></span><div class="ct">Productionize</div><h3>Per-rung AWS reference arch</h3><p>One diagram per rung — SageMaker/Kinesis/Bedrock, KMS/Lambda/DynamoDB/Nitro — to hand your platform team.</p></div>
+    </div>
+    <p class="reveal note-strip" style="--rc:var(--bright);margin-top:1.3rem">One repo, runs offline in under a minute. <b>Theory → live demo → a thing you run on your own game this week.</b></p>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The "real value add" slide — the answer to "what do I leave with besides ideas." Four concrete artifacts, each tied to a verb (Decide / Run / Run / Productionize), so the audience sees a path from "saw it" to "shipped it."</p>
+      <p><span class="el">Artifact 1 — Choose-your-rung worksheet.</span> The decision rule from the prior slide as a fill-in checklist. The highest-value item: it's the <i>judgment</i>, portable, applied to their game in ten minutes, costs nothing to use.</p>
+      <p><span class="el">Artifact 2 — Rung 1 detectors with a data contract.</span> Runnable anomaly + ring starters documenting the <i>minimal</i> columns they need (e.g. player_id, accuracy, actions_per_min, reaction_ms). Point at your own CSV → real flags-with-reasons, no training, no GPU.</p>
+      <p><span class="el">Artifact 3 — Money-pump prover + sealed-envelope verifier.</span> The proof-grade starters, backed by the real <code>verify_economy.py</code> and <code>tamper_check.py</code> in the kit. The prover takes a table of shop/crafting actions (gold + item effects) and searches for an inventory-neutral, gold-positive loop — handing back the exact exploit recipe or proving none exists; the studio just edits the action table to match their own economy. The verifier is the real SHA-256 commit-reveal check, droppable into a draw-log pipeline. Note the deliberately lay naming on the slide ("money-pump," "fingerprint") to stay consistent with the explainers.</p>
+      <p><span class="el">Artifact 4 — Per-rung AWS reference architectures.</span> One diagram per rung so "how do I productionize this" has a concrete answer for a platform team. Verify service names/status before presenting.</p>
+      <p><span class="el">Strip — the promise.</span> "One repo, offline, under a minute" + the arc "theory → live demo → a thing you run on your own game this week." <b>Reader note:</b> mirror this line in the abstract's takeaways and on the closing QR slide.</p>
+    </aside>
+  </section>
+
+  <!-- 21 · CLOSE -->
+  <section class="slide" data-rung="0">
+    <div class="reveal kicker"><span class="tick"></span> Close</div>
+    <h1 class="reveal" style="font-size:clamp(1.9rem,4.6vw,3.6rem);max-width:18ch">From <span style="color:var(--cool)">“we think so”</span> to <em>“we can prove it.”</em></h1>
+    <p class="reveal lede" style="margin-top:1.3rem;max-width:54ch">The techniques aren’t the point — the <strong>calibration</strong> is. Know what each signal proves, build the rung your stakes demand, attach a reason to everything, and stop there.</p>
+    <div class="reveal" style="margin-top:2rem;display:flex;gap:1rem;align-items:center">
+      <div style="width:90px;height:90px;border:1px solid var(--panel-line);border-radius:12px;display:grid;place-items:center;font-family:var(--mono);font-size:.58rem;color:var(--faint);background:var(--panel)">[ QR ]</div>
+      <div><div style="font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;color:var(--gold)">THE QUICKSTART KIT</div><div style="color:var(--muted);font-weight:300;margin-top:.3rem">Worksheet · runnable rungs · AWS reference arch.<br>One <code style="font-family:var(--mono)">git clone</code> away. Go climb it on your own game.</div></div>
+    </div>
+    <aside class="notes">
+      <p><b>Slide purpose &amp; context.</b> The close — return to the opening promise and hand off to action. Two jobs: restate the thesis so it's the last thing they hear, and point them at the kit. Keep it short; energy is "go do this," not "in summary."</p>
+      <p><span class="el">Headline — "from we think so to we can prove it."</span> The bookend; echoes the exact phrase from slide 2 ("we think so") and pays off the title. The audience should feel the arc close.</p>
+      <p><span class="el">Lede — "the techniques aren't the point, the calibration is."</span> The one sentence to leave them with. De-emphasizes the tech (mostly not novel) and elevates the <i>judgment</i> (the real contribution): know what each signal proves, build to your stakes, attach a reason, stop. Four verbs, the whole talk.</p>
+      <p><span class="el">QR + Quickstart Kit.</span> The call to action. Reiterate "one git clone away, go climb it on your own game." <b>Reader note:</b> replace the [QR] placeholder with the real repo link before presenting; end on the kit, not a thank-you slide — the last image should be the thing they take with them.</p>
+    </aside>
+  </section>
+
+</div>
+
+<div class="chrome"><span class="ct" id="cur">01</span> / <span id="tot">20</span> &nbsp;·&nbsp; <span id="sname"></span></div>
+<div class="hint">← → navigate &nbsp;·&nbsp; <b>N</b> notes &nbsp;·&nbsp; <b>F</b> fullscreen</div>
+
+<div class="notes-drawer" id="drawer">
+  <span class="ndclose" onclick="toggleNotes()">✕ close notes &nbsp;[N]</span>
+  <h5>Speaker &amp; reader notes</h5>
+  <div class="nbody" id="ndbody"></div>
+</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  const names=["The Confidence Ladder","The operator's question","The stakes (P&L)","The traditional toolkit","Where the baseline falls short","The idea: the ladder","How the next slides work","Rung 1 · Anomaly, explained","Rung 1 · Graph, explained","Rung 1 · today → result","Rung 1 · Analyst copilot","Rung 2 · Automated Reasoning, explained","Rung 2 · today → result","Rung 3 · Commit-reveal, explained","Rung 3 · today → result","Rung 4 · Expose","What 'proof' means","The climb, compounded","Choose your rung","Take-home kit","Close"];
+  let i=0;const tot=slides.length;
+  document.getElementById('tot').textContent=String(tot).padStart(2,'0');
+  const rail=[...document.querySelectorAll('.rail .step')];
+
+  function show(n){
+    i=Math.max(0,Math.min(tot-1,n));
+    slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+    document.getElementById('cur').textContent=String(i+1).padStart(2,'0');
+    document.getElementById('sname').textContent=names[i];
+    document.getElementById('bar').style.width=((i+1)/tot*100)+'%';
+    const rung=+slides[i].dataset.rung;
+    rail.forEach(st=>st.classList.toggle('on',+st.dataset.r<=rung && rung>0));
+    if(drawer.classList.contains('open')) loadNotes();
+  }
+  const drawer=document.getElementById('drawer');
+  function loadNotes(){
+    const note=slides[i].querySelector('aside.notes');
+    document.getElementById('ndbody').innerHTML=note?note.innerHTML:'<p>No notes for this slide.</p>';
+  }
+  function toggleNotes(){
+    drawer.classList.toggle('open');
+    document.body.classList.toggle('notes-open',drawer.classList.contains('open'));
+    if(drawer.classList.contains('open'))loadNotes();
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();show(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();show(i-1)}
+    else if(e.key==='n'||e.key==='N'){toggleNotes()}
+    else if(e.key==='f'||e.key==='F'){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()}
+    else if(e.key==='Home'){show(0)}else if(e.key==='End'){show(tot-1)}
+    else if(/^[1-9]$/.test(e.key)){show(+e.key-1)}
+  });
+  document.getElementById('stage').addEventListener('click',e=>{
+    if(drawer.classList.contains('open'))return;
+    const w=window.innerWidth;show(e.clientX<w*0.32?i-1:i+1);
+  });
+  show(0);
+</script>
+</body>
+</html>
