@@ -118,6 +118,7 @@
     --cool:#6f9bcf; --teal:#43b89c; --gold:#e3a93b; --bright:#f5d472; --warm:#d08a6f;
     /* rung accents: 1 Detect=cool · 2 Quantify=indigo · 3 Attribute=rose · 4 Stress=lime · 5 Verify-rules=teal · 6 Verify-pipeline=gold · 7 Expose=bright */
     --r2:#8b8fe6; --r3:#e58aa6; --r4:#9fc24f;
+    --xc:#5fc8b0; /* cross-cutting band: "keep the source of truth honest" */
     --shard:#7ad6e0;  /* SHARDFALL accent */
     --oracle:#c79be8; /* STAR ORACLE accent */
     --display:'Fraunces',Georgia,'Times New Roman',serif;
@@ -392,12 +393,19 @@
   .hint{position:fixed;right:1.7vw;bottom:1.6vh;z-index:22;font-family:var(--mono);font-size:.6rem;color:var(--faint);letter-spacing:.06em;transition:bottom .36s ease}
   .hint b{color:var(--muted)}
   /* when the notes drawer is open, lift the footer + hint above it so they stay readable */
-  body.notes-open .chrome,body.notes-open .hint{bottom:calc(35vh + .8rem)}
+  body.notes-open .chrome,body.notes-open .hint{bottom:calc(var(--drawer-h,35vh) + .8rem)}
 
-  .notes-drawer{position:fixed;left:0;right:0;bottom:0;z-index:20;height:35vh;overflow-y:auto;
+  .notes-drawer{position:fixed;left:0;right:0;bottom:0;z-index:20;height:var(--drawer-h,35vh);overflow-y:auto;
     background:rgba(6,9,13,.985);border-top:2px solid var(--gold);
     transform:translateY(101%);transition:transform .36s ease;padding:1.3rem 6.5vw 2.4rem;backdrop-filter:blur(10px)}
   .notes-drawer.open{transform:none}
+  body.drawer-dragging .notes-drawer{transition:none}     /* no lag while dragging */
+  body.drawer-dragging,body.drawer-dragging *{cursor:ns-resize !important;user-select:none}
+  /* draggable top-edge grip */
+  .notes-drawer .grip{position:sticky;top:0;height:14px;margin:-1.3rem -6.5vw .6rem;cursor:ns-resize;
+    display:flex;align-items:center;justify-content:center;background:rgba(6,9,13,.985);z-index:2}
+  .notes-drawer .grip::before{content:"";width:46px;height:4px;border-radius:3px;background:#3a4754;transition:background .2s}
+  .notes-drawer .grip:hover::before{background:var(--gold)}
   .notes-drawer::-webkit-scrollbar{width:10px}
   .notes-drawer::-webkit-scrollbar-thumb{background:#2a3540;border-radius:6px;border:2px solid #06090d}
   .notes-drawer::-webkit-scrollbar-track{background:#0a0f14}
@@ -442,6 +450,7 @@
 <div class="hint">← → navigate &nbsp;·&nbsp; <b>N</b> notes &nbsp;·&nbsp; <b>F</b> fullscreen &nbsp;·&nbsp; demos are <b>live</b></div>
 
 <div class="notes-drawer" id="drawer">
+  <div class="grip" id="drawer-grip" title="Drag to resize · double-click to reset"></div>
   <span class="ndclose" onclick="toggleNotes()">✕ close notes &nbsp;[N]</span>
   <h5>Speaker &amp; reader notes</h5>
   <div class="nbody" id="ndbody"></div>
@@ -2583,6 +2592,135 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
   <p><span class="el">Rung 1 row (added).</span> Anomaly/graph prove nothing — a ranked suspicion with false positives. Keeps the whole ladder honest in one table.</p>
   <p><span class="el">Strip.</span> "Don't trust, verify" works because trust is removed — but covers only the narrow proven property; the rest is governance, not math.</p>`},
 
+/* ============================================================
+   ===== CROSS-CUTTING BAND · keep the source of truth honest =====
+   NOT rungs — they don't sit on the evidence-strength axis.
+   They keep EVERY rung's evidence trustworthy over time (drift)
+   and across cohorts (fairness). Standard public methods.
+   ============================================================ */
+
+/* XB0 — BAND INTRO */
+{rung:0,name:"Keep the source of truth honest",html:`
+  <div class="reveal kicker"><span class="tick"></span> Across every rung · the two things that quietly rot a source of truth</div>
+  <h2 class="reveal" style="max-width:30ch">A ladder is only as trustworthy as the evidence <em style="color:var(--xc)">stays</em>.</h2>
+  <p class="reveal lede" style="margin-top:.7rem;max-width:86ch">The seven rungs give you <i>strong</i> evidence. But strong evidence can still quietly stop being <i>true</i> — and when it does, every rung above it inherits the rot. Two cross-cutting checks keep the whole ladder honest. <b>They aren’t rungs</b> — they don’t sit on the strength axis; they sit <i>underneath all of it</i>.</p>
+  <div class="reveal cols even" style="margin-top:.9rem;gap:1.6rem">
+    <div class="card icotop" style="--rc:var(--xc)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l5-5 4 3 6-7"/><path d="M3 21h18"/><path d="M14 8h5v5"/></svg></div>
+      <div class="ct">across TIME</div><h3>Drift &amp; continuous validation</h3><p>A detector that was right last month can be silently wrong today — the meta shifts, cheats adapt, the population changes. Watch the inputs and the accuracy for <i>drift</i>, and re-validate.</p></div>
+    <div class="card icotop" style="--rc:var(--xc)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 7l-2 5h4z"/><path d="M19 7l-2 5h4z"/><path d="M5 7h14"/><path d="M8 21h8"/></svg></div>
+      <div class="ct">across COHORTS</div><h3>Fairness &amp; bias auditing</h3><p>If your own matchmaking or moderation AI skews against a region or dialect, your “abuse data” is distorted at the source. Slice every metric by cohort and check for disparity.</p></div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--xc)">A reliable source of truth needs evidence that is <b>strong</b> (the ladder), that <b>stays valid</b> (drift), and that <b>isn’t skewed</b> (fairness). Skip these two and your dashboards drift into confident nonsense — green, and wrong.</p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“We’ve climbed all seven rungs. Before we tie it together, two checks that sit <i>underneath</i> the whole ladder — because here’s a failure mode the rungs alone don’t catch: <b>strong evidence that quietly stops being true.</b>”</p>
+    <p>“These are <i>not</i> rungs. A rung is a stronger grade of evidence. These are different — they’re what keeps <i>every</i> rung’s evidence trustworthy. Two of them. <span class="cue">[left]</span> Across <i>time</i>: drift. The detector that was sharp last month goes blunt as cheats adapt and the meta moves — and nothing tells you, unless you watch for it. <span class="cue">[right]</span> Across <i>cohorts</i>: fairness. If your own matchmaking or moderation model skews against a region or a dialect, the abuse data you’re building everything on is bent at the source.”</p>
+    <p><span class="cue">[strip]</span> “So the full claim isn’t just ‘strong evidence.’ It’s strong evidence that <i>stays valid</i> and <i>isn’t skewed</i>. Miss these and you get the worst outcome of all — a dashboard that’s confidently green, and wrong. That’s the opening tension of this whole talk, coming back to bite. Let’s close both gaps.”</p></div>
+  <p><b>Cross-cutting band — intro.</b> Frames the two honesty checks as NOT rungs (they don't sit on the evidence-strength axis) but as what keeps every rung trustworthy: drift (over time) and fairness (across cohorts). Closes a real gap — the ladder implicitly assumed evidence stays good forever. Ties back to slide 3's "green dashboard, angry players" tension. Placed after "what proof means", before the synthesis.</p>
+  <p><span class="el">Why it's not a rung.</span> Critical framing — say it out loud. A rung = a stronger grade of evidence; these are orthogonal quality controls on ALL rungs. Forcing them onto the ladder would re-break the strength-axis (same error as cramming recommenders in).</p>
+  <p><span class="el">Thesis completion.</span> "strong (ladder) + stays valid (drift) + isn't skewed (fairness)" = a genuinely reliable source of truth. This is the sharpened framing the whole deck builds toward.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Source of truth</dt><dd>The system/data an operator treats as authoritative — what dashboards, bans, and decisions are based on. The thing this whole talk is trying to make trustworthy.</dd>
+    <dt>Cross-cutting</dt><dd>A concern that applies to every part of a system rather than being one step in it — here, two quality checks that protect all seven rungs at once.</dd>
+    <dt>Drift</dt><dd>When live data or a model's accuracy slowly diverges from what it was built/calibrated on, so yesterday's correct answer is quietly wrong today.</dd>
+    <dt>Cohort</dt><dd>A subgroup of players (by region, platform, language, skill tier) — fairness means a metric holds <i>within</i> each, not just on average.</dd>
+  </dl></div>`},
+
+/* XB1 — DRIFT / CONTINUOUS VALIDATION */
+{rung:0,name:"Honest over time · drift detection",html:`
+  <div class="reveal kicker"><span class="tick"></span> Cross-cutting · across TIME <span class="accent" style="--rc:var(--xc)">· drift &amp; continuous validation</span> ${G_SHARD}</div>
+  <h2 class="reveal" style="--rc:var(--xc)">Yesterday’s detector, quietly wrong today.</h2>
+  <div class="reveal eli5" style="--rc:var(--xc);margin-top:.8rem">
+    <div class="analogy">
+      <div class="scene">⚖️🌡️📉</div><div class="lbl">Imagine…</div>
+      <p>A kitchen scale you calibrated last year. It still shows a confident number — but it’s drifted, and every recipe since is subtly wrong. Nobody notices, because the <em>number</em> still looks fine. A model is the same: it keeps emitting confident scores long after the world it learned has moved on.</p>
+    </div>
+    <div class="mech">
+      <div class="step"><span class="num">1</span><p><b>Snapshot “normal”</b> — the input distributions &amp; accuracy the detector had when you trusted it.</p></div>
+      <div class="step"><span class="num">2</span><p><b>Compare live data to that snapshot</b> every day — has the shape of the inputs shifted?</p></div>
+      <div class="step"><span class="num">3</span><p><b>Alarm on drift</b> — when the gap crosses a line, the detector is operating outside what it was validated for.</p></div>
+      <div class="step"><span class="num">4</span><p><b>Re-validate / recalibrate</b> — refresh the calibration set (Rung 2!), retrain, or roll back. The loop never ends.</p></div>
+    </div>
+  </div>
+  <div class="reveal depthgrid" style="--rc:var(--xc);margin-top:.8rem">
+    <div class="codepanel">
+      <div class="cphead"><span>two standard drift signals — for the engineers</span><span class="tag">PSI · KS</span></div>
+      <pre><span class="cm"># Population Stability Index: live vs reference, per feature</span>
+PSI = Σᵢ (live％ᵢ − ref％ᵢ) · ln(live％ᵢ / ref％ᵢ)
+<span class="cm">#  &lt;0.1 stable · 0.1–0.25 watch · &gt;0.25 DRIFTED</span>
+<span class="cm"># Kolmogorov–Smirnov: largest gap between the two CDFs</span>
+KS = max|F_live(x) − F_ref(x)|     <span class="cm"># + ADWIN for streaming change</span></pre>
+    </div>
+    <div class="formula"><span class="lab">worked example — SHARDFALL reaction-time feature</span>
+      Reference mean 270ms. After a new input-latency patch, live sessions shift — aim looks “too fast” to the Rung-1 model, <b>false positives spike</b>. PSI on <code>reaction_ms</code> = <b>0.31</b> (&gt;0.25) → <span style="color:var(--xc)">DRIFT alarm</span>. The cheats didn’t change — <i>the game did</i>. You recalibrate instead of banning innocents.</div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--xc)"><b>Why it protects the whole ladder:</b> drift silently breaks Rung 1’s scores <i>and</i> Rung 2’s calibration guarantee (conformal assumes live data resembles the calibration set — drift is exactly that assumption failing). <span style="color:var(--faint)">Standard methods: PSI, KS-test, ADWIN; in prod, SageMaker AI Model Monitor.</span></p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“First honesty check: across time. <span class="cue">[analogy]</span> Picture a kitchen scale you calibrated a year ago. It still shows a confident number — but it’s drifted, and every recipe since is quietly off. Nobody notices, because the number <i>looks</i> fine. Your models are exactly that scale: they keep emitting confident scores long after the world they learned has moved on.”</p>
+    <p><span class="cue">[walk the steps]</span> “So you snapshot what ‘normal’ looked like when you trusted the detector — the input distributions, the accuracy. You compare live data to that snapshot every day. You alarm when the gap crosses a line. And you re-validate — refresh the calibration set, retrain, or roll back. It’s a loop that never ends, because the adversary never stops.”</p>
+    <p><span class="cue">[code + worked example]</span> “For the engineers, two standard signals: Population Stability Index — this log-ratio sum, under 0.1 is stable, over 0.25 is drifted — and the KS statistic, the biggest gap between the two distributions. Concretely on SHARDFALL: you ship an input-latency patch, reaction times genuinely shift, and suddenly half your players look ‘too fast’ to the Rung-1 model — false positives spike. PSI on reaction time hits 0.31. The cheats didn’t change; <i>the game</i> changed. Drift detection tells you to recalibrate — instead of banning a wave of innocent players.”</p>
+    <p><span class="cue">[strip]</span> “And notice it protects the whole ladder: drift breaks Rung 1’s scores <i>and</i> silently voids Rung 2’s guarantee — because conformal’s one assumption is that live data resembles the calibration set, and drift is precisely that assumption breaking.”</p></div>
+  <p><b>Cross-cutting — drift / continuous validation.</b> PSI + KS (+ ADWIN for streams) detect when inputs/accuracy diverge from the validated baseline. Worked example: a latency patch drifts reaction-time, spiking false positives — "the game changed, not the cheats." Key tie: drift specifically voids Rung 2's conformal exchangeability assumption, so it protects the calibration guarantee, not just raw scores.</p>
+  <p><span class="el">The memorable line.</span> "The cheats didn't change — the game did." Drift makes a correct detector wrong without anyone touching it.</p>
+  <p><span class="el">PSI thresholds.</span> &lt;0.1 stable, 0.1–0.25 watch, &gt;0.25 drifted — the standard rule of thumb. The 0.31 example is over the line.</p>
+  <p><span class="el">AWS home.</span> SageMaker AI Model Monitor (data-quality + model-quality drift). Verify current naming.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Distribution</dt><dd>The overall shape of a feature's values across players (e.g. most reaction times cluster around 270ms). Drift = that shape moving.</dd>
+    <dt>PSI (Population Stability Index)</dt><dd>A single number for how much a feature's distribution has shifted from a reference; &gt;0.25 means "materially drifted, stop trusting the model here."</dd>
+    <dt>KS test (Kolmogorov–Smirnov)</dt><dd>Measures the largest gap between two distributions — a standard statistical test for "are these two samples the same shape?"</dd>
+    <dt>ADWIN</dt><dd>"ADaptive WINdowing" — a streaming algorithm that flags the moment a live data stream's behaviour changes, for real-time drift.</dd>
+    <dt>Continuous validation</dt><dd>Re-checking a deployed model's accuracy on fresh labelled data on an ongoing basis, rather than trusting the launch-day score forever.</dd>
+    <dt>Baseline / reference window</dt><dd>The snapshot of "known-good" data the model was validated on, that live data is compared against.</dd>
+  </dl></div>`},
+
+/* XB2 — FAIRNESS / BIAS AUDITING */
+{rung:0,name:"Honest across cohorts · fairness audit",html:`
+  <div class="reveal kicker"><span class="tick"></span> Cross-cutting · across COHORTS <span class="accent" style="--rc:var(--xc)">· fairness &amp; bias auditing</span> ${G_SHARD}</div>
+  <h2 class="reveal" style="--rc:var(--xc)">A biased model corrupts the truth <em>at the source</em>.</h2>
+  <div class="reveal eli5" style="--rc:var(--xc);margin-top:.8rem">
+    <div class="analogy">
+      <div class="scene">📋🌍⚖️</div><div class="lbl">Imagine…</div>
+      <p>A smoke detector that’s twice as sensitive in one wing of the building. The fire-incident <em>report</em> will say that wing is dangerous — but it’s the <em>detector</em> that’s skewed, not the wing. Act on that report and you punish the wrong people <em>and</em> trust a distorted map of reality.</p>
+    </div>
+    <div class="mech">
+      <div class="step"><span class="num">1</span><p><b>Pick the groups that matter</b> — region, platform, input device, language/dialect (for chat moderation).</p></div>
+      <div class="step"><span class="num">2</span><p><b>Slice every metric by group</b> — flag-rate, false-positive rate, accuracy. Don’t look only at the average.</p></div>
+      <div class="step"><span class="num">3</span><p><b>Measure the disparity</b> — is one group flagged far more, <i>after</i> controlling for actual behaviour?</p></div>
+      <div class="step"><span class="num">4</span><p><b>Find the cause &amp; correct</b> — a proxy feature? thin training data for that cohort? Re-weight, re-sample, or constrain.</p></div>
+    </div>
+  </div>
+  <div class="reveal depthgrid" style="--rc:var(--xc);margin-top:.8rem">
+    <div class="codepanel">
+      <div class="cphead"><span>the standard fairness checks — for the engineers</span><span class="tag">sliced metrics</span></div>
+      <pre><span class="cm"># Demographic parity: flag-rates equal across groups?</span>
+DPD = max_g P(flag | g) − min_g P(flag | g)
+<span class="cm"># Equalised odds: equal FP rate among the INNOCENT?</span>
+ΔFPR = max_g FPR_g − min_g FPR_g      <span class="cm"># the one that matters for bans</span>
+<span class="cm"># Disparate impact ratio (the "4/5ths" lens):</span>
+DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern</span></pre>
+    </div>
+    <div class="formula"><span class="lab">worked example — SHARDFALL toxicity moderation</span>
+      Overall false-positive rate looks fine at 4%. Slice by language: English 3%, but a dialect group sits at <b>11%</b>. ΔFPR = <b>0.08</b>, disparate-impact ratio well past the line. The model learned slang it doesn’t understand = “toxic.” <span style="color:var(--xc)">Innocent players in one cohort eat 3× the wrongful mutes</span> — and your “toxicity rate by region” chart is now fiction.</div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--xc)"><b>Why it protects the whole ladder:</b> a skewed detector poisons the very data every higher rung reasons over — a causal study (Rung 3) on biased flags measures the bias, not the truth. Audit the source, or build proofs on sand. <span style="color:var(--faint)">Standard methods: sliced metrics, demographic parity / equalised odds, SHAP; in prod, SageMaker AI Clarify.</span></p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“Second honesty check: across cohorts. <span class="cue">[analogy]</span> Imagine a smoke detector that’s twice as sensitive in one wing of a building. The incident report will say that wing is dangerous — but it’s the <i>detector</i> that’s skewed, not the wing. Act on the report and you do two bad things at once: punish the wrong people, <i>and</i> trust a distorted map of reality.”</p>
+    <p><span class="cue">[walk the steps]</span> “So you pick the groups that matter — region, platform, input device, language for chat. You slice <i>every</i> metric by group, never just the average. You measure the disparity — is one group flagged far more, after controlling for what they actually did? And you find the cause and fix it — usually a proxy feature or just thin data for that cohort.”</p>
+    <p><span class="cue">[code + worked example]</span> “For the engineers: demographic parity asks if flag-rates match across groups; equalised odds — the one that matters for bans — asks if the false-positive rate among the <i>innocent</i> is equal; and the disparate-impact ratio is the classic ‘four-fifths’ lens, under 0.8 is a red flag. Concretely on SHARDFALL chat moderation: overall false-positive rate looks great at four percent. Slice by language — English is three, but one dialect group sits at <i>eleven</i>. The model learned slang it doesn’t understand and called it toxic. Innocent players in that cohort eat three times the wrongful mutes — and your ‘toxicity by region’ dashboard is now fiction.”</p>
+    <p><span class="cue">[strip]</span> “And this is the one that poisons everything above it: a skewed detector corrupts the data every higher rung reasons over. Run a causal study from Rung 3 on biased flags and you’ll measure the bias, not the truth. Audit the source, or you’re building proofs on sand.”</p></div>
+  <p><b>Cross-cutting — fairness / bias auditing.</b> Sliced metrics + demographic parity / equalised odds / disparate-impact (4/5ths). Worked example: 4% overall FP rate hides 11% for one dialect cohort in toxicity moderation. Key tie: bias corrupts the data at the SOURCE, so every downstream rung (esp. Rung 3 causal) inherits it — "proofs on sand." Frames fairness as a data-truth issue, not just an ethics one (on-thesis).</p>
+  <p><span class="el">The reframe that keeps it on-spine.</span> This isn't pitched as "be ethical" — it's "a biased model is a lying instrument; your source of truth is corrupted." That's why it belongs in an integrity/trust deck.</p>
+  <p><span class="el">Equalised odds is the key metric.</span> For bans, the FP-rate-among-the-innocent disparity matters most — wrongfully muting/banning one cohort more than another. Lead with that.</p>
+  <p><span class="el">AWS home.</span> SageMaker AI Clarify (bias metrics + SHAP explainability). Verify current naming.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Demographic parity</dt><dd>The flag/ban rate is roughly equal across groups — a first, crude fairness check (can be misleading if groups genuinely differ in behaviour).</dd>
+    <dt>Equalised odds</dt><dd>The error rates — especially false positives among the innocent — are equal across groups. The fairness metric that matters most for bans.</dd>
+    <dt>Disparate impact (4/5ths rule)</dt><dd>A long-standing test: if one group's flag rate is less than 80% of another's, that's a legal/ethical red flag worth investigating.</dd>
+    <dt>Proxy feature</dt><dd>An input that secretly stands in for a protected/cohort trait (e.g. a region-correlated ping value), letting bias sneak in even without using the trait directly.</dd>
+    <dt>Sliced metric</dt><dd>A metric computed separately for each cohort instead of pooled — the simplest, most powerful way to expose hidden disparity.</dd>
+  </dl></div>`},
+
 /* 22b — IT ALL CONNECTS · the one pipeline */
 {rung:0,name:"It all connects",html:`
   <div class="reveal kicker"><span class="tick"></span> Bringing it together · every rung is the same five moves</div>
@@ -2600,7 +2738,7 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
       <tr><td><span class="rdot" style="background:var(--bright)"></span><b>7 Expose</b></td><td>the rung-6 artifact, published</td><td>outsider’s own recheck</td><td>same verify, run externally</td><td>independent confirmation</td><td><div class="strbar" style="--c2:var(--bright);--w:100%"></div>as strong as ↑</td></tr>
     </tbody>
   </table>
-  <p class="reveal note-strip" style="--rc:var(--bright)">Column ① is all <b>data you already have</b>. Column ⑤ is the climb: <b>suspicion → calibrated → causal → empirical → proof → cryptographic → outsider-verifiable</b>. Same four moves — data, engine, formula, verdict — at seven strengths. You just choose how high to climb.</p>`,
+  <p class="reveal note-strip" style="--rc:var(--bright)">Column ① is all <b>data you already have</b>. Column ⑤ is the climb: <b>suspicion → calibrated → causal → empirical → proof → cryptographic → outsider-verifiable</b>. Same four moves — data, engine, formula, verdict — at seven strengths. You just choose how high to climb — and <span style="color:var(--xc)">drift &amp; fairness checks keep every row honest</span>.</p>`,
  notes:`<div class="say"><span class="sh">▶ Say this (verbatim — the moment it all clicks)</span>
     <p>“Step back with me. We went deep on seven techniques — and I want you to see they were never seven different things. They were the <i>same four moves</i>, every time, at seven different strengths.”</p>
     <p><span class="cue">[point column by column]</span> “One: your game data goes in — and look down that column, it is <i>all</i> stuff you already have: telemetry, the scores you compute, a metric split by region, your shop config, a draw log. Two: an engine — a robust score, conformal, diff-in-diff, a self-play agent, an SMT solver, a hash check. Three: a formula, the exact ones we computed by hand. Four: the verdict you get back.”</p>
@@ -2704,7 +2842,7 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
     <div style="width:88px;height:88px;border:1px solid var(--panel-line);border-radius:12px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;color:var(--faint);background:var(--panel)">[ QR ]</div>
     <div><div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--gold)">THE QUICKSTART KIT</div><div style="color:var(--muted);font-weight:300;margin-top:.3rem">Worksheet · runnable rungs · AWS reference arch · every live demo.<br>One <code style="font-family:var(--mono)">git clone</code> away. Go climb it on your own game.</div></div>
   </div>
-  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal are all standard public methods (credits, with links, in the appendix). What’s new is the <i>framing</i>: a seven-rung ladder that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p>`,
+  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal, drift detection &amp; fairness auditing are all standard public methods (credits, with links, in the appendix). What’s new is the <i>framing</i>: a seven-rung ladder — kept honest by drift &amp; fairness checks — that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p>`,
  notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
     <p>“I started by asking if you could <i>prove</i> your game is fair, and the honest answer was three words: ‘we think so.’” <span class="cue">[point to the headline]</span> “The whole point of today was to turn that into ‘we can prove it’ — and to know exactly how high you need to climb to get there.”</p>
     <p>“But if you take one thing home, make it this:” <span class="cue">[read the lede]</span> “the techniques aren’t the point — the <b>calibration</b> is. Know what each signal actually proves. Build the rung your stakes demand — and no higher. Attach a reason to everything. And then stop.”</p>
@@ -2748,6 +2886,8 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
         <tr><td>VRF · Merkle tree</td><td><a href="https://datatracker.ietf.org/doc/rfc9381/" target="_blank" rel="noopener">RFC 9381 (VRF)</a> · Merkle 1979</td></tr>
         <tr><td>Nitro Enclaves attestation</td><td><a href="https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html" target="_blank" rel="noopener">docs.aws.amazon.com</a></td></tr>
         <tr><td><b style="color:var(--bright)">R7 Expose</b> · provably-fair pattern</td><td>open crypto-gaming convention (commit-reveal, above)</td></tr>
+        <tr><td><b style="color:var(--xc)">Cross-cut</b> · drift (PSI / KS / ADWIN)</td><td><a href="https://doi.org/10.1007/978-3-540-39483-1_3" target="_blank" rel="noopener">PSI</a> · <a href="https://epubs.siam.org/doi/10.1137/1.9781611972771.42" target="_blank" rel="noopener">ADWIN (Bifet &amp; Gavaldà 2007)</a></td></tr>
+        <tr><td><b style="color:var(--xc)">Cross-cut</b> · fairness auditing</td><td><a href="https://fairmlbook.org/" target="_blank" rel="noopener">Barocas, Hardt &amp; Narayanan</a> · <a href="https://arxiv.org/abs/1610.02413" target="_blank" rel="noopener">Equalised odds (Hardt et al.)</a></td></tr>
         <tr><td>Evidence-strength ladder (the framing’s lineage)</td><td><a href="https://www.bmj.com/content/336/7650/924" target="_blank" rel="noopener">GRADE, BMJ 2008</a></td></tr>
       </tbody></table>
     </div>
@@ -2802,6 +2942,7 @@ function show(n){
   document.getElementById('cur').textContent=String(i+1).padStart(2,'0');
   document.getElementById('sname').textContent=SLIDES[i].name;
   document.getElementById('bar').style.width=((i+1)/tot*100)+'%';
+  resetDrawerHeight();                 // each slide loads with the default-size notes
   if(drawer.classList.contains('open')) loadNotes();
   initDemoFor(i);
 }
@@ -2809,6 +2950,26 @@ function loadNotes(){const note=slides[i].querySelector('aside.notes');
   document.getElementById('ndbody').innerHTML=note?note.innerHTML:'<p>No notes.</p>';}
 function toggleNotes(){drawer.classList.toggle('open');const o=drawer.classList.contains('open');document.body.classList.toggle('notes-open',o);if(o)loadNotes();}
 window.toggleNotes=toggleNotes;
+
+/* ---- resizable notes drawer (default 35vh, drag the top grip; resets per slide) ---- */
+const DRAWER_DEFAULT='35vh';
+function resetDrawerHeight(){document.documentElement.style.setProperty('--drawer-h',DRAWER_DEFAULT);}
+(function(){
+  const grip=document.getElementById('drawer-grip');if(!grip)return;
+  let dragging=false;
+  const setH=px=>{const h=Math.max(window.innerHeight*0.12,Math.min(window.innerHeight*0.9,px));
+    document.documentElement.style.setProperty('--drawer-h',h+'px');};
+  const onMove=e=>{if(!dragging)return;const y=(e.touches?e.touches[0].clientY:e.clientY);
+    setH(window.innerHeight-y);};                 // drawer is bottom-anchored: height = viewportH − pointerY
+  const stop=()=>{dragging=false;document.body.classList.remove('drawer-dragging');
+    window.removeEventListener('mousemove',onMove);window.removeEventListener('touchmove',onMove);};
+  const start=e=>{e.preventDefault();dragging=true;document.body.classList.add('drawer-dragging');
+    window.addEventListener('mousemove',onMove);window.addEventListener('touchmove',onMove,{passive:false});};
+  grip.addEventListener('mousedown',start);
+  grip.addEventListener('touchstart',start,{passive:false});
+  window.addEventListener('mouseup',stop);window.addEventListener('touchend',stop);
+  grip.addEventListener('dblclick',resetDrawerHeight);   // double-click grip → back to default
+})();
 
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();show(i+1)}
