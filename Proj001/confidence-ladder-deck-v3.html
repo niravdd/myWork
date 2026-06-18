@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Confidence Ladder — re:Invent 2026 (interactive)</title>
+<title>The Confidence Ladder — interactive deck</title>
 <style>
   /* ===== fonts embedded as base64 (latin) — deck is 100% offline, no network needed ===== */
 @font-face {
@@ -119,6 +119,7 @@
     /* rung accents: 1 Detect=cool · 2 Quantify=indigo · 3 Attribute=rose · 4 Stress=lime · 5 Verify-rules=teal · 6 Verify-pipeline=gold · 7 Expose=bright */
     --r2:#8b8fe6; --r3:#e58aa6; --r4:#9fc24f;
     --xc:#5fc8b0; /* cross-cutting band: "keep the source of truth honest" */
+    --zk:#d98ad6; /* Rung 7+ ZK extension */ --fr:#7fb0ff; /* frontier section */
     --shard:#7ad6e0;  /* SHARDFALL accent */
     --oracle:#c79be8; /* STAR ORACLE accent */
     --display:'Fraunces',Georgia,'Times New Roman',serif;
@@ -538,7 +539,7 @@ const SLIDES = [
 {rung:0,name:"The Confidence Ladder",html:`
   <div class="cols split" style="align-items:start;gap:3vw;margin-top:2vh">
    <div>
-    <div class="reveal kicker"><span class="tick"></span> AWS re:Invent 2026 · Games &amp; Interactive · <b style="color:var(--muted)">interactive deck — demos run live</b></div>
+    <div class="reveal kicker"><span class="tick"></span> AI/ML &amp; Data Science for Games &amp; Interactive · <b style="color:var(--muted)">interactive deck — demos run live</b></div>
     <h1 class="reveal">The Confidence Ladder</h1>
     <h1 class="reveal" style="font-size:clamp(1.3rem,3vw,2.4rem);margin-top:.5rem;color:var(--muted);font-weight:300">Climb from <em>guesswork</em> to <em>proof</em> in your game</h1>
     <p class="reveal lede" style="margin-top:1.5rem">A studio-side toolkit that turns <strong>“we think our game is fair”</strong> into <strong>“we can prove it”</strong> — using AI/ML where it earns its keep, and mathematics where the stakes demand certainty. <strong>No data-science background needed</strong>; every idea gets a plain-English analogy, a worked example, and a <strong>live demo you can poke at</strong>.</p>
@@ -585,9 +586,9 @@ const SLIDES = [
  notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
     <p>“Quick show of hands — how many of you, right now, could <i>prove</i> that your game’s loot odds are exactly what you published? Not ‘we’re pretty sure.’ <i>Prove</i> it.” <span class="cue">[let the hands — or lack of them — sit for a beat]</span></p>
     <p>“Right. Most of us can’t. And that’s not a criticism — it’s the gap this whole talk is about. I’m going to show you a way to climb from ‘we think our game is fair’ all the way up to ‘we can prove it’ — and, just as importantly, how to know exactly how high <i>you</i> actually need to climb.”</p>
-    <p>“We call it the <b>Confidence Ladder</b>. And here’s my promise: you do <i>not</i> need a data-science background. Every idea gets a plain-English story first, then a live demo you’ll watch compute right here on screen — no slideware, no trust-me numbers.” <span class="cue">[gesture to the rail on the right] “That ladder on the edge of every slide? That’s our map. It lights up as we climb.”</span></p></div>
+    <p>“We call it the <b>Confidence Ladder</b>. And here’s my promise: you do <i>not</i> need a data-science background. Every idea gets a plain-English story first, then a live demo you’ll watch compute right here on screen — no slideware, no trust-me numbers.” <span class="cue">[on the rung slides, gesture to the step-tracker across the top] “That row of rungs at the top of each rung slide? That’s our map — it lights up the rung we’re on as we climb.”</span></p></div>
   <p><b>Cold open.</b> The room mixes engineers, LiveOps, designers, producers — many not data scientists. Plant the metaphor (a <b>ladder of confidence</b>), signal it's a <b>studio-side</b> talk, and promise plain language + live, pokeable demos. ~30s.</p>
-  <p><span class="el">Title.</span> One mental model: every signal about your game sits on a ladder, from a probabilistic hunch to a mathematical proof. The right-edge rail IS this ladder; it lights up as we climb.</p>
+  <p><span class="el">Title.</span> One mental model: every signal about your game sits on a ladder, from a probabilistic hunch to a mathematical proof. The <b>top step-tracker</b> on each rung slide IS this ladder; it highlights the current rung as we climb.</p>
   <p><span class="el">Two games.</span> Introduce them by badge now, fully next slide. <b>SHARDFALL</b> = the running example every demo and worked example uses (consistency). <b>STAR ORACLE</b> = the breadth foil that shows each idea in a totally different genre. This is how we get one coherent spine AND genre breadth.</p>
   <p><span class="el">"Live demos you can poke at."</span> Set the expectation early: this deck computes in front of them — drag a threshold and watch cheats slip under it, run a money-pump loop, tamper a record and watch the hash go red. For a dry topic, interaction is what makes it stick.</p>`},
 
@@ -929,7 +930,7 @@ const SLIDES = [
     <p>“Picture a bank teller who’s handled <i>thousands</i> of real signatures. Nobody ever sat them down and taught them what a forgery looks like. But when a fake slides across the counter, it just… feels wrong. The slant, the pressure, the speed — each one could be fine on its own, but <i>together</i> they don’t match what ‘real’ feels like.”</p>
     <p>“That’s exactly what we do with SHARDFALL players.” <span class="cue">[walk the three steps]</span> “We study thousands of normal players across lots of traits at once — aim steadiness, reaction time, headshot rate. We build a <i>feel</i> for what normal looks like — not a rulebook, a feel. And then we flag anything that doesn’t fit, even when every single trait, on its own, looks perfectly legal.”</p>
     <p>“So the punchline:” <span class="cue">[read the gist]</span> “instead of a checklist of what’s <i>bad</i> — which a cheat can just dodge — we learn what’s <i>normal</i> and notice what’s off. <i>That’s</i> anomaly detection. And on the next slide, I’m going to let you try to beat it.”</p></div>
-  <p><b>First ELI5 slide.</b> Goal: a non-technical attendee can describe anomaly detection in one sentence after. Rail's bottom rung (cool) lit. ~75s; let the analogy breathe.</p>
+  <p><b>First ELI5 slide.</b> Goal: a non-technical attendee can describe anomaly detection in one sentence after. Top step-tracker shows Rung 1 (cool) highlighted. ~75s; let the analogy breathe.</p>
   <p><span class="el">Analogy — bank teller.</span> Captures the two ideas: you learn from <i>normal</i> (never labelled fakes), and the giveaway is the <i>combination</i> of traits. Tell it as a story.</p>
   <p><span class="el">Mechanism (plain).</span> Study many normal players × many traits → build a feel for normal → flag what doesn't fit even when each trait alone is legal. Resist "z-score / distribution / feature vector" out loud.</p>
   <p><span class="el">Gist.</span> Attach "anomaly detection" only after intuition lands. Tee up the demo: the contrast "checklist of bad (dodgeable) vs sense of normal (not dodgeable)" becomes literally draggable next.</p>
@@ -2068,7 +2069,7 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
     <p>“Today, to check a game economy, your playtesters try thousands of things hoping to break it. Now imagine instead a <i>tireless logician</i> who reads your shop rulebook and checks <b>every</b> sequence of buys, sells, and crafts that could <i>ever</i> happen — and either hands you the exact recipe that breaks it, or proves, with certainty, that nothing can.”</p>
     <p><span class="cue">[walk the steps]</span> “How? You write the shop and crafting rules as precise logic — what each action does to gold and items. You state the promise you want kept — ‘no loop of trades can leave a player with the same items but more gold.’ And the solver searches every possibility <i>at once</i>, by reasoning — not by trying them one at a time.”</p>
     <p><span class="cue">[read the gist]</span> “Here’s the difference in a sentence: playtesting says ‘we tried a lot and didn’t break it.’ This says ‘we <i>proved</i> it can’t break’ — like proving a Sudoku has exactly one solution without filling in every possible grid. The name is <b>Automated Reasoning</b>, and it’s the same family as AWS’s own provable-security work. Next slide — let’s actually break SHARDFALL’s economy, then prove the fix.”</p></div>
-  <p><b>ELI5 for the most unfamiliar + most differentiated technique.</b> The leap: from "test a lot and hope" to "prove it can't happen." Rail's 2nd rung (teal). Conceptual heart; ~90s.</p>
+  <p><b>ELI5 for the most unfamiliar + most differentiated technique.</b> The leap: from "test a lot and hope" to "prove it can't happen." Top step-tracker shows Rung 5 (teal) highlighted. Conceptual heart; ~90s.</p>
   <p><span class="el">Analogy — tireless logician.</span> Familiar (playtesters) vs new (a logician checking <i>every</i> sequence by reasoning). Two outcomes: exact exploit, or proof of none. Both valuable.</p>
   <p><span class="el">Mechanism.</span> Write rules as logic → state the promise → solver searches all at once by reasoning (not sampling) → loophole or proof. Stress "all at once, by reasoning" = why it's certainty. Avoid "SMT / satisfiability / state space."</p>
   <p><span class="el">Gist.</span> The Sudoku image is the cleanest proof-vs-search intuition. Name "Automated Reasoning" last. Honest ceiling (full on the credibility slide): proof is over the rules <i>as written</i>, not shipped code. AWS hook: Bedrock Automated Reasoning checks; the Zelkova/Dafny provable-security lineage — verify naming.</p>`},
@@ -2359,7 +2360,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
     <p>“Before a SHARDFALL crate opens, the server writes the result on a card, seals it in an envelope, and hands <i>you</i> a tamper-proof fingerprint of what’s inside. <i>Then</i> you open the crate. Then the envelope gets unsealed — and you check the fingerprint still matches. Because you got that fingerprint <i>first</i>, the server could not possibly have changed the card after seeing your spin.”</p>
     <p><span class="cue">[walk the steps]</span> “Two things make the fingerprint magic: change even one letter of what’s inside and the fingerprint changes <i>completely</i> — and you can’t run it backwards to peek. The outcome is locked before you act, and it depends partly on a number <i>you</i> contribute, so the house can’t cherry-pick a result. And anyone can re-check later — if a result was edited, the fingerprint won’t match. A guaranteed catch, not a guess.”</p>
     <p><span class="cue">[read the gist]</span> “That fingerprint is called a <b>hash</b>; the pattern is <b>commit-reveal</b>; the stronger cousins are VRF and attestation. And on the next slide — this is the fun one — you’re going to tamper with a real crate record and watch a <i>real</i> hash turn red.”</p></div>
-  <p><b>ELI5 for the cryptographic rung</b> — sounds intimidating, actually the most intuitive once anchored to a sealed envelope. Rail's 3rd rung (gold).</p>
+  <p><b>ELI5 for the cryptographic rung</b> — sounds intimidating, actually the most intuitive once anchored to a sealed envelope. Top step-tracker shows Rung 6 (gold) highlighted.</p>
   <p><span class="el">Analogy — sealed envelope.</span> Universal (sealed bids, magician's prediction). Carries all three ideas: commit before the spin, can't change after, anyone checks at reveal.</p>
   <p><span class="el">Mechanism.</span> Fingerprint (hash) published first — two plain properties: any tiny change flips it; can't reverse it to peek. Outcome locked before the spin, depends partly on the player's number (house can't cherry-pick). Anyone re-checks; edited result won't match. Avoid bare "SHA-256 / preimage / nonce" — describe them.</p>
   <p><span class="el">Gist + ceiling.</span> "Hash = one-way fingerprint," then "commit-reveal," then VRF/attestation. Crucial ceiling (full two slides on): proves not-changed-after-the-fact, NOT that the odds were fair. Plant gently. Tee up the live tamper demo with a REAL hash.</p>`},
@@ -2633,10 +2634,123 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
     <p>“Rung seven is optional — and it’s the shortest, because it’s not a new technique. It’s the <i>same</i> Rung-6 proof, just pointed outward.”</p>
     <p>“Take that sealed envelope and publish it. Now any player — or a regulator — can check a Star Oracle banner pull <i>themselves</i> and confirm you didn’t cheat. <span class="cue">[walk Today → With → Result]</span> Today it’s ‘trust us, the odds are one percent,’ and every dispute is your word against theirs. With this, the published record lets them re-run the check independently. The result: disputes become evidence-based — fewer escalations, fewer chargebacks, a real compliance posture, and a genuine brand differentiator <i>where it’s worth it</i>.”</p>
     <p>“But I have to draw one hard line, and it’s the most important sentence in the talk.” <span class="cue">[read the boundary card slowly]</span> “This makes your game <b>auditable</b> — it does <i>not</i> automatically make it <b>accountable</b>. The math gives an outsider a record they can verify. Whether you <i>act</i> on it — refund, reverse, re-rank — is your policy, not your cryptography. <b>Proof supplies the evidence. People supply the remedy.</b> Anyone who tells you the math alone makes you accountable is overselling it.”</p></div>
-  <p><b>Optional final rung (7) + the sharpest line: auditable vs accountable.</b> Rail's top rung (bright). Brief but precise — over-claiming here undoes the credibility built so far. Compresses ELI5 + comparison because Rung 4 is "the same proof, pointed outward," not a new technique. Uses STAR ORACLE because gacha odds are the canonical exposure case.</p>
+  <p><b>Optional final rung (7) + the sharpest line: auditable vs accountable.</b> Top step-tracker shows Rung 7 (bright) highlighted. Brief but precise — over-claiming here undoes the credibility built so far. Compresses ELI5 + comparison because Rung 7 is "the same proof, pointed outward," not a new technique. Uses STAR ORACLE because gacha odds are the canonical exposure case.</p>
   <p><span class="el">Headline + imagine.</span> Reuses the envelope; the verifier is now an outsider who doesn't trust you — exactly why internal hygiene isn't enough and the cryptographic artifact is.</p>
   <p><span class="el">Today/With/Result.</span> belief-based → independent re-verification → evidence-based disputes (fewer escalations/chargebacks, compliance posture, differentiator) "where it's worth it" (ties to pick-and-choose).</p>
   <p><span class="el">Auditable vs accountable card.</span> The most important honesty distinction. Accountability = duty to answer + redress; crypto supplies neither, only an evidentiary substrate. "Auditable, not automatically accountable — proof supplies the evidence, people supply the remedy." This earns trust on everything else.</p>`},
+
+/* ============================================================
+   ===== RUNG 7+ EXTENSION · Zero-Knowledge proofs =====
+   Same "Expose" goal, but prove it's fair WITHOUT revealing the
+   secret (seed / model / hidden state). Generic public crypto
+   (zk-SNARK/STARK). Heavier; honest about maturity. 3 slides.
+   ============================================================ */
+
+/* 21b — ZK · EXPLAINED */
+{rung:7,name:"Rung 7+ · Zero-knowledge, explained",html:`
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · prove it’s fair <i>without revealing the secret</i> ${G_ORACLE}</div>
+  <h2 class="reveal" style="--rc:var(--zk)">“Don’t trust us — check it.” But what if the check needs a secret?</h2>
+  <div class="reveal eli5" style="--rc:var(--zk);margin-top:.8rem">
+    <div class="analogy">
+      <div class="scene">🚪🔑🙈</div><div class="lbl">Imagine…</div>
+      <p>You want to prove you know the password to a door — <em>without saying the password</em>. So you step through it and back while the doubter watches. They’re convinced you knew it; they still don’t know what it is. A <b>zero-knowledge proof</b> does exactly that for a computation: it convinces a skeptic the result is right while revealing <em>nothing</em> about the secret inputs.</p>
+    </div>
+    <div class="mech">
+      <div class="step"><span class="num">1</span><p><b>The tension:</b> commit-reveal (Rung 7) makes you eventually <i>publish the seed</i>. But the seed may be commercially secret (your RNG) or private (a player’s data).</p></div>
+      <div class="step"><span class="num">2</span><p><b>ZK breaks the tradeoff:</b> prove “this draw followed the published 1% odds” or “this score was earned legitimately” — <i>without</i> exposing the seed, the model, or the hidden state.</p></div>
+      <div class="step"><span class="num">3</span><p><b>Anyone verifies cheaply</b> — the proof is small and fast to check, even though producing it is heavy.</p></div>
+    </div>
+  </div>
+  <p class="reveal gist" style="--rc:var(--zk)"><b>The gist:</b> a <b>zero-knowledge proof</b> (zk-SNARK / zk-STARK) lets you publish a verifiable “this was computed correctly” <i>certificate</i> while keeping the inputs secret. It’s Rung 7’s “verify it yourself” — for the cases where full transparency would leak something you can’t expose. <span style="color:var(--faint)">Generic public cryptography; the natural fit for regulated real-money games and fog-of-war competitive integrity.</span></p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“One more turn of the Expose screw — and this is where it gets genuinely cutting-edge. Rung 7 said ‘don’t trust us, check it’ — but to check a draw, you eventually had to <i>publish the seed</i>. What if you can’t? Your RNG is a commercial secret; a player’s data is private; revealing the seed leaks your house edge.”</p>
+    <p>“Here’s the trick, and it’s beautiful. Imagine proving you know a door’s password <i>without saying it</i> — you just step through the door and back while the skeptic watches. They’re convinced; they still don’t know the password. A zero-knowledge proof does that for a <i>computation</i>: it convinces anyone the result is correct while revealing <i>nothing</i> about the secret inputs.”</p>
+    <p><span class="cue">[walk the three steps]</span> “So you prove ‘this loot draw followed the published one-percent odds’ or ‘this leaderboard score was earned legitimately’ — without exposing the seed, the model, or the hidden state. And the kicker: the proof is tiny and cheap for anyone to check, even though generating it is heavy.”</p>
+    <p><span class="cue">[gist]</span> “That’s a zero-knowledge proof — a zk-SNARK or zk-STARK. It’s the answer for regulated real-money games, where you must prove fairness but can’t reveal your RNG, and for fog-of-war competitive integrity, where you must prove a move was legal without revealing the hidden board.”</p></div>
+  <p><b>Rung 7+ (ZK) — ELI5.</b> Zero-knowledge proofs extend Expose to the case where the verification would itself leak a secret (RNG seed, model, hidden state). The "prove you know the password without saying it" analogy is the canonical ZK intuition. Strong fit for RMG/iGaming (prove fair odds without exposing the RNG) and fog-of-war anti-cheat. Generic public crypto — zk-SNARK/STARK.</p>
+  <p><span class="el">Why it's an extension, not a new rung.</span> Same goal as Rung 7 (outsider-verifiable proof); it just removes the "must reveal the secret" cost. Frame as "Rung 7, levelled up," not Rung 8 — keeps the ladder at seven.</p>
+  <p><span class="el">Honest maturity.</span> Real and deployed in crypto/blockchain, but heavy to author and compute for general game logic. Say "frontier-but-real," and see the limits on the next slide.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Zero-knowledge proof (ZKP)</dt><dd>A way to prove a statement is true while revealing nothing beyond the fact that it's true — e.g. "this draw was fair" without showing the seed.</dd>
+    <dt>zk-SNARK / zk-STARK</dt><dd>The two main families of practical ZK proof systems. Both produce a small certificate anyone can verify quickly; STARKs avoid a "trusted setup" and resist quantum attacks, SNARKs are smaller.</dd>
+    <dt>Trusted setup</dt><dd>A one-time secret-generation ceremony some ZK systems need; if botched or cheated it undermines the proofs — which is why STARKs (no setup) are often preferred.</dd>
+    <dt>Witness</dt><dd>The secret input (the seed, the hidden board, the model weights) the prover keeps private while still proving the result is correct.</dd>
+    <dt>Fog of war</dt><dd>Game state hidden from a player (the opponent's hand, unseen map) — ZK lets a server prove a move was legal without revealing that hidden state.</dd>
+  </dl></div>`},
+
+/* 21c — ZK · HOW IT WORKS + WORKED EXAMPLE */
+{rung:7,name:"Rung 7+ · Zero-knowledge — how it works",html:`
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · how a ZK fairness proof works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
+  <h2 class="reveal" style="--rc:var(--zk);font-size:clamp(1.4rem,2.9vw,2.1rem)">Prove the draw was fair; reveal nothing about the seed.</h2>
+  <div class="reveal depthgrid" style="--rc:var(--zk);margin-top:.7rem">
+    <div class="mechbox">
+      <div class="mh">the recipe — in plain English</div>
+      <ol>
+        <li><b>Write the rule as a circuit</b> — “outcome = map(hash(secret_seed, public_inputs)) and it matches the published odds.”</li>
+        <li><b>Keep the seed as a private “witness”</b>; mark the odds, the commitment, and the result as public.</li>
+        <li><b>Generate a proof</b> that the circuit ran correctly on <i>some</i> secret that hashes to the public commitment — heavy compute, done once per draw (or batched).</li>
+        <li><b>Anyone verifies the tiny proof</b> in milliseconds — convinced the draw was honest, still blind to the seed.</li>
+      </ol>
+    </div>
+    <div>
+      <div class="codepanel">
+        <div class="cphead"><span>the statement being proven — for the engineers</span><span class="tag">zk-SNARK/STARK</span></div>
+        <pre><span class="cm"># public: commitment C, odds table, outcome O</span>
+<span class="cm"># private witness: server_seed s, client_seed, nonce</span>
+prove ∃ s such that:
+   sha256(s) == C                       <span class="cm"># seed matches commitment</span>
+   roll = H(s, client, nonce) mod 10000
+   O    == odds_table(roll)             <span class="cm"># outcome follows published odds</span>
+<span class="cm"># verifier learns O is valid — learns NOTHING about s</span></pre>
+      </div>
+      <div class="formula"><span class="lab">worked example — a STAR ORACLE banner pull</span>
+        Player gets a <b>common</b>. The operator publishes a ZK proof that <i>some</i> secret seed (a) matches the pre-published commitment <b>and</b> (b) runs the audited 0.8%-rate banner logic to produce exactly that common — <span style="color:var(--zk)">without revealing the seed</span>. A regulator verifies the proof in milliseconds. The RNG stays secret; the fairness is proven.</div>
+    </div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--zk)"><b>Honest limits (this is frontier, not Monday):</b> proof generation is compute-heavy and the rule must be hand-compiled into a circuit (real engineering); and — same ceiling as all proofs — it proves the <i>circuit’s</i> logic, so someone must still certify the circuit encodes the real, audited odds. <span style="color:var(--faint)">In prod: ZK libraries (Circom/Halo2/StarkWare-style) on Lambda/Batch; verify current tooling.</span></p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“How does it actually work? Four steps. <span class="cue">[left]</span> You write the fairness rule as a <i>circuit</i> — ‘the outcome equals the published-odds function of a hash of the seed.’ You mark the seed as a private witness and the odds, commitment, and result as public. You generate a proof that the circuit ran correctly on <i>some</i> secret matching the published commitment. And then anyone verifies that tiny proof in milliseconds.”</p>
+    <p><span class="cue">[code panel]</span> “For the engineers, the statement is right here: there <i>exists</i> a seed s such that its hash equals the commitment, the roll derives from it, and the outcome follows the odds table — and the verifier learns the outcome is valid while learning <i>nothing</i> about s. That existential-with-a-hidden-witness is the whole magic.”</p>
+    <p><span class="cue">[worked example]</span> “Concretely: a Star Oracle pull comes up common. The operator publishes a proof that some secret seed both matches the pre-committed fingerprint <i>and</i> runs the audited 0.8% banner logic to produce that exact common — without revealing the seed. A regulator checks it in milliseconds. RNG stays secret; fairness is proven. That’s the thing you cannot do with plain commit-reveal.”</p>
+    <p><span class="cue">[limits]</span> “And I’ll be honest — this is frontier, not Monday. Generating proofs is compute-heavy, and you have to hand-compile the rule into a circuit. Plus the same ceiling as every proof on this ladder: it proves the <i>circuit’s</i> logic, so someone still has to certify the circuit encodes the real audited odds.”</p></div>
+  <p><b>Rung 7+ (ZK) — mechanism + worked example.</b> The proven statement: ∃ seed s with sha256(s)==commitment AND outcome follows the published odds table — verifier learns validity, nothing about s. Worked example: a gacha banner pull proven fair without revealing the RNG. Honest limits: heavy proving, circuit-authoring cost, and the proof-is-over-the-circuit ceiling (consistent with the "what proof means" slide).</p>
+  <p><span class="el">The one idea.</span> "∃ a secret that (matches the commitment) AND (produces this outcome under the audited rule)" — proven without revealing the secret. That existential-over-a-hidden-witness is ZK in one line.</p>
+  <p><span class="el">RMG bridge.</span> This is the slide that makes the real-money-games case concrete: prove published odds were applied without exposing the RNG/house edge. Lead with it if pitching iGaming.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Circuit (arithmetic circuit)</dt><dd>The rule rewritten as a fixed sequence of additions/multiplications that a ZK system can prove was followed — how you "compile" a fairness rule for ZK.</dd>
+    <dt>Public input vs private witness</dt><dd>Public = what everyone sees (odds, commitment, outcome); private witness = the secret (seed) the prover hides while still proving the result.</dd>
+    <dt>Proof generation vs verification</dt><dd>Making the proof is computationally expensive (the operator's cost); checking it is tiny and fast (anyone, including a regulator).</dd>
+    <dt>Circom / Halo2</dt><dd>Common open toolchains for writing ZK circuits and generating proofs — the practical libraries an engineer would reach for.</dd>
+  </dl></div>`},
+
+/* 21d — ZK · WHEN IT'S WORTH IT */
+{rung:7,name:"Rung 7+ · Zero-knowledge — when it's worth it",html:`
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · when the heavy machinery earns its keep</div>
+  <h2 class="reveal" style="--rc:var(--zk);font-size:clamp(1.4rem,2.9vw,2.1rem)">ZK isn’t free. Use it only where “verify without revealing” is the whole game.</h2>
+  <div class="reveal flow3" style="--rc:var(--zk)">
+    <div class="fcard today"><div class="ph"><span class="d"></span>Plain commit-reveal (Rung 7) is enough when…</div><h4>You can reveal the seed</h4><p>Loot/gacha where eventually publishing the seed leaks nothing you care about. Cheaper, simpler, no circuits. <b>Most games stop here.</b></p></div>
+    <div class="ar">→</div>
+    <div class="fcard after" style="--rc:var(--zk)"><div class="ph"><span class="d"></span>Reach for ZK when…</div><h4>Revealing the secret is unacceptable</h4><p>Regulated <b>real-money games</b> (prove published odds without exposing the RNG/house edge); <b>fog-of-war</b> esports (prove a move was legal without revealing the hidden board); <b>private-data</b> proofs (prove a player is eligible without exposing their identity).</p></div>
+    <div class="ar">→</div>
+    <div class="fcard result"><div class="ph"><span class="d"></span>The payoff</div><h4>Trust with confidentiality</h4><p>Regulator-grade, publicly-verifiable fairness — while your IP, your RNG, and your players’ data stay private. The one proof that gives <i>both</i>.</p></div>
+  </div>
+  <div class="reveal genre">
+    <div class="gh">✦ in your genre — “prove it without revealing it”</div>
+    <div class="grid">
+      <div class="gi"><b>✦ Real-money / iGaming</b>the headline use case: provably-fair to a regulator <i>without</i> disclosing the certified RNG or the live house edge.</div>
+      <div class="gi"><b>Competitive / esports</b>prove a play was within the rules (no wallhack data used) without revealing fog-of-war state mid-match.</div>
+      <div class="gi"><b>Card games / poker</b>prove a shuffle &amp; deal were honest without exposing the deck order to opponents.</div>
+      <div class="gi"><b>Web3 / on-chain games</b>where ZK is already native — verifiable outcomes with private state, on-chain.</div>
+    </div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--zk)"><b>Match the tool to the stakes — again.</b> ZK is the most powerful and most expensive verification on the whole ladder. It’s over-engineering for a cosmetic drop; it’s close to mandatory where money, ranked integrity, or privacy law collide with a secret you can’t reveal.</p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“Last word on ZK, and it’s the same discipline as the whole talk: match the tool to the stakes. <span class="cue">[left]</span> Plain commit-reveal — Rung 7 — is plenty when you can just reveal the seed eventually. Most games stop there, and should.”</p>
+    <p><span class="cue">[middle]</span> “You reach for zero-knowledge only when revealing the secret is itself unacceptable: regulated real-money games where the seed <i>is</i> your house edge; fog-of-war esports where revealing the hidden board mid-match would break the game; or private-data proofs where you must prove eligibility without exposing identity.”</p>
+    <p><span class="cue">[right + genre box]</span> “The payoff is the one thing nothing else on the ladder gives you: regulator-grade, publicly-verifiable fairness <i>and</i> confidentiality, together. <span class="cue">[read the iGaming line]</span> That’s why this is the headline technique for real-money gaming.”</p>
+    <p><span class="cue">[strip]</span> “But it’s the most expensive rung we’ve got. Over-engineering for a cosmetic drop; near-mandatory where money, ranked integrity, or privacy law collide with a secret you can’t reveal.”</p></div>
+  <p><b>Rung 7+ (ZK) — when-to-use / genre.</b> The decision boundary: commit-reveal when you CAN reveal the seed (most games); ZK when revealing is unacceptable (RMG/house-edge, fog-of-war esports, private-data eligibility, web3). Reinforces the talk's "match tool to stakes" spine at the most expensive end. Genre box leads with iGaming — the strongest ZK fit.</p>
+  <p><span class="el">RMG connection.</span> This trio of ZK slides is also the natural home for the real-money-games discussion we parked — ZK is what makes RMG's "prove fairness without exposing the RNG" possible. If we build an RMG framing later, it leans heavily here.</p>`},
 
 /* 22 — PROOF OF WHAT */
 {rung:0,name:"What 'proof' means",html:`
@@ -2905,6 +3019,49 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">Productionize.</span> One AWS diagram per rung. Verify service names/status before presenting.</p>
   <p><span class="el">Strip.</span> "One repo, offline, under a minute" + "theory → live demo → a thing you run on your own game this week." Mirror in the abstract's takeaways and the closing QR.</p>`},
 
+/* ============================================================
+   ===== FRONTIER · where this goes next =====
+   Emerging techniques, NOT yet deployable. Compact cards, NO
+   worked examples (would be dishonest for bleeding-edge tech).
+   Explicitly labelled maturity. ZKML + Neurosymbolic.
+   ============================================================ */
+
+/* FR0 — FRONTIER INTRO + CARDS */
+{rung:0,name:"Frontier · where this goes next",html:`
+  <div class="reveal kicker"><span class="tick"></span> Frontier · honest about what’s <i>coming</i>, not yet shippable</div>
+  <h2 class="reveal" style="max-width:30ch">Two emerging ideas worth <em style="color:var(--fr)">watching</em> — not yet building.</h2>
+  <p class="reveal lede" style="margin-top:.6rem;max-width:88ch">Everything on the ladder so far is deployable today. These two are different: genuinely promising for game trust, but <b>early</b>. We include them so you can track them — and so nobody sells them to you as production-ready. <span style="color:var(--fr)">No worked example here on purpose — that would overclaim maturity.</span></p>
+  <div class="reveal cols even" style="margin-top:.9rem;gap:1.6rem">
+    <div class="card icotop" style="--rc:var(--fr)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M7 11v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3v-4"/><path d="M12 18v3"/><path d="M9 8h.01M17 8h.01"/></svg></div>
+      <div class="ct" style="color:var(--fr)">Frontier · verifiable AI</div><h3>Zero-Knowledge ML (ZKML)</h3>
+      <p><b>The idea:</b> prove a model produced a given output <i>without revealing the model</i> — or prove an output came from <i>the</i> certified anti-cheat/matchmaking model, not a tampered one.</p>
+      <p style="margin-top:.5rem"><b>Why it matters for games:</b> prove your matchmaking wasn’t rigged, or a ban came from the audited model — while keeping the model (your IP, and your anti-cheat secrets) private. It’s ZK (Rung 7+) pointed at the <i>model</i> instead of the <i>RNG</i>.</p>
+      <p style="margin-top:.5rem;color:var(--warm)"><b>Maturity:</b> early. Proving cost for large models is still impractical; works today only for small models. Watch, prototype, don’t depend on it.</p></div>
+    <div class="card icotop" style="--rc:var(--fr)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><rect x="14" y="8" width="8" height="8" rx="1.5"/><path d="M12 12h2"/><path d="M8 8v.01M8 16v.01M6 12h.01"/></svg></div>
+      <div class="ct" style="color:var(--fr)">Frontier · neural + symbolic</div><h3>Neurosymbolic AI</h3>
+      <p><b>The idea:</b> fuse the <i>pattern-spotting</i> of neural nets (Rungs 1–4) with the <i>provable rules</i> of symbolic logic (Rung 5) — a detector whose every flag comes with a checkable logical justification.</p>
+      <p style="margin-top:.5rem"><b>Why it matters for games:</b> it could let a cheat detector <i>explain itself in rules a human can verify</i> — closing the gap between “the model flagged it” (Rung 1) and “here’s the provable reason” (Rung 5), in one system.</p>
+      <p style="margin-top:.5rem;color:var(--warm)"><b>Maturity:</b> early &amp; mostly research. It’s an architecture, not a drop-in tool — promising for explainable, rule-grounded detection, but not productised for games yet.</p></div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--fr)">The honest framing: the ladder is what you build <b>now</b>; these are what you <b>track</b>. Both aim at the same north star — trust you can <i>verify</i> — which is exactly why they’re worth watching, and exactly why we won’t pretend they’re ready.</p>`,
+ notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“Before I close, a quick frontier check — because intellectual honesty cuts both ways. Everything on the ladder is deployable today. These next two are <i>not</i> — they’re genuinely promising for game trust, but early, and I’d rather you hear that from me than from a vendor.”</p>
+    <p><span class="cue">[left card]</span> “First: zero-knowledge <i>machine learning</i>. We just used ZK to prove an <i>RNG</i> was fair without revealing the seed. ZKML points the same idea at a <i>model</i>: prove your matchmaking wasn’t rigged, or that a ban came from the audited model and not a tampered one — while keeping the model itself private. Powerful for protecting both your IP and your anti-cheat secrets. Maturity, honestly? Early. Proving cost for big models is still impractical; it works today only for small ones. Watch it, prototype it, don’t depend on it.”</p>
+    <p><span class="cue">[right card]</span> “Second: neurosymbolic AI. The whole tension in this talk is neural pattern-spotting at the bottom of the ladder versus provable logic at the top. Neurosymbolic tries to <i>fuse</i> them — a detector whose every flag carries a checkable logical reason. Imagine closing the gap between ‘the model flagged it’ and ‘here’s the provable rule it broke,’ in one system. But it’s an architecture, not a tool you download — mostly research today.”</p>
+    <p><span class="cue">[strip]</span> “So the honest framing: the ladder is what you build <i>now</i>; these are what you <i>track</i>. Same north star — trust you can verify — which is why they’re worth a slide, and why I won’t pretend they’re ready.”</p></div>
+  <p><b>Frontier section.</b> ZKML + neurosymbolic AI as emerging, explicitly-not-deployable ideas. Compact cards, NO worked examples (deliberate — overclaiming maturity on bleeding-edge tech would break the deck's honesty discipline). Each card states the idea, the game relevance, AND an explicit maturity caveat in warm/caution colour. Placed after the kit, before the Close, as a "what to track next" coda.</p>
+  <p><span class="el">Why no worked example.</span> The rest of the deck earns trust with runnable math; faking a worked example for tech this early would undercut that. Honesty about maturity is the point of the slide.</p>
+  <p><span class="el">How they connect to the ladder.</span> ZKML = Rung 7+ (ZK) aimed at the model not the RNG. Neurosymbolic = fusing Rungs 1–4 (neural) with Rung 5 (symbolic proof) — explainable detection with a checkable reason. Both serve the same "verifiable trust" thesis, which is why they belong as a coda, not as forced rungs.</p>
+  <p><span class="el">Tone.</span> This slide builds credibility precisely by NOT overselling. "Build the ladder now; track these." Don't let enthusiasm tip into "deploy this Monday."</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>ZKML (zero-knowledge ML)</dt><dd>Using a zero-knowledge proof to show a model gave a certain output, or that the output came from a specific certified model — without revealing the model's weights.</dd>
+    <dt>Neurosymbolic AI</dt><dd>An approach combining neural networks (learn patterns from data) with symbolic logic (explicit, checkable rules) so the system can both spot <i>and</i> justify.</dd>
+    <dt>Symbolic logic</dt><dd>Reasoning with explicit rules and facts (like the automated-reasoning rung) — the opposite of a neural net's learned, opaque weights.</dd>
+    <dt>Maturity (as used here)</dt><dd>How ready a technique is for production. "Early/research" = promising but not yet practical at game scale; track it, don't bet on it.</dd>
+  </dl></div>`},
+
 /* 26 — CLOSE */
 {rung:0,name:"Close",html:`
   <div class="reveal kicker"><span class="tick"></span> Close</div>
@@ -2914,7 +3071,7 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
     <div style="width:88px;height:88px;border:1px solid var(--panel-line);border-radius:12px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;color:var(--faint);background:var(--panel)">[ QR ]</div>
     <div><div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--gold)">THE QUICKSTART KIT</div><div style="color:var(--muted);font-weight:300;margin-top:.3rem">Worksheet · runnable rungs · AWS reference arch · every live demo.<br>One <code style="font-family:var(--mono)">git clone</code> away. Go climb it on your own game.</div></div>
   </div>
-  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal, drift detection &amp; fairness auditing are all standard public methods (credits, with links, in the appendix). What’s new is the <i>framing</i>: a seven-rung ladder — kept honest by drift &amp; fairness checks — that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p>`,
+  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal, zero-knowledge proofs, drift detection &amp; fairness auditing are all standard public methods (credits, with links, in the appendix), and the frontier ideas (ZKML, neurosymbolic) are flagged as emerging. What’s new is the <i>framing</i>: a seven-rung ladder — kept honest by drift &amp; fairness checks — that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p>`,
  notes:`<div class="say"><span class="sh">▶ Say this (verbatim script)</span>
     <p>“I started by asking if you could <i>prove</i> your game is fair, and the honest answer was three words: ‘we think so.’” <span class="cue">[point to the headline]</span> “The whole point of today was to turn that into ‘we can prove it’ — and to know exactly how high you need to climb to get there.”</p>
     <p>“But if you take one thing home, make it this:” <span class="cue">[read the lede]</span> “the techniques aren’t the point — the <b>calibration</b> is. Know what each signal actually proves. Build the rung your stakes demand — and no higher. Attach a reason to everything. And then stop.”</p>
@@ -2958,6 +3115,9 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
         <tr><td>VRF · Merkle tree</td><td><a href="https://datatracker.ietf.org/doc/rfc9381/" target="_blank" rel="noopener">RFC 9381 (VRF)</a> · Merkle 1979</td></tr>
         <tr><td>Nitro Enclaves attestation</td><td><a href="https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html" target="_blank" rel="noopener">docs.aws.amazon.com</a></td></tr>
         <tr><td><b style="color:var(--bright)">R7 Expose</b> · provably-fair pattern</td><td>open crypto-gaming convention (commit-reveal, above)</td></tr>
+        <tr><td><b style="color:var(--zk)">R7+ ZK</b> · zero-knowledge proofs</td><td><a href="https://doi.org/10.1137/0218012" target="_blank" rel="noopener">Goldwasser, Micali &amp; Rackoff 1989</a> · <a href="https://eprint.iacr.org/2018/046" target="_blank" rel="noopener">zk-STARK (Ben-Sasson et al.)</a></td></tr>
+        <tr><td><b style="color:var(--fr)">Frontier</b> · ZKML</td><td><a href="https://arxiv.org/abs/2502.18535" target="_blank" rel="noopener">ZKML survey 2025</a> · <a href="https://github.com/zkonduit/ezkl" target="_blank" rel="noopener">EZKL (open tooling)</a></td></tr>
+        <tr><td><b style="color:var(--fr)">Frontier</b> · neurosymbolic AI</td><td><a href="https://arxiv.org/abs/2305.00813" target="_blank" rel="noopener">Neurosymbolic survey (Garcez et al.)</a></td></tr>
         <tr><td><b style="color:var(--xc)">Cross-cut</b> · drift (PSI / KS / ADWIN)</td><td><a href="https://doi.org/10.1007/978-3-540-39483-1_3" target="_blank" rel="noopener">PSI</a> · <a href="https://epubs.siam.org/doi/10.1137/1.9781611972771.42" target="_blank" rel="noopener">ADWIN (Bifet &amp; Gavaldà 2007)</a></td></tr>
         <tr><td><b style="color:var(--xc)">Cross-cut</b> · fairness auditing</td><td><a href="https://fairmlbook.org/" target="_blank" rel="noopener">Barocas, Hardt &amp; Narayanan</a> · <a href="https://arxiv.org/abs/1610.02413" target="_blank" rel="noopener">Equalised odds (Hardt et al.)</a></td></tr>
         <tr><td>Evidence-strength ladder (the framing’s lineage)</td><td><a href="https://www.bmj.com/content/336/7650/924" target="_blank" rel="noopener">GRADE, BMJ 2008</a></td></tr>

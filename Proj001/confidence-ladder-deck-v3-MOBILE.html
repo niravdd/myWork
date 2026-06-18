@@ -117,6 +117,7 @@
     /* rung accents: 1 Detect=cool · 2 Quantify=indigo · 3 Attribute=rose · 4 Stress=lime · 5 Verify-rules=teal · 6 Verify-pipeline=gold · 7 Expose=bright */
     --r2:#8b8fe6; --r3:#e58aa6; --r4:#9fc24f;
     --xc:#5fc8b0; /* cross-cutting band: "keep the source of truth honest" */
+    --zk:#d98ad6; /* Rung 7+ ZK extension */ --fr:#7fb0ff; /* frontier section */
     --shard:#7ad6e0;  /* SHARDFALL accent */
     --oracle:#c79be8; /* STAR ORACLE accent */
     --display:'Fraunces',Georgia,'Times New Roman',serif;
@@ -472,8 +473,6 @@
 html,body{height:auto;overflow:visible;-webkit-text-size-adjust:100%}
 body{background:linear-gradient(180deg,#0a0f15,#070a0e);padding:0}
 body::before,body::after{display:none}
-
-/* sticky top bar */
 .m-bar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:.6rem;
   padding:.6rem .9rem;background:rgba(6,9,13,.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--panel-line)}
 .m-bar .m-title{font-family:var(--display);font-size:1rem;color:var(--text);flex:1;line-height:1.1}
@@ -481,27 +480,20 @@ body::before,body::after{display:none}
 .m-bar button{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
   background:var(--panel);color:var(--text);border:1px solid var(--panel-line);border-radius:7px;padding:.45rem .6rem;cursor:pointer}
 .m-prog{position:fixed;left:0;top:0;height:3px;background:linear-gradient(90deg,var(--cool),var(--teal),var(--gold),var(--bright));z-index:60;width:0}
-
-/* table of contents drawer */
 .m-toc{display:none;position:sticky;top:48px;z-index:49;max-height:60vh;overflow-y:auto;
   background:rgba(6,9,13,.98);border-bottom:1px solid var(--panel-line);padding:.5rem .6rem}
 .m-toc.open{display:block}
 .m-tocitem{display:block;font-size:.82rem;color:var(--muted);text-decoration:none;padding:.4rem .5rem;border-radius:6px;border-bottom:1px solid rgba(255,255,255,.04)}
 .m-tocitem span{font-family:var(--mono);font-size:.72rem;margin-right:.5rem}
 .m-tocitem:active{background:var(--panel)}
-
-/* each entry */
 .m-entry{padding:1.1rem .9rem 1.4rem;border-bottom:1px solid var(--panel-line);scroll-margin-top:54px}
 .m-head{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:.7rem}
 .m-num{font-family:var(--mono);font-size:.62rem;color:var(--faint)}
 .m-chip{font-family:var(--mono);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase;color:var(--rc);border:1px solid var(--rc);border-radius:5px;padding:.15rem .4rem;opacity:.9}
 .m-name{font-family:var(--display);font-size:1.15rem;color:var(--text);width:100%;line-height:1.15;margin-top:.1rem}
-
-/* slide content rendered as a flowing block (not a fixed full-screen layer) */
 .m-slide{position:relative;background:rgba(255,255,255,.02);border:1px solid var(--panel-line);border-radius:13px;padding:1rem .95rem;overflow:hidden}
 .m-slide .reveal{animation:none!important;opacity:1!important;transform:none!important}
 .m-slide .slidemotif{display:none!important}
-/* force EVERYTHING to a single column on a phone */
 .m-slide .cols,.m-slide .cols.split,.m-slide .cols.even,.m-slide .eli5,.m-slide .depthgrid,
 .m-slide .bacols,.m-slide .flow3,.m-slide .worked,.m-slide .cards,.m-slide .cards.g2,
 .m-slide .cards.g3,.m-slide .cards.g4{display:flex!important;flex-direction:column!important;gap:.7rem!important;grid-template-columns:none!important}
@@ -509,21 +501,17 @@ body::before,body::after{display:none}
 .m-slide .rungstepper{flex-wrap:wrap;gap:.3rem}
 .m-slide .rungstepper .rstep{flex:1 1 40%}
 .m-slide .rungstepper .arrow{display:none}
-.m-slide .rungstepper .rstep .rn{display:block}      /* show all rung labels on the stepper */
-/* type that won't collapse to nothing: cap the vw-based clamps */
+.m-slide .rungstepper .rstep .rn{display:block}
 .m-slide h1{font-size:1.5rem!important}
 .m-slide h2{font-size:1.25rem!important}
 .m-slide .lede{font-size:1rem!important;max-width:none!important}
-/* code / terminals scroll horizontally instead of overflowing */
 .m-slide pre,.m-slide .term,.m-slide .codepanel pre,.m-slide table.io,.m-slide table.prog{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .m-slide table.io,.m-slide table.prog{display:block;width:100%}
 .m-slide .heroart{margin-top:.6rem}.m-slide .heroart svg{width:62vw;max-width:280px}
-.m-slide .notes,.m-slide aside.notes{display:none!important}   /* notes are rendered separately below */
+.m-slide .notes,.m-slide aside.notes{display:none!important}
 .m-demobanner{background:rgba(122,214,224,.08);border:1px solid rgba(122,214,224,.3);border-radius:9px;
   padding:.55rem .7rem;margin-bottom:.8rem;font-size:.78rem;color:#bfe9f2;line-height:1.4}
 .m-demobanner code{font-family:var(--mono);font-size:.92em;color:var(--shard)}
-
-/* collapsible notes */
 .m-notes{margin-top:.7rem;border:1px solid var(--panel-line);border-radius:11px;background:rgba(255,255,255,.015);overflow:hidden}
 .m-notes>summary{cursor:pointer;list-style:none;padding:.6rem .8rem;font-family:var(--mono);font-size:.66rem;
   letter-spacing:.12em;text-transform:uppercase;color:var(--gold);background:rgba(229,169,59,.06)}
@@ -540,21 +528,22 @@ body::before,body::after{display:none}
 .m-notes .nbody .gloss dl{display:grid;grid-template-columns:1fr;gap:.1rem .8rem}
 .m-notes .nbody .gloss dt{color:var(--bright);font-weight:600;margin-top:.4rem}
 .m-notes .nbody .el{color:var(--teal);font-family:var(--mono);font-size:.82em}
+.m-notes .nbody a,.m-notes .nbody .reflist a{color:#7fb0ff}
 .m-foot{padding:2rem .9rem 3rem;text-align:center;font-family:var(--mono);font-size:.66rem;color:var(--faint)}
 </style></head><body>
 <div class="m-prog" id="mprog"></div>
 <div class="m-bar">
-  <div class="m-title">The Confidence Ladder<small>mobile reader · 67 slides + full notes</small></div>
+  <div class="m-title">The Confidence Ladder<small>mobile reader · 71 slides + full notes</small></div>
   <button id="m-toctoggle">Jump ▾</button>
   <button id="m-notestoggle">Notes</button>
 </div>
-<nav class="m-toc" id="mtoc"><a href="#s0" class="m-tocitem"><span style="color:var(--muted)">01</span> The Confidence Ladder</a><a href="#s1" class="m-tocitem"><span style="color:var(--muted)">02</span> Meet the games</a><a href="#s2" class="m-tocitem"><span style="color:var(--muted)">03</span> The operator's question</a><a href="#s3" class="m-tocitem"><span style="color:var(--muted)">04</span> The stakes (P&L)</a><a href="#s4" class="m-tocitem"><span style="color:var(--muted)">05</span> The traditional toolkit</a><a href="#s5" class="m-tocitem"><span style="color:var(--muted)">06</span> Where the baseline falls short</a><a href="#s6" class="m-tocitem"><span style="color:var(--muted)">07</span> The idea: the ladder</a><a href="#s7" class="m-tocitem"><span style="color:var(--muted)">08</span> How the next slides work</a><a href="#s8" class="m-tocitem"><span style="color:var(--cool)">09</span> Rung 1 · Anomaly, explained</a><a href="#s9" class="m-tocitem"><span style="color:var(--cool)">10</span> Rung 1 · Anomaly — how it works</a><a href="#s10" class="m-tocitem"><span style="color:var(--cool)">11</span> Rung 1 · Anomaly — your data & I/O</a><a href="#s11" class="m-tocitem"><span style="color:var(--cool)">12</span> Rung 1 · Anomaly — worked example</a><a href="#s12" class="m-tocitem"><span style="color:var(--cool)">13</span> Rung 1 · Anomaly — the methods menu</a><a href="#s13" class="m-tocitem"><span style="color:var(--cool)">14</span> Rung 1 · Anomaly — before & after</a><a href="#s14" class="m-tocitem"><span style="color:var(--cool)">15</span> Rung 1 · Anomaly — LIVE</a><a href="#s15" class="m-tocitem"><span style="color:var(--cool)">16</span> Rung 1 · Graph, explained</a><a href="#s16" class="m-tocitem"><span style="color:var(--cool)">17</span> Rung 1 · Graph — how it works</a><a href="#s17" class="m-tocitem"><span style="color:var(--cool)">18</span> Rung 1 · Graph — your data & I/O</a><a href="#s18" class="m-tocitem"><span style="color:var(--cool)">19</span> Rung 1 · Graph — worked example</a><a href="#s19" class="m-tocitem"><span style="color:var(--cool)">20</span> Rung 1 · Graph — the methods menu</a><a href="#s20" class="m-tocitem"><span style="color:var(--cool)">21</span> Rung 1 · Graph — before & after</a><a href="#s21" class="m-tocitem"><span style="color:var(--cool)">22</span> Rung 1 · Rings — LIVE</a><a href="#s22" class="m-tocitem"><span style="color:var(--cool)">23</span> Rung 1 · today → result</a><a href="#s23" class="m-tocitem"><span style="color:var(--cool)">24</span> Rung 1 · Analyst copilot</a><a href="#s24" class="m-tocitem"><span style="color:var(--r2)">25</span> Rung 2 · Quantify, explained</a><a href="#s25" class="m-tocitem"><span style="color:var(--r2)">26</span> Rung 2 · Quantify — how it works</a><a href="#s26" class="m-tocitem"><span style="color:var(--r2)">27</span> Rung 2 · Quantify — your data & I/O</a><a href="#s27" class="m-tocitem"><span style="color:var(--r2)">28</span> Rung 2 · Quantify — worked example</a><a href="#s28" class="m-tocitem"><span style="color:var(--r2)">29</span> Rung 2 · Quantify — the methods menu</a><a href="#s29" class="m-tocitem"><span style="color:var(--r2)">30</span> Rung 2 · Quantify — fair matchmaking</a><a href="#s30" class="m-tocitem"><span style="color:var(--r3)">31</span> Rung 3 · Attribute, explained</a><a href="#s31" class="m-tocitem"><span style="color:var(--r3)">32</span> Rung 3 · Attribute — how it works</a><a href="#s32" class="m-tocitem"><span style="color:var(--r3)">33</span> Rung 3 · Attribute — your data & I/O</a><a href="#s33" class="m-tocitem"><span style="color:var(--r3)">34</span> Rung 3 · Attribute — worked example</a><a href="#s34" class="m-tocitem"><span style="color:var(--r3)">35</span> Rung 3 · Attribute — the methods menu</a><a href="#s35" class="m-tocitem"><span style="color:var(--r4)">36</span> Rung 4 · Stress-test, explained</a><a href="#s36" class="m-tocitem"><span style="color:var(--r4)">37</span> Rung 4 · Stress-test — how it works</a><a href="#s37" class="m-tocitem"><span style="color:var(--r4)">38</span> Rung 4 · Stress-test — your data & I/O</a><a href="#s38" class="m-tocitem"><span style="color:var(--r4)">39</span> Rung 4 · Stress-test — worked example</a><a href="#s39" class="m-tocitem"><span style="color:var(--r4)">40</span> Rung 4 · Stress-test — the methods menu</a><a href="#s40" class="m-tocitem"><span style="color:var(--teal)">41</span> Rung 5 · Automated Reasoning, explained</a><a href="#s41" class="m-tocitem"><span style="color:var(--teal)">42</span> Rung 5 · Auto-Reasoning — how it works</a><a href="#s42" class="m-tocitem"><span style="color:var(--teal)">43</span> Rung 5 · Auto-Reasoning — your data & I/O</a><a href="#s43" class="m-tocitem"><span style="color:var(--teal)">44</span> Rung 5 · Auto-Reasoning — worked example</a><a href="#s44" class="m-tocitem"><span style="color:var(--teal)">45</span> Rung 5 · Auto-Reasoning — the methods menu</a><a href="#s45" class="m-tocitem"><span style="color:var(--teal)">46</span> Rung 5 · Auto-Reasoning — before & after</a><a href="#s46" class="m-tocitem"><span style="color:var(--teal)">47</span> Rung 5 · Money pump — LIVE</a><a href="#s47" class="m-tocitem"><span style="color:var(--teal)">48</span> Rung 5 · today → result</a><a href="#s48" class="m-tocitem"><span style="color:var(--gold)">49</span> Rung 6 · Commit-reveal, explained</a><a href="#s49" class="m-tocitem"><span style="color:var(--gold)">50</span> Rung 6 · Commit-reveal — how it works</a><a href="#s50" class="m-tocitem"><span style="color:var(--gold)">51</span> Rung 6 · Commit-reveal — your data & I/O</a><a href="#s51" class="m-tocitem"><span style="color:var(--gold)">52</span> Rung 6 · Commit-reveal — worked example</a><a href="#s52" class="m-tocitem"><span style="color:var(--gold)">53</span> Rung 6 · Commit-reveal — the methods menu</a><a href="#s53" class="m-tocitem"><span style="color:var(--gold)">54</span> Rung 6 · Commit-reveal — before & after</a><a href="#s54" class="m-tocitem"><span style="color:var(--gold)">55</span> Rung 6 · Tamper test — LIVE</a><a href="#s55" class="m-tocitem"><span style="color:var(--gold)">56</span> Rung 6 · today → result</a><a href="#s56" class="m-tocitem"><span style="color:var(--bright)">57</span> Rung 7 · Expose</a><a href="#s57" class="m-tocitem"><span style="color:var(--muted)">58</span> What 'proof' means</a><a href="#s58" class="m-tocitem"><span style="color:var(--muted)">59</span> Keep the source of truth honest</a><a href="#s59" class="m-tocitem"><span style="color:var(--muted)">60</span> Honest over time · drift detection</a><a href="#s60" class="m-tocitem"><span style="color:var(--muted)">61</span> Honest across cohorts · fairness audit</a><a href="#s61" class="m-tocitem"><span style="color:var(--muted)">62</span> It all connects</a><a href="#s62" class="m-tocitem"><span style="color:var(--muted)">63</span> The climb, compounded</a><a href="#s63" class="m-tocitem"><span style="color:var(--muted)">64</span> Choose your rung</a><a href="#s64" class="m-tocitem"><span style="color:var(--muted)">65</span> Take-home kit</a><a href="#s65" class="m-tocitem"><span style="color:var(--muted)">66</span> Close</a><a href="#s66" class="m-tocitem"><span style="color:var(--muted)">67</span> Appendix · credits & sources</a></nav>
+<nav class="m-toc" id="mtoc"><a href="#s0" class="m-tocitem"><span style="color:var(--muted)">01</span> The Confidence Ladder</a><a href="#s1" class="m-tocitem"><span style="color:var(--muted)">02</span> Meet the games</a><a href="#s2" class="m-tocitem"><span style="color:var(--muted)">03</span> The operator's question</a><a href="#s3" class="m-tocitem"><span style="color:var(--muted)">04</span> The stakes (P&L)</a><a href="#s4" class="m-tocitem"><span style="color:var(--muted)">05</span> The traditional toolkit</a><a href="#s5" class="m-tocitem"><span style="color:var(--muted)">06</span> Where the baseline falls short</a><a href="#s6" class="m-tocitem"><span style="color:var(--muted)">07</span> The idea: the ladder</a><a href="#s7" class="m-tocitem"><span style="color:var(--muted)">08</span> How the next slides work</a><a href="#s8" class="m-tocitem"><span style="color:var(--cool)">09</span> Rung 1 · Anomaly, explained</a><a href="#s9" class="m-tocitem"><span style="color:var(--cool)">10</span> Rung 1 · Anomaly — how it works</a><a href="#s10" class="m-tocitem"><span style="color:var(--cool)">11</span> Rung 1 · Anomaly — your data & I/O</a><a href="#s11" class="m-tocitem"><span style="color:var(--cool)">12</span> Rung 1 · Anomaly — worked example</a><a href="#s12" class="m-tocitem"><span style="color:var(--cool)">13</span> Rung 1 · Anomaly — the methods menu</a><a href="#s13" class="m-tocitem"><span style="color:var(--cool)">14</span> Rung 1 · Anomaly — before & after</a><a href="#s14" class="m-tocitem"><span style="color:var(--cool)">15</span> Rung 1 · Anomaly — LIVE</a><a href="#s15" class="m-tocitem"><span style="color:var(--cool)">16</span> Rung 1 · Graph, explained</a><a href="#s16" class="m-tocitem"><span style="color:var(--cool)">17</span> Rung 1 · Graph — how it works</a><a href="#s17" class="m-tocitem"><span style="color:var(--cool)">18</span> Rung 1 · Graph — your data & I/O</a><a href="#s18" class="m-tocitem"><span style="color:var(--cool)">19</span> Rung 1 · Graph — worked example</a><a href="#s19" class="m-tocitem"><span style="color:var(--cool)">20</span> Rung 1 · Graph — the methods menu</a><a href="#s20" class="m-tocitem"><span style="color:var(--cool)">21</span> Rung 1 · Graph — before & after</a><a href="#s21" class="m-tocitem"><span style="color:var(--cool)">22</span> Rung 1 · Rings — LIVE</a><a href="#s22" class="m-tocitem"><span style="color:var(--cool)">23</span> Rung 1 · today → result</a><a href="#s23" class="m-tocitem"><span style="color:var(--cool)">24</span> Rung 1 · Analyst copilot</a><a href="#s24" class="m-tocitem"><span style="color:var(--r2)">25</span> Rung 2 · Quantify, explained</a><a href="#s25" class="m-tocitem"><span style="color:var(--r2)">26</span> Rung 2 · Quantify — how it works</a><a href="#s26" class="m-tocitem"><span style="color:var(--r2)">27</span> Rung 2 · Quantify — your data & I/O</a><a href="#s27" class="m-tocitem"><span style="color:var(--r2)">28</span> Rung 2 · Quantify — worked example</a><a href="#s28" class="m-tocitem"><span style="color:var(--r2)">29</span> Rung 2 · Quantify — the methods menu</a><a href="#s29" class="m-tocitem"><span style="color:var(--r2)">30</span> Rung 2 · Quantify — fair matchmaking</a><a href="#s30" class="m-tocitem"><span style="color:var(--r3)">31</span> Rung 3 · Attribute, explained</a><a href="#s31" class="m-tocitem"><span style="color:var(--r3)">32</span> Rung 3 · Attribute — how it works</a><a href="#s32" class="m-tocitem"><span style="color:var(--r3)">33</span> Rung 3 · Attribute — your data & I/O</a><a href="#s33" class="m-tocitem"><span style="color:var(--r3)">34</span> Rung 3 · Attribute — worked example</a><a href="#s34" class="m-tocitem"><span style="color:var(--r3)">35</span> Rung 3 · Attribute — the methods menu</a><a href="#s35" class="m-tocitem"><span style="color:var(--r4)">36</span> Rung 4 · Stress-test, explained</a><a href="#s36" class="m-tocitem"><span style="color:var(--r4)">37</span> Rung 4 · Stress-test — how it works</a><a href="#s37" class="m-tocitem"><span style="color:var(--r4)">38</span> Rung 4 · Stress-test — your data & I/O</a><a href="#s38" class="m-tocitem"><span style="color:var(--r4)">39</span> Rung 4 · Stress-test — worked example</a><a href="#s39" class="m-tocitem"><span style="color:var(--r4)">40</span> Rung 4 · Stress-test — the methods menu</a><a href="#s40" class="m-tocitem"><span style="color:var(--teal)">41</span> Rung 5 · Automated Reasoning, explained</a><a href="#s41" class="m-tocitem"><span style="color:var(--teal)">42</span> Rung 5 · Auto-Reasoning — how it works</a><a href="#s42" class="m-tocitem"><span style="color:var(--teal)">43</span> Rung 5 · Auto-Reasoning — your data & I/O</a><a href="#s43" class="m-tocitem"><span style="color:var(--teal)">44</span> Rung 5 · Auto-Reasoning — worked example</a><a href="#s44" class="m-tocitem"><span style="color:var(--teal)">45</span> Rung 5 · Auto-Reasoning — the methods menu</a><a href="#s45" class="m-tocitem"><span style="color:var(--teal)">46</span> Rung 5 · Auto-Reasoning — before & after</a><a href="#s46" class="m-tocitem"><span style="color:var(--teal)">47</span> Rung 5 · Money pump — LIVE</a><a href="#s47" class="m-tocitem"><span style="color:var(--teal)">48</span> Rung 5 · today → result</a><a href="#s48" class="m-tocitem"><span style="color:var(--gold)">49</span> Rung 6 · Commit-reveal, explained</a><a href="#s49" class="m-tocitem"><span style="color:var(--gold)">50</span> Rung 6 · Commit-reveal — how it works</a><a href="#s50" class="m-tocitem"><span style="color:var(--gold)">51</span> Rung 6 · Commit-reveal — your data & I/O</a><a href="#s51" class="m-tocitem"><span style="color:var(--gold)">52</span> Rung 6 · Commit-reveal — worked example</a><a href="#s52" class="m-tocitem"><span style="color:var(--gold)">53</span> Rung 6 · Commit-reveal — the methods menu</a><a href="#s53" class="m-tocitem"><span style="color:var(--gold)">54</span> Rung 6 · Commit-reveal — before & after</a><a href="#s54" class="m-tocitem"><span style="color:var(--gold)">55</span> Rung 6 · Tamper test — LIVE</a><a href="#s55" class="m-tocitem"><span style="color:var(--gold)">56</span> Rung 6 · today → result</a><a href="#s56" class="m-tocitem"><span style="color:var(--bright)">57</span> Rung 7 · Expose</a><a href="#s57" class="m-tocitem"><span style="color:var(--bright)">58</span> Rung 7+ · Zero-knowledge, explained</a><a href="#s58" class="m-tocitem"><span style="color:var(--bright)">59</span> Rung 7+ · Zero-knowledge — how it works</a><a href="#s59" class="m-tocitem"><span style="color:var(--bright)">60</span> Rung 7+ · Zero-knowledge — when it's worth it</a><a href="#s60" class="m-tocitem"><span style="color:var(--muted)">61</span> What 'proof' means</a><a href="#s61" class="m-tocitem"><span style="color:var(--muted)">62</span> Keep the source of truth honest</a><a href="#s62" class="m-tocitem"><span style="color:var(--muted)">63</span> Honest over time · drift detection</a><a href="#s63" class="m-tocitem"><span style="color:var(--muted)">64</span> Honest across cohorts · fairness audit</a><a href="#s64" class="m-tocitem"><span style="color:var(--muted)">65</span> It all connects</a><a href="#s65" class="m-tocitem"><span style="color:var(--muted)">66</span> The climb, compounded</a><a href="#s66" class="m-tocitem"><span style="color:var(--muted)">67</span> Choose your rung</a><a href="#s67" class="m-tocitem"><span style="color:var(--muted)">68</span> Take-home kit</a><a href="#s68" class="m-tocitem"><span style="color:var(--muted)">69</span> Frontier · where this goes next</a><a href="#s69" class="m-tocitem"><span style="color:var(--muted)">70</span> Close</a><a href="#s70" class="m-tocitem"><span style="color:var(--muted)">71</span> Appendix · credits & sources</a></nav>
 <article class="m-entry" id="s0">
-    <div class="m-head"><span class="m-num">01/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The Confidence Ladder</span></div>
+    <div class="m-head"><span class="m-num">01/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The Confidence Ladder</span></div>
     <div class="m-slide">
   <div class="cols split" style="align-items:start;gap:3vw;margin-top:2vh">
    <div>
-    <div class="reveal kicker"><span class="tick"></span> AWS re:Invent 2026 · Games &amp; Interactive · <b style="color:var(--muted)">interactive deck — demos run live</b></div>
+    <div class="reveal kicker"><span class="tick"></span> AI/ML &amp; Data Science for Games &amp; Interactive · <b style="color:var(--muted)">interactive deck — demos run live</b></div>
     <h1 class="reveal">The Confidence Ladder</h1>
     <h1 class="reveal" style="font-size:clamp(1.3rem,3vw,2.4rem);margin-top:.5rem;color:var(--muted);font-weight:300">Climb from <em>guesswork</em> to <em>proof</em> in your game</h1>
     <p class="reveal lede" style="margin-top:1.5rem">A studio-side toolkit that turns <strong>“we think our game is fair”</strong> into <strong>“we can prove it”</strong> — using AI/ML where it earns its keep, and mathematics where the stakes demand certainty. <strong>No data-science background needed</strong>; every idea gets a plain-English analogy, a worked example, and a <strong>live demo you can poke at</strong>.</p>
@@ -603,14 +592,14 @@ body::before,body::after{display:none}
       <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
     <p>“Quick show of hands — how many of you, right now, could <i>prove</i> that your game’s loot odds are exactly what you published? Not ‘we’re pretty sure.’ <i>Prove</i> it.” <span class="cue">[let the hands — or lack of them — sit for a beat]</span></p>
     <p>“Right. Most of us can’t. And that’s not a criticism — it’s the gap this whole talk is about. I’m going to show you a way to climb from ‘we think our game is fair’ all the way up to ‘we can prove it’ — and, just as importantly, how to know exactly how high <i>you</i> actually need to climb.”</p>
-    <p>“We call it the <b>Confidence Ladder</b>. And here’s my promise: you do <i>not</i> need a data-science background. Every idea gets a plain-English story first, then a live demo you’ll watch compute right here on screen — no slideware, no trust-me numbers.” <span class="cue">[gesture to the rail on the right] “That ladder on the edge of every slide? That’s our map. It lights up as we climb.”</span></p></div>
+    <p>“We call it the <b>Confidence Ladder</b>. And here’s my promise: you do <i>not</i> need a data-science background. Every idea gets a plain-English story first, then a live demo you’ll watch compute right here on screen — no slideware, no trust-me numbers.” <span class="cue">[on the rung slides, gesture to the step-tracker across the top] “That row of rungs at the top of each rung slide? That’s our map — it lights up the rung we’re on as we climb.”</span></p></div>
   <p><b>Cold open.</b> The room mixes engineers, LiveOps, designers, producers — many not data scientists. Plant the metaphor (a <b>ladder of confidence</b>), signal it's a <b>studio-side</b> talk, and promise plain language + live, pokeable demos. ~30s.</p>
-  <p><span class="el">Title.</span> One mental model: every signal about your game sits on a ladder, from a probabilistic hunch to a mathematical proof. The right-edge rail IS this ladder; it lights up as we climb.</p>
+  <p><span class="el">Title.</span> One mental model: every signal about your game sits on a ladder, from a probabilistic hunch to a mathematical proof. The <b>top step-tracker</b> on each rung slide IS this ladder; it highlights the current rung as we climb.</p>
   <p><span class="el">Two games.</span> Introduce them by badge now, fully next slide. <b>SHARDFALL</b> = the running example every demo and worked example uses (consistency). <b>STAR ORACLE</b> = the breadth foil that shows each idea in a totally different genre. This is how we get one coherent spine AND genre breadth.</p>
   <p><span class="el">"Live demos you can poke at."</span> Set the expectation early: this deck computes in front of them — drag a threshold and watch cheats slip under it, run a money-pump loop, tamper a record and watch the hash go red. For a dry topic, interaction is what makes it stick.</p></div>
     </details>
   </article><article class="m-entry" id="s1">
-    <div class="m-head"><span class="m-num">02/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Meet the games</span></div>
+    <div class="m-head"><span class="m-num">02/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Meet the games</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Our worked examples · one spine, one foil</div>
   <h2 class="reveal" style="max-width:24ch">Two games carry the whole talk.</h2>
@@ -674,7 +663,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s2">
-    <div class="m-head"><span class="m-num">03/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The operator's question</span></div>
+    <div class="m-head"><span class="m-num">03/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The operator's question</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The business problem · 01 <span class="gamebadge">◆ SHARDFALL</span></div>
   <div class="cols split">
@@ -754,7 +743,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s3">
-    <div class="m-head"><span class="m-num">04/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The stakes (P&L)</span></div>
+    <div class="m-head"><span class="m-num">04/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The stakes (P&L)</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The business problem · 02 · why it costs real money</div>
   <h2 class="reveal" style="max-width:22ch">Four places the gap shows up on the P&amp;L.</h2>
@@ -795,7 +784,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s4">
-    <div class="m-head"><span class="m-num">05/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The traditional toolkit</span></div>
+    <div class="m-head"><span class="m-num">05/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The traditional toolkit</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Baseline · 01 · what studios already do well</div>
   <div class="cols split">
@@ -833,7 +822,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s5">
-    <div class="m-head"><span class="m-num">06/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Where the baseline falls short</span></div>
+    <div class="m-head"><span class="m-num">06/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Where the baseline falls short</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Baseline · 02 · the gaps that hit the P&amp;L</div>
   <h2 class="reveal" style="max-width:22ch">Good tools. Four blind spots.</h2>
@@ -876,7 +865,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s6">
-    <div class="m-head"><span class="m-num">07/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The idea: the ladder</span></div>
+    <div class="m-head"><span class="m-num">07/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The idea: the ladder</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The idea</div>
   <div class="cols split" style="align-items:start">
@@ -914,7 +903,7 @@ body::before,body::after{display:none}
   <p><span class="el">"You don't need every rung."</span> Even more important now that there are seven — say it firmly. Seven is a menu; most games build 2–3. The §decision slide makes the choice concrete.</p></div>
     </details>
   </article><article class="m-entry" id="s7">
-    <div class="m-head"><span class="m-num">08/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">How the next slides work</span></div>
+    <div class="m-head"><span class="m-num">08/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">How the next slides work</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Before we climb · the pattern for every rung</div>
   <h2 class="reveal" style="max-width:28ch">Each rung, the same rhythm: <em style="color:var(--bright)">plain English</em> → <em style="color:var(--bright)">the math</em> → <em style="color:var(--bright)">a worked example</em> → <em style="color:var(--bright)">your game</em>.</h2>
@@ -946,7 +935,7 @@ body::before,body::after{display:none}
   <p><span class="el">D In your genre.</span> The breadth move via STAR ORACLE and others. Reader note: tell them the rhythm repeats so each new rung feels familiar.</p></div>
     </details>
   </article><article class="m-entry" id="s8">
-    <div class="m-head"><span class="m-num">09/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly, explained</span></div>
+    <div class="m-head"><span class="m-num">09/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · technique 1 of 2: anomaly detection <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--cool)">Spotting the fake without ever being shown one.</h2>
@@ -969,7 +958,7 @@ body::before,body::after{display:none}
     <p>“Picture a bank teller who’s handled <i>thousands</i> of real signatures. Nobody ever sat them down and taught them what a forgery looks like. But when a fake slides across the counter, it just… feels wrong. The slant, the pressure, the speed — each one could be fine on its own, but <i>together</i> they don’t match what ‘real’ feels like.”</p>
     <p>“That’s exactly what we do with SHARDFALL players.” <span class="cue">[walk the three steps]</span> “We study thousands of normal players across lots of traits at once — aim steadiness, reaction time, headshot rate. We build a <i>feel</i> for what normal looks like — not a rulebook, a feel. And then we flag anything that doesn’t fit, even when every single trait, on its own, looks perfectly legal.”</p>
     <p>“So the punchline:” <span class="cue">[read the gist]</span> “instead of a checklist of what’s <i>bad</i> — which a cheat can just dodge — we learn what’s <i>normal</i> and notice what’s off. <i>That’s</i> anomaly detection. And on the next slide, I’m going to let you try to beat it.”</p></div>
-  <p><b>First ELI5 slide.</b> Goal: a non-technical attendee can describe anomaly detection in one sentence after. Rail's bottom rung (cool) lit. ~75s; let the analogy breathe.</p>
+  <p><b>First ELI5 slide.</b> Goal: a non-technical attendee can describe anomaly detection in one sentence after. Top step-tracker shows Rung 1 (cool) highlighted. ~75s; let the analogy breathe.</p>
   <p><span class="el">Analogy — bank teller.</span> Captures the two ideas: you learn from <i>normal</i> (never labelled fakes), and the giveaway is the <i>combination</i> of traits. Tell it as a story.</p>
   <p><span class="el">Mechanism (plain).</span> Study many normal players × many traits → build a feel for normal → flag what doesn't fit even when each trait alone is legal. Resist "z-score / distribution / feature vector" out loud.</p>
   <p><span class="el">Gist.</span> Attach "anomaly detection" only after intuition lands. Tee up the demo: the contrast "checklist of bad (dodgeable) vs sense of normal (not dodgeable)" becomes literally draggable next.</p>
@@ -982,7 +971,7 @@ body::before,body::after{display:none}
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s9">
-    <div class="m-head"><span class="m-num">10/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — how it works</span></div>
+    <div class="m-head"><span class="m-num">10/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · how anomaly detection actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.4rem,2.9vw,2.1rem)">From “feels off” to a number you can rank.</h2>
@@ -1031,7 +1020,7 @@ reason = argmax<sub>f</sub> |z[f]|       <span class="cm"># the dominant signal<
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s10">
-    <div class="m-head"><span class="m-num">11/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">11/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">What you feed it — and where that data already lives.</h2>
@@ -1071,7 +1060,7 @@ reason = argmax<sub>f</sub> |z[f]|       <span class="cm"># the dominant signal<
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s11">
-    <div class="m-head"><span class="m-num">12/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — worked example</span></div>
+    <div class="m-head"><span class="m-num">12/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · one real row → the formula → the verdict <span style="color:var(--faint)">— the whole pipeline on one player</span></div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">Let’s run <span style="color:var(--shard)">one evasive cheat</span> through the math.</h2>
@@ -1113,7 +1102,7 @@ cutoff (93rd pct of all scores)        = <span class="b">~9.5</span>
   <p><span class="el">The teaching climax of Rung 1.</span> This is where "I understand anomaly detection" becomes "I could compute it." Linger on step 3 (the react_std tell) and step 4 (small oddities summing).</p></div>
     </details>
   </article><article class="m-entry" id="s12">
-    <div class="m-head"><span class="m-num">13/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">13/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · not one formula — a menu · pick by your constraints</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">Several ways to score “how abnormal.” Here’s when to use which.</h2>
@@ -1148,7 +1137,7 @@ cutoff (93rd pct of all scores)        = <span class="b">~9.5</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s13">
-    <div class="m-head"><span class="m-num">14/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — before & after</span></div>
+    <div class="m-head"><span class="m-num">14/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — before & after</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · before → after · the code <i>and</i> the validation</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.4rem,2.9vw,2.1rem)">Same data. Swap the method. Watch the numbers move.</h2>
@@ -1188,7 +1177,7 @@ reason = FEATURES[ argmax(abs(Z)) ]</pre>
   <p><span class="el">F1.</span> If asked: F1 is the single combined score of precision &amp; recall (their harmonic mean) — one number to compare the two methods. 0.68 → 0.92 is a large, real jump.</p></div>
     </details>
   </article><article class="m-entry" id="s14">
-    <div class="m-head"><span class="m-num">15/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — LIVE</span></div>
+    <div class="m-head"><span class="m-num">15/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Anomaly — LIVE</span></div>
     <div class="m-slide"><div class="m-demobanner">▶ This is a <b>live interactive demo</b> in the full deck (drag / run / tap). Below is its surrounding content; open <code>confidence-ladder-deck-v3.html</code> on a laptop to run it.</div>
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · LIVE DEMO — drag the threshold <span class="gamebadge">◆ SHARDFALL</span></div>
   <div class="reveal demo" style="--rc:var(--cool)" id="demo-anom">
@@ -1236,7 +1225,7 @@ reason = FEATURES[ argmax(abs(Z)) ]</pre>
   <p><span class="el">Honesty.</span> Anomaly mode still raises <i>some</i> false alarms (a few legit on the fringe) — correct, because it surfaces for review, never auto-bans. Numbers are computed live in-browser.</p></div>
     </details>
   </article><article class="m-entry" id="s15">
-    <div class="m-head"><span class="m-num">16/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph, explained</span></div>
+    <div class="m-head"><span class="m-num">16/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · technique 2 of 2: graph analysis <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--cool)">The conspiracy you can’t see one suspect at a time.</h2>
@@ -1265,7 +1254,7 @@ reason = FEATURES[ argmax(abs(Z)) ]</pre>
   <p><span class="el">Gist.</span> "Graph = map of connections," then "GNN = the learning version." Tee up the build-the-ring demo.</p></div>
     </details>
   </article><article class="m-entry" id="s16">
-    <div class="m-head"><span class="m-num">17/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — how it works</span></div>
+    <div class="m-head"><span class="m-num">17/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · how graph ring-detection actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.4rem,2.9vw,2.1rem)">Turn matches into a map, then find the dense knots.</h2>
@@ -1311,7 +1300,7 @@ rings  = connected_components(strong)
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s17">
-    <div class="m-head"><span class="m-num">18/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">18/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">A graph is just two tables you probably already have.</h2>
@@ -1348,7 +1337,7 @@ rings  = connected_components(strong)
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s18">
-    <div class="m-head"><span class="m-num">19/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — worked example</span></div>
+    <div class="m-head"><span class="m-num">19/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · your edge list → the filter → the ring <span style="color:var(--faint)">— the whole pipeline on six players</span></div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">From a match log to a named ring, by the numbers.</h2>
@@ -1384,7 +1373,7 @@ each member’s solo win-rate ≈ <span class="b">50%</span>  <span class="dim">
   <p><span class="el">Numbers match the demo.</span> The c984–c989 ring is exactly what detect_rings.py / the live demo surface; counts (8–10 intra vs 1–2 ordinary) and the 4×median rule are the real algorithm.</p></div>
     </details>
   </article><article class="m-entry" id="s19">
-    <div class="m-head"><span class="m-num">20/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">20/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · several ways to find the knot · pick by your constraints</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.35rem,2.7vw,2rem)">From a one-line rule to a learned model.</h2>
@@ -1417,7 +1406,7 @@ each member’s solo win-rate ≈ <span class="b">50%</span>  <span class="dim">
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s20">
-    <div class="m-head"><span class="m-num">21/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — before & after</span></div>
+    <div class="m-head"><span class="m-num">21/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Graph — before & after</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · before → after · per-account vs relational</div>
   <h2 class="reveal" style="--rc:var(--cool);font-size:clamp(1.4rem,2.9vw,2.1rem)">The exact same accounts — invisible, then obvious.</h2>
@@ -1452,7 +1441,7 @@ flag   = members of rings (size &gt;= <span class="num">3</span>)</pre>
   <p><b>Depth slide — graph before/after.</b> Drives home that per-account detection isn't under-tuned, it's structurally incapable — the strongest argument for the relational method.</p></div>
     </details>
   </article><article class="m-entry" id="s21">
-    <div class="m-head"><span class="m-num">22/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Rings — LIVE</span></div>
+    <div class="m-head"><span class="m-num">22/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Rings — LIVE</span></div>
     <div class="m-slide"><div class="m-demobanner">▶ This is a <b>live interactive demo</b> in the full deck (drag / run / tap). Below is its surrounding content; open <code>confidence-ladder-deck-v3.html</code> on a laptop to run it.</div>
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · LIVE DEMO — build the matches, watch the ring <span class="gamebadge">◆ SHARDFALL</span></div>
   <div class="reveal demo" style="--rc:var(--cool)" id="demo-ring">
@@ -1489,7 +1478,7 @@ flag   = members of rings (size &gt;= <span class="num">3</span>)</pre>
   <p><span class="el">Teaching point.</span> The signal isn't in any node — it's in the edges. This is the step-change a GNN delivers; here it's transparent graph clustering so it runs live. Say: production = a GNN learning node embeddings (Amazon SageMaker AI) over a graph (Amazon Neptune); the structure it finds is exactly this.</p></div>
     </details>
   </article><article class="m-entry" id="s22">
-    <div class="m-head"><span class="m-num">23/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · today → result</span></div>
+    <div class="m-head"><span class="m-num">23/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · today → result</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · today → with this → expected result</div>
   <div class="reveal flow3" style="--rc:var(--cool)">
@@ -1531,7 +1520,7 @@ flag   = members of rings (size &gt;= <span class="num">3</span>)</pre>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s23">
-    <div class="m-head"><span class="m-num">24/67</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Analyst copilot</span></div>
+    <div class="m-head"><span class="m-num">24/71</span><span class="m-chip" style="--rc:var(--cool)">R1 · Detect</span><span class="m-name">Rung 1 · Analyst copilot</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 1 <span class="accent" style="--rc:var(--cool)">· Detect</span> · closing the loop: the analyst copilot <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--cool)">A detection is useless until a <em>human</em> can act on it fast.</h2>
@@ -1561,7 +1550,7 @@ flag   = members of rings (size &gt;= <span class="num">3</span>)</pre>
   <p><span class="el">Gist + transition.</span> Name "LLM / generative AI" last; restate the boundary. Then transition to Rung 2 (Quantify): a flagged suspicion still has <i>no honest error bar</i> — the next rung puts a provable number on the confidence. → Rung 2.</p></div>
     </details>
   </article><article class="m-entry" id="s24">
-    <div class="m-head"><span class="m-num">25/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify, explained</span></div>
+    <div class="m-head"><span class="m-num">25/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · putting an honest number on “how sure” <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--r2)">A model says “0.83.” <em>0.83 what?</em></h2>
@@ -1597,7 +1586,7 @@ flag   = members of rings (size &gt;= <span class="num">3</span>)</pre>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s25">
-    <div class="m-head"><span class="m-num">26/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — how it works</span></div>
+    <div class="m-head"><span class="m-num">26/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · how conformal prediction actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--r2);font-size:clamp(1.4rem,2.9vw,2.1rem)">From a raw score to a guaranteed error rate.</h2>
@@ -1646,7 +1635,7 @@ p(x) = ( 1 + #{ sᵢ ≥ score(x) } ) / ( n + 1 )   <span class="cm"># conformal
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s26">
-    <div class="m-head"><span class="m-num">27/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">27/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--r2);font-size:clamp(1.35rem,2.7vw,2rem)">It needs almost nothing new — just scores you already produce.</h2>
@@ -1678,7 +1667,7 @@ p(x) = ( 1 + #{ sᵢ ≥ score(x) } ) / ( n + 1 )   <span class="cm"># conformal
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s27">
-    <div class="m-head"><span class="m-num">28/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — worked example</span></div>
+    <div class="m-head"><span class="m-num">28/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · your scores → the formula → the guarantee <span style="color:var(--faint)">— two players, one calibration set</span></div>
   <h2 class="reveal" style="--rc:var(--r2);font-size:clamp(1.35rem,2.7vw,2rem)">Turn two raw scores into two honest decisions.</h2>
@@ -1710,7 +1699,7 @@ B: p 0.012 &gt; 0.01  →  <span class="r">ABSTAIN → human review</span>   <sp
   <p><span class="el">Continuity.</span> p412 (score 18.3) is the same evasive cheat from the Rung-1 anomaly worked example — shows the rungs composing on one player.</p></div>
     </details>
   </article><article class="m-entry" id="s28">
-    <div class="m-head"><span class="m-num">29/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">29/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · several ways to put a number on confidence · pick by need</div>
   <h2 class="reveal" style="--rc:var(--r2);font-size:clamp(1.35rem,2.7vw,2rem)">Conformal isn’t the only way to be honest about uncertainty.</h2>
@@ -1742,7 +1731,7 @@ B: p 0.012 &gt; 0.01  →  <span class="r">ABSTAIN → human review</span>   <sp
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s29">
-    <div class="m-head"><span class="m-num">30/67</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — fair matchmaking</span></div>
+    <div class="m-head"><span class="m-num">30/71</span><span class="m-chip" style="--rc:var(--r2)">R2 · Quantify</span><span class="m-name">Rung 2 · Quantify — fair matchmaking</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 2 <span class="accent" style="--rc:var(--r2)">· Quantify</span> · a second face: uncertainty = fair matchmaking <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--r2);font-size:clamp(1.35rem,2.7vw,2rem)">The same idea, applied to who you match.</h2>
@@ -1790,7 +1779,7 @@ match to minimise P(draw-mismatch);
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s30">
-    <div class="m-head"><span class="m-num">31/67</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute, explained</span></div>
+    <div class="m-head"><span class="m-num">31/71</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--r3)">· Attribute</span> · did your fix actually work — or did you get lucky? <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--r3)">You shipped the fix. The metric moved. <em>Did the fix do it?</em></h2>
@@ -1826,7 +1815,7 @@ match to minimise P(draw-mismatch);
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s31">
-    <div class="m-head"><span class="m-num">32/67</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — how it works</span></div>
+    <div class="m-head"><span class="m-num">32/71</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--r3)">· Attribute</span> · how causal inference actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--r3);font-size:clamp(1.4rem,2.9vw,2.1rem)">Subtract the world that would have happened anyway.</h2>
@@ -1880,7 +1869,7 @@ Y* = Y − θ·(X − E[X]) ,  θ = Cov(Y,X)/Var(X)</pre>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s32">
-    <div class="m-head"><span class="m-num">33/67</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">33/71</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--r3)">· Attribute</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--r3);font-size:clamp(1.35rem,2.7vw,2rem)">It runs on the metrics &amp; logs you already chart.</h2>
@@ -1914,7 +1903,7 @@ Y* = Y − θ·(X − E[X]) ,  θ = Cov(Y,X)/Var(X)</pre>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s33">
-    <div class="m-head"><span class="m-num">34/67</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — worked example</span></div>
+    <div class="m-head"><span class="m-num">34/71</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--r3)">· Attribute</span> · your metric → the formula → the true effect <span style="color:var(--faint)">— did the ban wave work?</span></div>
   <h2 class="reveal" style="--rc:var(--r3);font-size:clamp(1.35rem,2.7vw,2rem)">The dashboard says −30%. The truth is −22%.</h2>
@@ -1945,7 +1934,7 @@ ATT = −12 − (−3) = <span class="g">−9 reports/1000</span>  (on a base of
   <p><span class="el">Why these numbers.</span> Chosen so the naive vs causal gap is large and clean (30% vs 22%), illustrating confounding by a shared downward trend. Verifiable on screen.</p></div>
     </details>
   </article><article class="m-entry" id="s34">
-    <div class="m-head"><span class="m-num">35/67</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">35/71</span><span class="m-chip" style="--rc:var(--r3)">R3 · Attribute</span><span class="m-name">Rung 3 · Attribute — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 3 <span class="accent" style="--rc:var(--r3)">· Attribute</span> · several ways to prove a cause · pick by what you can run</div>
   <h2 class="reveal" style="--rc:var(--r3);font-size:clamp(1.35rem,2.7vw,2rem)">Match the method to how much control you have.</h2>
@@ -1976,7 +1965,7 @@ ATT = −12 − (−3) = <span class="g">−9 reports/1000</span>  (on a base of
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s35">
-    <div class="m-head"><span class="m-num">36/67</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test, explained</span></div>
+    <div class="m-head"><span class="m-num">36/71</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--r4)">· Stress-test</span> · break it yourself, before a million players do <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--r4)">Don’t wait for players to find the broken build. <em>Send robots first.</em></h2>
@@ -2012,7 +2001,7 @@ ATT = −12 − (−3) = <span class="g">−9 reports/1000</span>  (on a base of
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s36">
-    <div class="m-head"><span class="m-num">37/67</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — how it works</span></div>
+    <div class="m-head"><span class="m-num">37/71</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--r4)">· Stress-test</span> · how RL self-play &amp; economy sim actually work <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--r4);font-size:clamp(1.4rem,2.9vw,2.1rem)">Reward the agent for breaking your game.</h2>
@@ -2065,7 +2054,7 @@ prices ← market_clear(all_actions)   <span class="cm"># watch CPI, Gini</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s37">
-    <div class="m-head"><span class="m-num">38/67</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">38/71</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--r4)">· Stress-test</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--r4);font-size:clamp(1.35rem,2.7vw,2rem)">It needs a sandbox, not your players.</h2>
@@ -2098,7 +2087,7 @@ prices ← market_clear(all_actions)   <span class="cm"># watch CPI, Gini</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s38">
-    <div class="m-head"><span class="m-num">39/67</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — worked example</span></div>
+    <div class="m-head"><span class="m-num">39/71</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--r4)">· Stress-test</span> · sandbox → agents → the exploit, pre-launch <span style="color:var(--faint)">— an economy meltdown caught in sim</span></div>
   <h2 class="reveal" style="--rc:var(--r4);font-size:clamp(1.35rem,2.7vw,2rem)">10,000 simulated players find what QA didn’t.</h2>
@@ -2131,7 +2120,7 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
   <p><span class="el">Numbers are illustrative.</span> The CPI/Gini figures are plausible simulation outputs, not from a specific run; framed as "an example run." The arbitrage mechanism is the real craft-recipe mispricing from Rung 5.</p></div>
     </details>
   </article><article class="m-entry" id="s39">
-    <div class="m-head"><span class="m-num">40/67</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">40/71</span><span class="m-chip" style="--rc:var(--r4)">R4 · Stress-test</span><span class="m-name">Rung 4 · Stress-test — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 4 <span class="accent" style="--rc:var(--r4)">· Stress-test</span> · several ways to break it first · pick by what you’re testing</div>
   <h2 class="reveal" style="--rc:var(--r4);font-size:clamp(1.35rem,2.7vw,2rem)">Different breakage, different robot.</h2>
@@ -2161,7 +2150,7 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s40">
-    <div class="m-head"><span class="m-num">41/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Automated Reasoning, explained</span></div>
+    <div class="m-head"><span class="m-num">41/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Automated Reasoning, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · the technique <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--teal)">A tireless rule-lawyer who checks <em>every</em> possible move.</h2>
@@ -2184,13 +2173,13 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
     <p>“Today, to check a game economy, your playtesters try thousands of things hoping to break it. Now imagine instead a <i>tireless logician</i> who reads your shop rulebook and checks <b>every</b> sequence of buys, sells, and crafts that could <i>ever</i> happen — and either hands you the exact recipe that breaks it, or proves, with certainty, that nothing can.”</p>
     <p><span class="cue">[walk the steps]</span> “How? You write the shop and crafting rules as precise logic — what each action does to gold and items. You state the promise you want kept — ‘no loop of trades can leave a player with the same items but more gold.’ And the solver searches every possibility <i>at once</i>, by reasoning — not by trying them one at a time.”</p>
     <p><span class="cue">[read the gist]</span> “Here’s the difference in a sentence: playtesting says ‘we tried a lot and didn’t break it.’ This says ‘we <i>proved</i> it can’t break’ — like proving a Sudoku has exactly one solution without filling in every possible grid. The name is <b>Automated Reasoning</b>, and it’s the same family as AWS’s own provable-security work. Next slide — let’s actually break SHARDFALL’s economy, then prove the fix.”</p></div>
-  <p><b>ELI5 for the most unfamiliar + most differentiated technique.</b> The leap: from "test a lot and hope" to "prove it can't happen." Rail's 2nd rung (teal). Conceptual heart; ~90s.</p>
+  <p><b>ELI5 for the most unfamiliar + most differentiated technique.</b> The leap: from "test a lot and hope" to "prove it can't happen." Top step-tracker shows Rung 5 (teal) highlighted. Conceptual heart; ~90s.</p>
   <p><span class="el">Analogy — tireless logician.</span> Familiar (playtesters) vs new (a logician checking <i>every</i> sequence by reasoning). Two outcomes: exact exploit, or proof of none. Both valuable.</p>
   <p><span class="el">Mechanism.</span> Write rules as logic → state the promise → solver searches all at once by reasoning (not sampling) → loophole or proof. Stress "all at once, by reasoning" = why it's certainty. Avoid "SMT / satisfiability / state space."</p>
   <p><span class="el">Gist.</span> The Sudoku image is the cleanest proof-vs-search intuition. Name "Automated Reasoning" last. Honest ceiling (full on the credibility slide): proof is over the rules <i>as written</i>, not shipped code. AWS hook: Bedrock Automated Reasoning checks; the Zelkova/Dafny provable-security lineage — verify naming.</p></div>
     </details>
   </article><article class="m-entry" id="s41">
-    <div class="m-head"><span class="m-num">42/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — how it works</span></div>
+    <div class="m-head"><span class="m-num">42/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · how automated reasoning actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--teal);font-size:clamp(1.4rem,2.9vw,2.1rem)">Describe the rules as math; ask “can this ever break?”</h2>
@@ -2238,7 +2227,7 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s42">
-    <div class="m-head"><span class="m-num">43/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">43/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--teal);font-size:clamp(1.35rem,2.7vw,2rem)">Its “data” isn’t telemetry — it’s your design spec.</h2>
@@ -2274,7 +2263,7 @@ day 1–600: stable · <span class="r">day ~640: CPI starts climbing</span></div
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s43">
-    <div class="m-head"><span class="m-num">44/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — worked example</span></div>
+    <div class="m-head"><span class="m-num">44/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · your config → the constraints → the verdict <span style="color:var(--faint)">— the whole proof on one economy</span></div>
   <h2 class="reveal" style="--rc:var(--teal);font-size:clamp(1.35rem,2.7vw,2rem)">Turn the shop config into math, and let it break.</h2>
@@ -2314,7 +2303,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
   <p><span class="el">SAT/SMT note.</span> Integer counts + arithmetic = SMT (linear integer arithmetic); the slide says "solver searches all non-negative integer n[a]" which is accurate.</p></div>
     </details>
   </article><article class="m-entry" id="s44">
-    <div class="m-head"><span class="m-num">45/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">45/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · several tools to prove a property · pick by the question</div>
   <h2 class="reveal" style="--rc:var(--teal);font-size:clamp(1.35rem,2.7vw,2rem)">Different properties want different provers.</h2>
@@ -2346,7 +2335,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s45">
-    <div class="m-head"><span class="m-num">46/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — before & after</span></div>
+    <div class="m-head"><span class="m-num">46/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Auto-Reasoning — before & after</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · before → after · fuzzing vs proving</div>
   <h2 class="reveal" style="--rc:var(--teal);font-size:clamp(1.4rem,2.9vw,2.1rem)">“We tried a lot” vs. “it cannot happen.”</h2>
@@ -2387,7 +2376,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
   <p><b>Depth slide — AR before/after.</b> Fuzzing code + its "none seen in N tries" outcome vs the solver + its exploit-then-UNSAT outcome. Honesty note: we explicitly concede fuzzing WOULD find this toy 4-step loop — the real argument is (a) long/rare/conditional loops in a real economy slip the random net, and (b) fuzzing can never prove <i>absence</i>. Don't claim fuzzing "missed" a trivial loop; that's not credible.</p></div>
     </details>
   </article><article class="m-entry" id="s46">
-    <div class="m-head"><span class="m-num">47/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Money pump — LIVE</span></div>
+    <div class="m-head"><span class="m-num">47/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · Money pump — LIVE</span></div>
     <div class="m-slide"><div class="m-demobanner">▶ This is a <b>live interactive demo</b> in the full deck (drag / run / tap). Below is its surrounding content; open <code>confidence-ladder-deck-v3.html</code> on a laptop to run it.</div>
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · LIVE DEMO — find the dupe, prove the fix <span class="gamebadge">◆ SHARDFALL</span></div>
   <div class="reveal demo" style="--rc:var(--teal)" id="demo-pump">
@@ -2432,7 +2421,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
   <p><span class="el">Honest ceiling + AWS.</span> Proof is over the rules as written, not the shipped binary. Production: Bedrock Automated Reasoning checks / the Zelkova-Dafny lineage prove it unbounded; the demo's search is sound over the bounded action lattice.</p></div>
     </details>
   </article><article class="m-entry" id="s47">
-    <div class="m-head"><span class="m-num">48/67</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · today → result</span></div>
+    <div class="m-head"><span class="m-num">48/71</span><span class="m-chip" style="--rc:var(--teal)">R5 · Verify rules</span><span class="m-name">Rung 5 · today → result</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 5 <span class="accent" style="--rc:var(--teal)">· Verify rules</span> · today → with this → expected result</div>
   <div class="reveal flow3" style="--rc:var(--teal)">
@@ -2474,7 +2463,7 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s48">
-    <div class="m-head"><span class="m-num">49/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal, explained</span></div>
+    <div class="m-head"><span class="m-num">49/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal, explained</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · the technique <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--gold)">The sealed envelope you can’t secretly swap.</h2>
@@ -2497,13 +2486,13 @@ no n[a] satisfies gold &gt; 0   →  <span class="g">UNSAT → PROVEN safe</span
     <p>“Before a SHARDFALL crate opens, the server writes the result on a card, seals it in an envelope, and hands <i>you</i> a tamper-proof fingerprint of what’s inside. <i>Then</i> you open the crate. Then the envelope gets unsealed — and you check the fingerprint still matches. Because you got that fingerprint <i>first</i>, the server could not possibly have changed the card after seeing your spin.”</p>
     <p><span class="cue">[walk the steps]</span> “Two things make the fingerprint magic: change even one letter of what’s inside and the fingerprint changes <i>completely</i> — and you can’t run it backwards to peek. The outcome is locked before you act, and it depends partly on a number <i>you</i> contribute, so the house can’t cherry-pick a result. And anyone can re-check later — if a result was edited, the fingerprint won’t match. A guaranteed catch, not a guess.”</p>
     <p><span class="cue">[read the gist]</span> “That fingerprint is called a <b>hash</b>; the pattern is <b>commit-reveal</b>; the stronger cousins are VRF and attestation. And on the next slide — this is the fun one — you’re going to tamper with a real crate record and watch a <i>real</i> hash turn red.”</p></div>
-  <p><b>ELI5 for the cryptographic rung</b> — sounds intimidating, actually the most intuitive once anchored to a sealed envelope. Rail's 3rd rung (gold).</p>
+  <p><b>ELI5 for the cryptographic rung</b> — sounds intimidating, actually the most intuitive once anchored to a sealed envelope. Top step-tracker shows Rung 6 (gold) highlighted.</p>
   <p><span class="el">Analogy — sealed envelope.</span> Universal (sealed bids, magician's prediction). Carries all three ideas: commit before the spin, can't change after, anyone checks at reveal.</p>
   <p><span class="el">Mechanism.</span> Fingerprint (hash) published first — two plain properties: any tiny change flips it; can't reverse it to peek. Outcome locked before the spin, depends partly on the player's number (house can't cherry-pick). Anyone re-checks; edited result won't match. Avoid bare "SHA-256 / preimage / nonce" — describe them.</p>
   <p><span class="el">Gist + ceiling.</span> "Hash = one-way fingerprint," then "commit-reveal," then VRF/attestation. Crucial ceiling (full two slides on): proves not-changed-after-the-fact, NOT that the odds were fair. Plant gently. Tee up the live tamper demo with a REAL hash.</p></div>
     </details>
   </article><article class="m-entry" id="s49">
-    <div class="m-head"><span class="m-num">50/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — how it works</span></div>
+    <div class="m-head"><span class="m-num">50/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — how it works</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · how commit-reveal actually works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
   <h2 class="reveal" style="--rc:var(--gold);font-size:clamp(1.4rem,2.9vw,2.1rem)">Lock the answer in public, before anyone acts.</h2>
@@ -2551,7 +2540,7 @@ ok     = (sha256(server_seed) == commit)   <span class="cm"># not swapped</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s50">
-    <div class="m-head"><span class="m-num">51/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — your data & I/O</span></div>
+    <div class="m-head"><span class="m-num">51/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — your data & I/O</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · the inputs, the outputs, and where to get them</div>
   <h2 class="reveal" style="--rc:var(--gold);font-size:clamp(1.35rem,2.7vw,2rem)">Five fields per draw — and your RNG already makes most of them.</h2>
@@ -2588,7 +2577,7 @@ ok     = (sha256(server_seed) == commit)   <span class="cm"># not swapped</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s51">
-    <div class="m-head"><span class="m-num">52/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — worked example</span></div>
+    <div class="m-head"><span class="m-num">52/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — worked example</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · one crate → the hash → tamper fails <span style="color:var(--faint)">— the whole protocol on one draw</span></div>
   <h2 class="reveal" style="--rc:var(--gold);font-size:clamp(1.35rem,2.7vw,2rem)">Follow one loot draw — then try to cheat it.</h2>
@@ -2625,7 +2614,7 @@ verify: re-derive from seeds → roll 9912 → <span class="b">common</span>
   <p><span class="el">Re-state the ceiling.</span> "Proves not-changed, not honest-odds → VRF" — keeps the credibility line intact and bridges to the methods menu.</p></div>
     </details>
   </article><article class="m-entry" id="s52">
-    <div class="m-head"><span class="m-num">53/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — the methods menu</span></div>
+    <div class="m-head"><span class="m-num">53/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — the methods menu</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · a ladder within the rung · pick by threat &amp; trust model</div>
   <h2 class="reveal" style="--rc:var(--gold);font-size:clamp(1.35rem,2.7vw,2rem)">How strong a guarantee, against whom?</h2>
@@ -2659,7 +2648,7 @@ verify: re-derive from seeds → roll 9912 → <span class="b">common</span>
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s53">
-    <div class="m-head"><span class="m-num">54/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — before & after</span></div>
+    <div class="m-head"><span class="m-num">54/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Commit-reveal — before & after</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · before → after · trust vs verify</div>
   <h2 class="reveal" style="--rc:var(--gold);font-size:clamp(1.4rem,2.9vw,2.1rem)">An edited record: silent, then caught and named.</h2>
@@ -2695,7 +2684,7 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
   <p><b>Depth slide — commit-reveal before/after.</b> The "trust" stub (verify returns True) vs the real derive-and-compare check. Drives home the rung-3 distinction: not a tuned threshold, a deterministic reproduction — hence a hard true positive, not a suspicion.</p></div>
     </details>
   </article><article class="m-entry" id="s54">
-    <div class="m-head"><span class="m-num">55/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Tamper test — LIVE</span></div>
+    <div class="m-head"><span class="m-num">55/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · Tamper test — LIVE</span></div>
     <div class="m-slide"><div class="m-demobanner">▶ This is a <b>live interactive demo</b> in the full deck (drag / run / tap). Below is its surrounding content; open <code>confidence-ladder-deck-v3.html</code> on a laptop to run it.</div>
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · LIVE DEMO — tamper it, watch the real hash break <span class="gamebadge">◆ SHARDFALL</span></div>
   <div class="reveal demo" style="--rc:var(--gold)" id="demo-hash">
@@ -2726,7 +2715,7 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
   <p><span class="el">Reframe + AWS.</span> Pitch it as an INTERNAL control (is the crate service running my configured odds? would a rewritten record be caught?), not a player gimmick. Production: KMS (signing), Lambda (verify endpoint), DynamoDB + application-level hash-chaining (QLDB reached end-of-support in 2025 — don't use it), Nitro Enclaves (attestation, which attests image measurements / PCRs). [SageMaker AI for the heavier ML in earlier rungs.]</p></div>
     </details>
   </article><article class="m-entry" id="s55">
-    <div class="m-head"><span class="m-num">56/67</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · today → result</span></div>
+    <div class="m-head"><span class="m-num">56/71</span><span class="m-chip" style="--rc:var(--gold)">R6 · Verify pipeline</span><span class="m-name">Rung 6 · today → result</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 6 <span class="accent" style="--rc:var(--gold)">· Verify pipeline</span> · today → with this → expected result</div>
   <div class="reveal flow3" style="--rc:var(--gold)">
@@ -2768,7 +2757,7 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
   </dl></div></div>
     </details>
   </article><article class="m-entry" id="s56">
-    <div class="m-head"><span class="m-num">57/67</span><span class="m-chip" style="--rc:var(--bright)">R7 · Expose</span><span class="m-name">Rung 7 · Expose</span></div>
+    <div class="m-head"><span class="m-num">57/71</span><span class="m-chip" style="--rc:var(--bright)">R7 · Expose</span><span class="m-name">Rung 7 · Expose</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--bright)">· Expose</span> · optional · plain English + comparison <span class="gamebadge oracle">✦ STAR ORACLE</span></div>
   <div class="cols split" style="align-items:start">
@@ -2792,13 +2781,128 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
     <p>“Rung seven is optional — and it’s the shortest, because it’s not a new technique. It’s the <i>same</i> Rung-6 proof, just pointed outward.”</p>
     <p>“Take that sealed envelope and publish it. Now any player — or a regulator — can check a Star Oracle banner pull <i>themselves</i> and confirm you didn’t cheat. <span class="cue">[walk Today → With → Result]</span> Today it’s ‘trust us, the odds are one percent,’ and every dispute is your word against theirs. With this, the published record lets them re-run the check independently. The result: disputes become evidence-based — fewer escalations, fewer chargebacks, a real compliance posture, and a genuine brand differentiator <i>where it’s worth it</i>.”</p>
     <p>“But I have to draw one hard line, and it’s the most important sentence in the talk.” <span class="cue">[read the boundary card slowly]</span> “This makes your game <b>auditable</b> — it does <i>not</i> automatically make it <b>accountable</b>. The math gives an outsider a record they can verify. Whether you <i>act</i> on it — refund, reverse, re-rank — is your policy, not your cryptography. <b>Proof supplies the evidence. People supply the remedy.</b> Anyone who tells you the math alone makes you accountable is overselling it.”</p></div>
-  <p><b>Optional final rung (7) + the sharpest line: auditable vs accountable.</b> Rail's top rung (bright). Brief but precise — over-claiming here undoes the credibility built so far. Compresses ELI5 + comparison because Rung 4 is "the same proof, pointed outward," not a new technique. Uses STAR ORACLE because gacha odds are the canonical exposure case.</p>
+  <p><b>Optional final rung (7) + the sharpest line: auditable vs accountable.</b> Top step-tracker shows Rung 7 (bright) highlighted. Brief but precise — over-claiming here undoes the credibility built so far. Compresses ELI5 + comparison because Rung 7 is "the same proof, pointed outward," not a new technique. Uses STAR ORACLE because gacha odds are the canonical exposure case.</p>
   <p><span class="el">Headline + imagine.</span> Reuses the envelope; the verifier is now an outsider who doesn't trust you — exactly why internal hygiene isn't enough and the cryptographic artifact is.</p>
   <p><span class="el">Today/With/Result.</span> belief-based → independent re-verification → evidence-based disputes (fewer escalations/chargebacks, compliance posture, differentiator) "where it's worth it" (ties to pick-and-choose).</p>
   <p><span class="el">Auditable vs accountable card.</span> The most important honesty distinction. Accountability = duty to answer + redress; crypto supplies neither, only an evidentiary substrate. "Auditable, not automatically accountable — proof supplies the evidence, people supply the remedy." This earns trust on everything else.</p></div>
     </details>
   </article><article class="m-entry" id="s57">
-    <div class="m-head"><span class="m-num">58/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">What 'proof' means</span></div>
+    <div class="m-head"><span class="m-num">58/71</span><span class="m-chip" style="--rc:var(--bright)">R7 · Expose</span><span class="m-name">Rung 7+ · Zero-knowledge, explained</span></div>
+    <div class="m-slide">
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · prove it’s fair <i>without revealing the secret</i> <span class="gamebadge oracle">✦ STAR ORACLE</span></div>
+  <h2 class="reveal" style="--rc:var(--zk)">“Don’t trust us — check it.” But what if the check needs a secret?</h2>
+  <div class="reveal eli5" style="--rc:var(--zk);margin-top:.8rem">
+    <div class="analogy">
+      <div class="scene">🚪🔑🙈</div><div class="lbl">Imagine…</div>
+      <p>You want to prove you know the password to a door — <em>without saying the password</em>. So you step through it and back while the doubter watches. They’re convinced you knew it; they still don’t know what it is. A <b>zero-knowledge proof</b> does exactly that for a computation: it convinces a skeptic the result is right while revealing <em>nothing</em> about the secret inputs.</p>
+    </div>
+    <div class="mech">
+      <div class="step"><span class="num">1</span><p><b>The tension:</b> commit-reveal (Rung 7) makes you eventually <i>publish the seed</i>. But the seed may be commercially secret (your RNG) or private (a player’s data).</p></div>
+      <div class="step"><span class="num">2</span><p><b>ZK breaks the tradeoff:</b> prove “this draw followed the published 1% odds” or “this score was earned legitimately” — <i>without</i> exposing the seed, the model, or the hidden state.</p></div>
+      <div class="step"><span class="num">3</span><p><b>Anyone verifies cheaply</b> — the proof is small and fast to check, even though producing it is heavy.</p></div>
+    </div>
+  </div>
+  <p class="reveal gist" style="--rc:var(--zk)"><b>The gist:</b> a <b>zero-knowledge proof</b> (zk-SNARK / zk-STARK) lets you publish a verifiable “this was computed correctly” <i>certificate</i> while keeping the inputs secret. It’s Rung 7’s “verify it yourself” — for the cases where full transparency would leak something you can’t expose. <span style="color:var(--faint)">Generic public cryptography; the natural fit for regulated real-money games and fog-of-war competitive integrity.</span></p></div>
+    <details class="m-notes" open>
+      <summary>▶ Speaker &amp; reader notes</summary>
+      <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“One more turn of the Expose screw — and this is where it gets genuinely cutting-edge. Rung 7 said ‘don’t trust us, check it’ — but to check a draw, you eventually had to <i>publish the seed</i>. What if you can’t? Your RNG is a commercial secret; a player’s data is private; revealing the seed leaks your house edge.”</p>
+    <p>“Here’s the trick, and it’s beautiful. Imagine proving you know a door’s password <i>without saying it</i> — you just step through the door and back while the skeptic watches. They’re convinced; they still don’t know the password. A zero-knowledge proof does that for a <i>computation</i>: it convinces anyone the result is correct while revealing <i>nothing</i> about the secret inputs.”</p>
+    <p><span class="cue">[walk the three steps]</span> “So you prove ‘this loot draw followed the published one-percent odds’ or ‘this leaderboard score was earned legitimately’ — without exposing the seed, the model, or the hidden state. And the kicker: the proof is tiny and cheap for anyone to check, even though generating it is heavy.”</p>
+    <p><span class="cue">[gist]</span> “That’s a zero-knowledge proof — a zk-SNARK or zk-STARK. It’s the answer for regulated real-money games, where you must prove fairness but can’t reveal your RNG, and for fog-of-war competitive integrity, where you must prove a move was legal without revealing the hidden board.”</p></div>
+  <p><b>Rung 7+ (ZK) — ELI5.</b> Zero-knowledge proofs extend Expose to the case where the verification would itself leak a secret (RNG seed, model, hidden state). The "prove you know the password without saying it" analogy is the canonical ZK intuition. Strong fit for RMG/iGaming (prove fair odds without exposing the RNG) and fog-of-war anti-cheat. Generic public crypto — zk-SNARK/STARK.</p>
+  <p><span class="el">Why it's an extension, not a new rung.</span> Same goal as Rung 7 (outsider-verifiable proof); it just removes the "must reveal the secret" cost. Frame as "Rung 7, levelled up," not Rung 8 — keeps the ladder at seven.</p>
+  <p><span class="el">Honest maturity.</span> Real and deployed in crypto/blockchain, but heavy to author and compute for general game logic. Say "frontier-but-real," and see the limits on the next slide.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Zero-knowledge proof (ZKP)</dt><dd>A way to prove a statement is true while revealing nothing beyond the fact that it's true — e.g. "this draw was fair" without showing the seed.</dd>
+    <dt>zk-SNARK / zk-STARK</dt><dd>The two main families of practical ZK proof systems. Both produce a small certificate anyone can verify quickly; STARKs avoid a "trusted setup" and resist quantum attacks, SNARKs are smaller.</dd>
+    <dt>Trusted setup</dt><dd>A one-time secret-generation ceremony some ZK systems need; if botched or cheated it undermines the proofs — which is why STARKs (no setup) are often preferred.</dd>
+    <dt>Witness</dt><dd>The secret input (the seed, the hidden board, the model weights) the prover keeps private while still proving the result is correct.</dd>
+    <dt>Fog of war</dt><dd>Game state hidden from a player (the opponent's hand, unseen map) — ZK lets a server prove a move was legal without revealing that hidden state.</dd>
+  </dl></div></div>
+    </details>
+  </article><article class="m-entry" id="s58">
+    <div class="m-head"><span class="m-num">59/71</span><span class="m-chip" style="--rc:var(--bright)">R7 · Expose</span><span class="m-name">Rung 7+ · Zero-knowledge — how it works</span></div>
+    <div class="m-slide">
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · how a ZK fairness proof works <span style="color:var(--faint)">— plain-first, formula beside</span></div>
+  <h2 class="reveal" style="--rc:var(--zk);font-size:clamp(1.4rem,2.9vw,2.1rem)">Prove the draw was fair; reveal nothing about the seed.</h2>
+  <div class="reveal depthgrid" style="--rc:var(--zk);margin-top:.7rem">
+    <div class="mechbox">
+      <div class="mh">the recipe — in plain English</div>
+      <ol>
+        <li><b>Write the rule as a circuit</b> — “outcome = map(hash(secret_seed, public_inputs)) and it matches the published odds.”</li>
+        <li><b>Keep the seed as a private “witness”</b>; mark the odds, the commitment, and the result as public.</li>
+        <li><b>Generate a proof</b> that the circuit ran correctly on <i>some</i> secret that hashes to the public commitment — heavy compute, done once per draw (or batched).</li>
+        <li><b>Anyone verifies the tiny proof</b> in milliseconds — convinced the draw was honest, still blind to the seed.</li>
+      </ol>
+    </div>
+    <div>
+      <div class="codepanel">
+        <div class="cphead"><span>the statement being proven — for the engineers</span><span class="tag">zk-SNARK/STARK</span></div>
+        <pre><span class="cm"># public: commitment C, odds table, outcome O</span>
+<span class="cm"># private witness: server_seed s, client_seed, nonce</span>
+prove ∃ s such that:
+   sha256(s) == C                       <span class="cm"># seed matches commitment</span>
+   roll = H(s, client, nonce) mod 10000
+   O    == odds_table(roll)             <span class="cm"># outcome follows published odds</span>
+<span class="cm"># verifier learns O is valid — learns NOTHING about s</span></pre>
+      </div>
+      <div class="formula"><span class="lab">worked example — a STAR ORACLE banner pull</span>
+        Player gets a <b>common</b>. The operator publishes a ZK proof that <i>some</i> secret seed (a) matches the pre-published commitment <b>and</b> (b) runs the audited 0.8%-rate banner logic to produce exactly that common — <span style="color:var(--zk)">without revealing the seed</span>. A regulator verifies the proof in milliseconds. The RNG stays secret; the fairness is proven.</div>
+    </div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--zk)"><b>Honest limits (this is frontier, not Monday):</b> proof generation is compute-heavy and the rule must be hand-compiled into a circuit (real engineering); and — same ceiling as all proofs — it proves the <i>circuit’s</i> logic, so someone must still certify the circuit encodes the real, audited odds. <span style="color:var(--faint)">In prod: ZK libraries (Circom/Halo2/StarkWare-style) on Lambda/Batch; verify current tooling.</span></p></div>
+    <details class="m-notes" open>
+      <summary>▶ Speaker &amp; reader notes</summary>
+      <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“How does it actually work? Four steps. <span class="cue">[left]</span> You write the fairness rule as a <i>circuit</i> — ‘the outcome equals the published-odds function of a hash of the seed.’ You mark the seed as a private witness and the odds, commitment, and result as public. You generate a proof that the circuit ran correctly on <i>some</i> secret matching the published commitment. And then anyone verifies that tiny proof in milliseconds.”</p>
+    <p><span class="cue">[code panel]</span> “For the engineers, the statement is right here: there <i>exists</i> a seed s such that its hash equals the commitment, the roll derives from it, and the outcome follows the odds table — and the verifier learns the outcome is valid while learning <i>nothing</i> about s. That existential-with-a-hidden-witness is the whole magic.”</p>
+    <p><span class="cue">[worked example]</span> “Concretely: a Star Oracle pull comes up common. The operator publishes a proof that some secret seed both matches the pre-committed fingerprint <i>and</i> runs the audited 0.8% banner logic to produce that exact common — without revealing the seed. A regulator checks it in milliseconds. RNG stays secret; fairness is proven. That’s the thing you cannot do with plain commit-reveal.”</p>
+    <p><span class="cue">[limits]</span> “And I’ll be honest — this is frontier, not Monday. Generating proofs is compute-heavy, and you have to hand-compile the rule into a circuit. Plus the same ceiling as every proof on this ladder: it proves the <i>circuit’s</i> logic, so someone still has to certify the circuit encodes the real audited odds.”</p></div>
+  <p><b>Rung 7+ (ZK) — mechanism + worked example.</b> The proven statement: ∃ seed s with sha256(s)==commitment AND outcome follows the published odds table — verifier learns validity, nothing about s. Worked example: a gacha banner pull proven fair without revealing the RNG. Honest limits: heavy proving, circuit-authoring cost, and the proof-is-over-the-circuit ceiling (consistent with the "what proof means" slide).</p>
+  <p><span class="el">The one idea.</span> "∃ a secret that (matches the commitment) AND (produces this outcome under the audited rule)" — proven without revealing the secret. That existential-over-a-hidden-witness is ZK in one line.</p>
+  <p><span class="el">RMG bridge.</span> This is the slide that makes the real-money-games case concrete: prove published odds were applied without exposing the RNG/house edge. Lead with it if pitching iGaming.</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>Circuit (arithmetic circuit)</dt><dd>The rule rewritten as a fixed sequence of additions/multiplications that a ZK system can prove was followed — how you "compile" a fairness rule for ZK.</dd>
+    <dt>Public input vs private witness</dt><dd>Public = what everyone sees (odds, commitment, outcome); private witness = the secret (seed) the prover hides while still proving the result.</dd>
+    <dt>Proof generation vs verification</dt><dd>Making the proof is computationally expensive (the operator's cost); checking it is tiny and fast (anyone, including a regulator).</dd>
+    <dt>Circom / Halo2</dt><dd>Common open toolchains for writing ZK circuits and generating proofs — the practical libraries an engineer would reach for.</dd>
+  </dl></div></div>
+    </details>
+  </article><article class="m-entry" id="s59">
+    <div class="m-head"><span class="m-num">60/71</span><span class="m-chip" style="--rc:var(--bright)">R7 · Expose</span><span class="m-name">Rung 7+ · Zero-knowledge — when it's worth it</span></div>
+    <div class="m-slide">
+  <div class="reveal kicker"><span class="tick"></span> Rung 7 <span class="accent" style="--rc:var(--zk)">· Expose, extended</span> · when the heavy machinery earns its keep</div>
+  <h2 class="reveal" style="--rc:var(--zk);font-size:clamp(1.4rem,2.9vw,2.1rem)">ZK isn’t free. Use it only where “verify without revealing” is the whole game.</h2>
+  <div class="reveal flow3" style="--rc:var(--zk)">
+    <div class="fcard today"><div class="ph"><span class="d"></span>Plain commit-reveal (Rung 7) is enough when…</div><h4>You can reveal the seed</h4><p>Loot/gacha where eventually publishing the seed leaks nothing you care about. Cheaper, simpler, no circuits. <b>Most games stop here.</b></p></div>
+    <div class="ar">→</div>
+    <div class="fcard after" style="--rc:var(--zk)"><div class="ph"><span class="d"></span>Reach for ZK when…</div><h4>Revealing the secret is unacceptable</h4><p>Regulated <b>real-money games</b> (prove published odds without exposing the RNG/house edge); <b>fog-of-war</b> esports (prove a move was legal without revealing the hidden board); <b>private-data</b> proofs (prove a player is eligible without exposing their identity).</p></div>
+    <div class="ar">→</div>
+    <div class="fcard result"><div class="ph"><span class="d"></span>The payoff</div><h4>Trust with confidentiality</h4><p>Regulator-grade, publicly-verifiable fairness — while your IP, your RNG, and your players’ data stay private. The one proof that gives <i>both</i>.</p></div>
+  </div>
+  <div class="reveal genre">
+    <div class="gh">✦ in your genre — “prove it without revealing it”</div>
+    <div class="grid">
+      <div class="gi"><b>✦ Real-money / iGaming</b>the headline use case: provably-fair to a regulator <i>without</i> disclosing the certified RNG or the live house edge.</div>
+      <div class="gi"><b>Competitive / esports</b>prove a play was within the rules (no wallhack data used) without revealing fog-of-war state mid-match.</div>
+      <div class="gi"><b>Card games / poker</b>prove a shuffle &amp; deal were honest without exposing the deck order to opponents.</div>
+      <div class="gi"><b>Web3 / on-chain games</b>where ZK is already native — verifiable outcomes with private state, on-chain.</div>
+    </div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--zk)"><b>Match the tool to the stakes — again.</b> ZK is the most powerful and most expensive verification on the whole ladder. It’s over-engineering for a cosmetic drop; it’s close to mandatory where money, ranked integrity, or privacy law collide with a secret you can’t reveal.</p></div>
+    <details class="m-notes" open>
+      <summary>▶ Speaker &amp; reader notes</summary>
+      <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“Last word on ZK, and it’s the same discipline as the whole talk: match the tool to the stakes. <span class="cue">[left]</span> Plain commit-reveal — Rung 7 — is plenty when you can just reveal the seed eventually. Most games stop there, and should.”</p>
+    <p><span class="cue">[middle]</span> “You reach for zero-knowledge only when revealing the secret is itself unacceptable: regulated real-money games where the seed <i>is</i> your house edge; fog-of-war esports where revealing the hidden board mid-match would break the game; or private-data proofs where you must prove eligibility without exposing identity.”</p>
+    <p><span class="cue">[right + genre box]</span> “The payoff is the one thing nothing else on the ladder gives you: regulator-grade, publicly-verifiable fairness <i>and</i> confidentiality, together. <span class="cue">[read the iGaming line]</span> That’s why this is the headline technique for real-money gaming.”</p>
+    <p><span class="cue">[strip]</span> “But it’s the most expensive rung we’ve got. Over-engineering for a cosmetic drop; near-mandatory where money, ranked integrity, or privacy law collide with a secret you can’t reveal.”</p></div>
+  <p><b>Rung 7+ (ZK) — when-to-use / genre.</b> The decision boundary: commit-reveal when you CAN reveal the seed (most games); ZK when revealing is unacceptable (RMG/house-edge, fog-of-war esports, private-data eligibility, web3). Reinforces the talk's "match tool to stakes" spine at the most expensive end. Genre box leads with iGaming — the strongest ZK fit.</p>
+  <p><span class="el">RMG connection.</span> This trio of ZK slides is also the natural home for the real-money-games discussion we parked — ZK is what makes RMG's "prove fairness without exposing the RNG" possible. If we build an RMG framing later, it leans heavily here.</p></div>
+    </details>
+  </article><article class="m-entry" id="s60">
+    <div class="m-head"><span class="m-num">61/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">What 'proof' means</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The credibility check · what “proof” does and doesn’t mean</div>
   <h2 class="reveal" style="max-width:26ch">Be precise about what each proof <em style="color:var(--bright)">actually</em> proves.</h2>
@@ -2826,8 +2930,8 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
   <p><span class="el">Rung 1 row (added).</span> Anomaly/graph prove nothing — a ranked suspicion with false positives. Keeps the whole ladder honest in one table.</p>
   <p><span class="el">Strip.</span> "Don't trust, verify" works because trust is removed — but covers only the narrow proven property; the rest is governance, not math.</p></div>
     </details>
-  </article><article class="m-entry" id="s58">
-    <div class="m-head"><span class="m-num">59/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Keep the source of truth honest</span></div>
+  </article><article class="m-entry" id="s61">
+    <div class="m-head"><span class="m-num">62/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Keep the source of truth honest</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Across every rung · the two things that quietly rot a source of truth</div>
   <h2 class="reveal" style="max-width:30ch">A ladder is only as trustworthy as the evidence <em style="color:var(--xc)">stays</em>.</h2>
@@ -2857,8 +2961,8 @@ db.update(draw_id, outcome=<span class="str">"RARE"</span>)
     <dt>Cohort</dt><dd>A subgroup of players (by region, platform, language, skill tier) — fairness means a metric holds <i>within</i> each, not just on average.</dd>
   </dl></div></div>
     </details>
-  </article><article class="m-entry" id="s59">
-    <div class="m-head"><span class="m-num">60/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Honest over time · drift detection</span></div>
+  </article><article class="m-entry" id="s62">
+    <div class="m-head"><span class="m-num">63/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Honest over time · drift detection</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Cross-cutting · across TIME <span class="accent" style="--rc:var(--xc)">· drift &amp; continuous validation</span> <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--xc)">Yesterday’s detector, quietly wrong today.</h2>
@@ -2907,8 +3011,8 @@ KS = max|F_live(x) − F_ref(x)|     <span class="cm"># + ADWIN for streaming ch
     <dt>Baseline / reference window</dt><dd>The snapshot of "known-good" data the model was validated on, that live data is compared against.</dd>
   </dl></div></div>
     </details>
-  </article><article class="m-entry" id="s60">
-    <div class="m-head"><span class="m-num">61/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Honest across cohorts · fairness audit</span></div>
+  </article><article class="m-entry" id="s63">
+    <div class="m-head"><span class="m-num">64/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Honest across cohorts · fairness audit</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Cross-cutting · across COHORTS <span class="accent" style="--rc:var(--xc)">· fairness &amp; bias auditing</span> <span class="gamebadge">◆ SHARDFALL</span></div>
   <h2 class="reveal" style="--rc:var(--xc)">A biased model corrupts the truth <em>at the source</em>.</h2>
@@ -2957,8 +3061,8 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
     <dt>Sliced metric</dt><dd>A metric computed separately for each cohort instead of pooled — the simplest, most powerful way to expose hidden disparity.</dd>
   </dl></div></div>
     </details>
-  </article><article class="m-entry" id="s61">
-    <div class="m-head"><span class="m-num">62/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">It all connects</span></div>
+  </article><article class="m-entry" id="s64">
+    <div class="m-head"><span class="m-num">65/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">It all connects</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Bringing it together · every rung is the same five moves</div>
   <h2 class="reveal" style="max-width:32ch">Seven techniques. <em style="color:var(--bright)">One shape.</em> Your game data in, a graded verdict out.</h2>
@@ -2986,8 +3090,8 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><b>Capstone bridge slide (7 rungs).</b> Collapses all seven rungs into ONE pipeline (data → engine → formula → verdict → strength), proving they share one shape. Column ① reinforces "you already have this data"; the strength bars grow 20→100% across the seven, reprising the whole thesis. The single most photographed slide — make sure the 1–4 statistical vs 5–7 proof distinction is still felt (bars 20–58% vs 74–100%).</p>
   <p><span class="el">Why it lands.</span> After seven deep dives the audience needs the zoom-out: not seven tools to memorise, one repeatable move with a tunable proof-strength.</p></div>
     </details>
-  </article><article class="m-entry" id="s62">
-    <div class="m-head"><span class="m-num">63/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The climb, compounded</span></div>
+  </article><article class="m-entry" id="s65">
+    <div class="m-head"><span class="m-num">66/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">The climb, compounded</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The climb, in one view</div>
   <h2 class="reveal" style="max-width:28ch">Each rung answers a different question — with a stronger guarantee.</h2>
@@ -3015,8 +3119,8 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">The seam at rung 4/5.</span> The most important conceptual line: statistical evidence (1–4) vs mathematical proof (5–7). Don't let the audience flatten all seven into "more math = better."</p>
   <p><span class="el">Who-acts column.</span> human → abstain-or-act → analysts → designers → anyone. The drift toward "anyone can act/check" tracks the rising certainty.</p></div>
     </details>
-  </article><article class="m-entry" id="s63">
-    <div class="m-head"><span class="m-num">64/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Choose your rung</span></div>
+  </article><article class="m-entry" id="s66">
+    <div class="m-head"><span class="m-num">67/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Choose your rung</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> The takeaway that matters Monday · you don’t need all of it</div>
   <div class="cols split" style="align-items:start">
@@ -3045,8 +3149,8 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">Question→rung map.</span> Q1 adversary→Detect · Q2 costly wrong-ban→Quantify · Q3 interventions→Attribute · Q4 pre-launch catastrophe→Stress-test · Q5 loophole-certainty→Verify-rules · Q6 insider→Verify-pipeline · Q7 outsider-verify→Expose. Colour of each bullet matches its rung.</p>
   <p><span class="el">Two extremes.</span> Single-player non-monetised → Rung 1 at most; regulated real-money gacha → most of the ladder, needed anyway. This is the worksheet shipped in the kit.</p></div>
     </details>
-  </article><article class="m-entry" id="s64">
-    <div class="m-head"><span class="m-num">65/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Take-home kit</span></div>
+  </article><article class="m-entry" id="s67">
+    <div class="m-head"><span class="m-num">68/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Take-home kit</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> What you take home · more than slides</div>
   <h2 class="reveal" style="max-width:20ch">Leave with a kit, not a memory.</h2>
@@ -3081,8 +3185,47 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">Productionize.</span> One AWS diagram per rung. Verify service names/status before presenting.</p>
   <p><span class="el">Strip.</span> "One repo, offline, under a minute" + "theory → live demo → a thing you run on your own game this week." Mirror in the abstract's takeaways and the closing QR.</p></div>
     </details>
-  </article><article class="m-entry" id="s65">
-    <div class="m-head"><span class="m-num">66/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Close</span></div>
+  </article><article class="m-entry" id="s68">
+    <div class="m-head"><span class="m-num">69/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Frontier · where this goes next</span></div>
+    <div class="m-slide">
+  <div class="reveal kicker"><span class="tick"></span> Frontier · honest about what’s <i>coming</i>, not yet shippable</div>
+  <h2 class="reveal" style="max-width:30ch">Two emerging ideas worth <em style="color:var(--fr)">watching</em> — not yet building.</h2>
+  <p class="reveal lede" style="margin-top:.6rem;max-width:88ch">Everything on the ladder so far is deployable today. These two are different: genuinely promising for game trust, but <b>early</b>. We include them so you can track them — and so nobody sells them to you as production-ready. <span style="color:var(--fr)">No worked example here on purpose — that would overclaim maturity.</span></p>
+  <div class="reveal cols even" style="margin-top:.9rem;gap:1.6rem">
+    <div class="card icotop" style="--rc:var(--fr)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="3"/><circle cx="17" cy="8" r="3"/><path d="M7 11v4a3 3 0 0 0 3 3h4a3 3 0 0 0 3-3v-4"/><path d="M12 18v3"/><path d="M9 8h.01M17 8h.01"/></svg></div>
+      <div class="ct" style="color:var(--fr)">Frontier · verifiable AI</div><h3>Zero-Knowledge ML (ZKML)</h3>
+      <p><b>The idea:</b> prove a model produced a given output <i>without revealing the model</i> — or prove an output came from <i>the</i> certified anti-cheat/matchmaking model, not a tampered one.</p>
+      <p style="margin-top:.5rem"><b>Why it matters for games:</b> prove your matchmaking wasn’t rigged, or a ban came from the audited model — while keeping the model (your IP, and your anti-cheat secrets) private. It’s ZK (Rung 7+) pointed at the <i>model</i> instead of the <i>RNG</i>.</p>
+      <p style="margin-top:.5rem;color:var(--warm)"><b>Maturity:</b> early. Proving cost for large models is still impractical; works today only for small models. Watch, prototype, don’t depend on it.</p></div>
+    <div class="card icotop" style="--rc:var(--fr)"><span class="edge"></span>
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><rect x="14" y="8" width="8" height="8" rx="1.5"/><path d="M12 12h2"/><path d="M8 8v.01M8 16v.01M6 12h.01"/></svg></div>
+      <div class="ct" style="color:var(--fr)">Frontier · neural + symbolic</div><h3>Neurosymbolic AI</h3>
+      <p><b>The idea:</b> fuse the <i>pattern-spotting</i> of neural nets (Rungs 1–4) with the <i>provable rules</i> of symbolic logic (Rung 5) — a detector whose every flag comes with a checkable logical justification.</p>
+      <p style="margin-top:.5rem"><b>Why it matters for games:</b> it could let a cheat detector <i>explain itself in rules a human can verify</i> — closing the gap between “the model flagged it” (Rung 1) and “here’s the provable reason” (Rung 5), in one system.</p>
+      <p style="margin-top:.5rem;color:var(--warm)"><b>Maturity:</b> early &amp; mostly research. It’s an architecture, not a drop-in tool — promising for explainable, rule-grounded detection, but not productised for games yet.</p></div>
+  </div>
+  <p class="reveal note-strip" style="--rc:var(--fr)">The honest framing: the ladder is what you build <b>now</b>; these are what you <b>track</b>. Both aim at the same north star — trust you can <i>verify</i> — which is exactly why they’re worth watching, and exactly why we won’t pretend they’re ready.</p></div>
+    <details class="m-notes" open>
+      <summary>▶ Speaker &amp; reader notes</summary>
+      <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
+    <p>“Before I close, a quick frontier check — because intellectual honesty cuts both ways. Everything on the ladder is deployable today. These next two are <i>not</i> — they’re genuinely promising for game trust, but early, and I’d rather you hear that from me than from a vendor.”</p>
+    <p><span class="cue">[left card]</span> “First: zero-knowledge <i>machine learning</i>. We just used ZK to prove an <i>RNG</i> was fair without revealing the seed. ZKML points the same idea at a <i>model</i>: prove your matchmaking wasn’t rigged, or that a ban came from the audited model and not a tampered one — while keeping the model itself private. Powerful for protecting both your IP and your anti-cheat secrets. Maturity, honestly? Early. Proving cost for big models is still impractical; it works today only for small ones. Watch it, prototype it, don’t depend on it.”</p>
+    <p><span class="cue">[right card]</span> “Second: neurosymbolic AI. The whole tension in this talk is neural pattern-spotting at the bottom of the ladder versus provable logic at the top. Neurosymbolic tries to <i>fuse</i> them — a detector whose every flag carries a checkable logical reason. Imagine closing the gap between ‘the model flagged it’ and ‘here’s the provable rule it broke,’ in one system. But it’s an architecture, not a tool you download — mostly research today.”</p>
+    <p><span class="cue">[strip]</span> “So the honest framing: the ladder is what you build <i>now</i>; these are what you <i>track</i>. Same north star — trust you can verify — which is why they’re worth a slide, and why I won’t pretend they’re ready.”</p></div>
+  <p><b>Frontier section.</b> ZKML + neurosymbolic AI as emerging, explicitly-not-deployable ideas. Compact cards, NO worked examples (deliberate — overclaiming maturity on bleeding-edge tech would break the deck's honesty discipline). Each card states the idea, the game relevance, AND an explicit maturity caveat in warm/caution colour. Placed after the kit, before the Close, as a "what to track next" coda.</p>
+  <p><span class="el">Why no worked example.</span> The rest of the deck earns trust with runnable math; faking a worked example for tech this early would undercut that. Honesty about maturity is the point of the slide.</p>
+  <p><span class="el">How they connect to the ladder.</span> ZKML = Rung 7+ (ZK) aimed at the model not the RNG. Neurosymbolic = fusing Rungs 1–4 (neural) with Rung 5 (symbolic proof) — explainable detection with a checkable reason. Both serve the same "verifiable trust" thesis, which is why they belong as a coda, not as forced rungs.</p>
+  <p><span class="el">Tone.</span> This slide builds credibility precisely by NOT overselling. "Build the ladder now; track these." Don't let enthusiasm tip into "deploy this Monday."</p>
+  <div class="gloss"><span class="gh2">✦ plain-English terms (new on this slide)</span><dl>
+    <dt>ZKML (zero-knowledge ML)</dt><dd>Using a zero-knowledge proof to show a model gave a certain output, or that the output came from a specific certified model — without revealing the model's weights.</dd>
+    <dt>Neurosymbolic AI</dt><dd>An approach combining neural networks (learn patterns from data) with symbolic logic (explicit, checkable rules) so the system can both spot <i>and</i> justify.</dd>
+    <dt>Symbolic logic</dt><dd>Reasoning with explicit rules and facts (like the automated-reasoning rung) — the opposite of a neural net's learned, opaque weights.</dd>
+    <dt>Maturity (as used here)</dt><dd>How ready a technique is for production. "Early/research" = promising but not yet practical at game scale; track it, don't bet on it.</dd>
+  </dl></div></div>
+    </details>
+  </article><article class="m-entry" id="s69">
+    <div class="m-head"><span class="m-num">70/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Close</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Close</div>
   <h1 class="reveal" style="font-size:clamp(1.9rem,4.6vw,3.6rem);max-width:18ch">From <span style="color:var(--cool)">“we think so”</span> to <em>“we can prove it.”</em></h1>
@@ -3091,7 +3234,7 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
     <div style="width:88px;height:88px;border:1px solid var(--panel-line);border-radius:12px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;color:var(--faint);background:var(--panel)">[ QR ]</div>
     <div><div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:var(--gold)">THE QUICKSTART KIT</div><div style="color:var(--muted);font-weight:300;margin-top:.3rem">Worksheet · runnable rungs · AWS reference arch · every live demo.<br>One <code style="font-family:var(--mono)">git clone</code> away. Go climb it on your own game.</div></div>
   </div>
-  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal, drift detection &amp; fairness auditing are all standard public methods (credits, with links, in the appendix). What’s new is the <i>framing</i>: a seven-rung ladder — kept honest by drift &amp; fairness checks — that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p></div>
+  <p class="reveal" style="font-size:.74rem;color:var(--faint);margin-top:1.4rem;max-width:80ch;line-height:1.5">None of these techniques are mine or new — anomaly detection, GNNs, conformal prediction, causal inference, RL self-play, agent-based simulation, automated reasoning, commit-reveal, zero-knowledge proofs, drift detection &amp; fairness auditing are all standard public methods (credits, with links, in the appendix), and the frontier ideas (ZKML, neurosymbolic) are flagged as emerging. What’s new is the <i>framing</i>: a seven-rung ladder — kept honest by drift &amp; fairness checks — that matches evidence strength to stakes, for game integrity. <span style="display:block;margin-top:.3rem">SHARDFALL and STAR ORACLE are fictional games invented for this talk; any resemblance to real titles is coincidental.</span></p></div>
     <details class="m-notes" open>
       <summary>▶ Speaker &amp; reader notes</summary>
       <div class="nbody"><div class="say"><span class="sh">▶ Say this (verbatim script)</span>
@@ -3104,8 +3247,8 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">Lede — "the techniques aren't the point, the calibration is."</span> The one sentence to leave them with. De-emphasizes the (mostly not novel) tech, elevates the judgment: know what each signal proves, build to your stakes, attach a reason, stop. Four verbs, the whole talk.</p>
   <p><span class="el">QR + kit.</span> Replace [QR] with the real repo link. End on the kit — the last image is the thing they take with them. Mention every live demo they poked is in the repo.</p></div>
     </details>
-  </article><article class="m-entry" id="s66">
-    <div class="m-head"><span class="m-num">67/67</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Appendix · credits & sources</span></div>
+  </article><article class="m-entry" id="s70">
+    <div class="m-head"><span class="m-num">71/71</span><span class="m-chip" style="--rc:var(--muted)">·</span><span class="m-name">Appendix · credits & sources</span></div>
     <div class="m-slide">
   <div class="reveal kicker"><span class="tick"></span> Appendix · standing on shoulders — every technique is public, credited &amp; linked</div>
   <h2 class="reveal" style="font-size:clamp(1.3rem,2.6vw,1.9rem)">Credits, references &amp; further reading <span style="color:var(--faint);font-size:.6em;font-weight:400">— by rung</span></h2>
@@ -3138,6 +3281,9 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
         <tr><td>VRF · Merkle tree</td><td><a href="https://datatracker.ietf.org/doc/rfc9381/" target="_blank" rel="noopener">RFC 9381 (VRF)</a> · Merkle 1979</td></tr>
         <tr><td>Nitro Enclaves attestation</td><td><a href="https://docs.aws.amazon.com/enclaves/latest/user/set-up-attestation.html" target="_blank" rel="noopener">docs.aws.amazon.com</a></td></tr>
         <tr><td><b style="color:var(--bright)">R7 Expose</b> · provably-fair pattern</td><td>open crypto-gaming convention (commit-reveal, above)</td></tr>
+        <tr><td><b style="color:var(--zk)">R7+ ZK</b> · zero-knowledge proofs</td><td><a href="https://doi.org/10.1137/0218012" target="_blank" rel="noopener">Goldwasser, Micali &amp; Rackoff 1989</a> · <a href="https://eprint.iacr.org/2018/046" target="_blank" rel="noopener">zk-STARK (Ben-Sasson et al.)</a></td></tr>
+        <tr><td><b style="color:var(--fr)">Frontier</b> · ZKML</td><td><a href="https://arxiv.org/abs/2502.18535" target="_blank" rel="noopener">ZKML survey 2025</a> · <a href="https://github.com/zkonduit/ezkl" target="_blank" rel="noopener">EZKL (open tooling)</a></td></tr>
+        <tr><td><b style="color:var(--fr)">Frontier</b> · neurosymbolic AI</td><td><a href="https://arxiv.org/abs/2305.00813" target="_blank" rel="noopener">Neurosymbolic survey (Garcez et al.)</a></td></tr>
         <tr><td><b style="color:var(--xc)">Cross-cut</b> · drift (PSI / KS / ADWIN)</td><td><a href="https://doi.org/10.1007/978-3-540-39483-1_3" target="_blank" rel="noopener">PSI</a> · <a href="https://epubs.siam.org/doi/10.1137/1.9781611972771.42" target="_blank" rel="noopener">ADWIN (Bifet &amp; Gavaldà 2007)</a></td></tr>
         <tr><td><b style="color:var(--xc)">Cross-cut</b> · fairness auditing</td><td><a href="https://fairmlbook.org/" target="_blank" rel="noopener">Barocas, Hardt &amp; Narayanan</a> · <a href="https://arxiv.org/abs/1610.02413" target="_blank" rel="noopener">Equalised odds (Hardt et al.)</a></td></tr>
         <tr><td>Evidence-strength ladder (the framing’s lineage)</td><td><a href="https://www.bmj.com/content/336/7650/924" target="_blank" rel="noopener">GRADE, BMJ 2008</a></td></tr>
@@ -3154,16 +3300,13 @@ DI = P(flag | g_low) / P(flag | g_high)   <span class="cm"># &lt;0.8 ⇒ concern
   <p><span class="el">Why this matters.</span> Protects against both "you reinvented X" and "you claimed Y as your own." Showing linked lineage makes the synthesis more credible, not less.</p></div>
     </details>
   </article>
-<div class="m-foot">— end · 67 slides · generated from confidence-ladder-deck-v3.html —</div>
+<div class="m-foot">— end · 71 slides · generated from confidence-ladder-deck-v3.html —</div>
 <script>
-  // progress bar
   const prog=document.getElementById('mprog');
   addEventListener('scroll',()=>{const sc=document.documentElement;const p=sc.scrollTop/(sc.scrollHeight-sc.clientHeight)*100;prog.style.width=p+'%';},{passive:true});
-  // jump menu
   const toc=document.getElementById('mtoc');
   document.getElementById('m-toctoggle').onclick=()=>toc.classList.toggle('open');
   toc.querySelectorAll('a').forEach(a=>a.onclick=()=>toc.classList.remove('open'));
-  // collapse/expand all notes
   let allOpen=true;
   document.getElementById('m-notestoggle').onclick=function(){allOpen=!allOpen;
     document.querySelectorAll('.m-notes').forEach(d=>d.open=allOpen);
